@@ -7,7 +7,7 @@ Versões exatas estão em `package.json` e `package-lock.json`. Os avisos embuti
 | Motion                     | https://github.com/motiondivision/motion  | MIT                                                                |
 | React e React DOM          | https://github.com/facebook/react         | MIT                                                                |
 | Remotion e Remotion Player | https://github.com/remotion-dev/remotion  | Remotion License — https://www.remotion.dev/license                |
-| HyperFrames                | https://github.com/heygen-com/hyperframes | MIT                                                                |
+| HyperFrames                | https://github.com/heygen-com/hyperframes | Apache-2.0                                                                |
 | GSAP                       | https://gsap.com                          | Standard License — https://gsap.com/standard-license/              |
 | Sora                       | Fontsource / Sora                         | SIL Open Font License; texto em `assets/fonts/Sora-LICENSE.txt`    |
 | DM Sans                    | Fontsource / DM Sans                      | SIL Open Font License; texto em `assets/fonts/DM-Sans-LICENSE.txt` |
