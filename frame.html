@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1280,height=720" />
+    <title>Frame — WunderHub / HyperFrames</title>
+    <script src="./assets/vendor/gsap.min.js"></script>
+    <script src="./assets/vendor/hyperframe.runtime.js"></script>
+    <style>
+      @font-face {
+        font-family: Sora;
+        src: url("./assets/fonts/sora.woff2") format("woff2");
+        font-weight: 100 800;
+        font-display: swap;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+        background: #d4d2cc;
+        color: #252522;
+        font-family: Sora, Arial, sans-serif;
+      }
+      #stage {
+        position: relative;
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+      }
+      .label {
+        position: absolute;
+        top: 35px;
+        left: 45px;
+        font-size: 18px;
+        font-weight: 400;
+      }
+      .credit {
+        position: absolute;
+        bottom: 85px;
+        left: 45px;
+        font-size: 16px;
+      }
+      .shape {
+        position: absolute;
+        background: #c83931;
+        width: 90px;
+        height: 250px;
+        top: 235px;
+        transform: skew(-23deg);
+      }
+      #bar-left {
+        left: 110px;
+      }
+      #bar-right {
+        right: 110px;
+        background: #252522;
+      }
+      .word {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        font-size: 145px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -10px;
+      }
+      #make {
+        top: 105px;
+      }
+      #it {
+        top: 260px;
+        color: #c83931;
+      }
+      #move {
+        top: 420px;
+      }
+      #end {
+        position: absolute;
+        inset: 0;
+        background: #c83931;
+        color: #f2e9dc;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        visibility: hidden;
+        opacity: 0;
+      }
+      #end h2 {
+        font-size: 122px;
+        letter-spacing: -8px;
+        font-weight: 600;
+      }
+      #end p {
+        font-size: 25px;
+        margin-top: 22px;
+      }
+      .time-line {
+        position: absolute;
+        height: 5px;
+        bottom: 0;
+        left: 0;
+        background: #252522;
+        width: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="frame"
+      data-start="0"
+      data-duration="10"
+      data-width="1280"
+      data-height="720"
+    >
+      <p
+        id="frame-label"
+        class="label clip"
+        data-start="0"
+        data-duration="10"
+        data-track-index="0"
+      >
+        Frame / Type in motion
+      </p>
+      <div
+        id="bar-left"
+        class="shape clip"
+        data-start="0"
+        data-duration="7.2"
+        data-track-index="1"
+      ></div>
+      <div
+        id="bar-right"
+        class="shape clip"
+        data-start="0"
+        data-duration="7.2"
+        data-track-index="1"
+      ></div>
+      <div
+        id="make"
+        class="word clip"
+        data-start="0"
+        data-duration="7.2"
+        data-track-index="2"
+      >
+        MAKE
+      </div>
+      <div
+        id="it"
+        class="word clip"
+        data-start="0"
+        data-duration="7.2"
+        data-track-index="3"
+      >
+        IT
+      </div>
+      <div
+        id="move"
+        class="word clip"
+        data-start="0"
+        data-duration="7.2"
+        data-track-index="4"
+      >
+        MOVE.
+      </div>
+      <p
+        id="frame-credit"
+        class="credit clip"
+        data-start="0"
+        data-duration="7.2"
+        data-track-index="5"
+      >
+        Um estudo sobre forma, tempo e expressão.
+      </p>
+      <div id="end">
+        <h2>WunderHub.</h2>
+        <p>Ideias também têm ritmo.</p>
+      </div>
+      <div class="time-line"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo(
+        "#make",
+        { y: -60, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+        0,
+      )
+        .fromTo(
+          "#it",
+          { scale: 0.5, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.4)" },
+          0.25,
+        )
+        .fromTo(
+          "#move",
+          { y: 60, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          0.45,
+        )
+        .fromTo(
+          ".shape",
+          { scaleY: 0 },
+          { scaleY: 1, duration: 0.9, ease: "power3.inOut" },
+          0.7,
+        )
+        .to("#make", { x: -125, duration: 1.1, ease: "power3.inOut" }, 2.1)
+        .to("#move", { x: 125, duration: 1.1, ease: "power3.inOut" }, 2.1)
+        .to(
+          "#it",
+          { rotation: 8, scale: 1.1, duration: 1.1, ease: "power3.inOut" },
+          2.1,
+        )
+        .to(
+          ".shape",
+          { rotation: 90, scaleY: 0.65, duration: 1.1, ease: "power3.inOut" },
+          2.1,
+        )
+        .to(
+          ["#make", "#move"],
+          { x: 0, duration: 1.1, ease: "power3.inOut" },
+          4.1,
+        )
+        .to(
+          "#it",
+          { rotation: 0, scale: 1, duration: 1.1, ease: "power3.inOut" },
+          4.1,
+        )
+        .to(
+          ".shape",
+          { rotation: 0, scaleY: 1, duration: 1.1, ease: "power3.inOut" },
+          4.1,
+        )
+        .to(
+          [".word", ".shape", ".credit"],
+          { opacity: 0, y: -30, duration: 0.5, ease: "power2.in" },
+          6.7,
+        )
+        .fromTo(
+          "#end",
+          { autoAlpha: 0, scale: 0.95 },
+          { autoAlpha: 1, scale: 1, duration: 0.8, ease: "power3.out" },
+          7.2,
+        )
+        .to(".time-line", { width: 1280, duration: 10, ease: "none" }, 0);
+      window.__timelines.frame = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

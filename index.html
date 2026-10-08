@@ -3,424 +3,510 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#09090b" />
+    <meta name="theme-color" content="#101010" />
     <meta
       name="description"
-      content="WunderHub — um portfólio de design e desenvolvimento para a web. Conheça o projeto e converse pelo WhatsApp."
+      content="WunderHub, por Kauê Ribeiro. Design e desenvolvimento de sites, interfaces interativas e motion design. Explore os estudos e converse sobre seu projeto."
     />
-    <meta property="og:title" content="WunderHub — Portfólio" />
+    <meta
+      property="og:title"
+      content="WunderHub — Design, código e movimento"
+    />
     <meta
       property="og:description"
-      content="Ideias que ganham forma na web. Conheça o portfólio da WunderHub."
+      content="Design à altura da sua próxima ideia. Um estúdio independente de experiências digitais por Kauê Ribeiro."
     />
     <meta property="og:type" content="website" />
-    <title>WunderHub — Portfólio</title>
-    <link rel="icon" href="./assets/logo.png" type="image/png" />
+    <meta
+      property="og:image"
+      content="https://wunderhub.github.io/Portfolio.io/assets/logo.png"
+    />
+    <meta
+      property="og:url"
+      content="https://wunderhub.github.io/Portfolio.io/"
+    />
+    <title>WunderHub — Design, código e movimento</title>
+    <link rel="canonical" href="https://wunderhub.github.io/Portfolio.io/" />
+    <link rel="icon" href="./assets/favicon.png" type="image/png" />
+    <link
+      rel="preload"
+      href="./assets/fonts/sora.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="./assets/fonts/dm-sans.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="./assets/styles.css" />
-    <script src="./assets/main.js" defer></script>
+    <script type="module" src="./assets/dist/main.js"></script>
   </head>
   <body>
+    <svg
+      class="svg-definitions"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <symbol id="arrow" viewBox="0 0 24 24">
+          <path d="M5 19 19 5M5 5h14v14" />
+        </symbol>
+        <symbol id="play" viewBox="0 0 24 24">
+          <path d="m9 5 11 7-11 7Z" />
+        </symbol>
+        <symbol id="plus" viewBox="0 0 24 24">
+          <path d="M12 5v14M5 12h14" />
+        </symbol>
+      </defs>
+    </svg>
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
-    <header class="site-header wrap">
+    <header class="header shell">
       <a class="brand" href="#inicio" aria-label="WunderHub, início"
-        ><img
-          class="brand-logo"
-          src="./assets/logo.png"
-          alt=""
-          width="52"
-          height="43"
-        /><span
-          >WunderHub<span class="brand-small"
-            >Design e desenvolvimento</span
-          ></span
+        ><img src="./assets/logo.webp" width="50" height="31" alt="" /><span
+          >WunderHub<span class="brand-period">.</span></span
         ></a
       >
       <nav aria-label="Navegação principal">
-        <a href="#projetos">Projeto</a>
-        <a href="#sobre">Sobre</a>
-        <a class="nav-contact" href="https://wa.me/5511959300903"
-          >Vamos conversar
-          <span aria-hidden="true"
-            ><svg
-              class="icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M6 18 18 6M6 6h12v12" /></svg></span
-        ></a>
+        <a href="#trabalhos">Trabalhos</a><a href="#abordagem">Abordagem</a
+        ><a href="#estudio">Estúdio</a>
       </nav>
+      <a class="header-contact" href="https://wa.me/5511959300903"
+        >Vamos conversar <span class="contact-dot" aria-hidden="true"></span
+      ></a>
     </header>
-
     <main id="conteudo">
-      <section class="hero wrap" id="inicio" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="intro">
-            <span aria-hidden="true"></span>Design e desenvolvimento web
-          </p>
-          <h1 id="hero-title">Ideias que<br />ganham forma<br />na web.</h1>
-          <p class="hero-description">
-            Um espaço para explorar interfaces, compartilhar projetos e
-            transformar o que está no papel em experiências digitais.
-          </p>
-          <a class="button button-primary" href="https://wa.me/5511959300903"
-            >Conversar no WhatsApp
-            <span aria-hidden="true"
-              ><svg
-                class="icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M6 18 18 6M6 6h12v12" /></svg></span
-          ></a>
-          <div class="hero-footnote">
-            <span class="tiny-mark" aria-hidden="true"
-              ><svg
-                class="star-icon"
-                viewBox="0 0 32 32"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.4"
-                stroke-linecap="round"
-                aria-hidden="true"
-              >
-                <path d="M16 3v26M3 16h26M7 7l18 18M7 25 25 7" /></svg></span
-            ><span>Do primeiro rascunho<br />ao último detalhe.</span>
-          </div>
+      <section class="hero shell" id="inicio" aria-labelledby="hero-title">
+        <div class="hero-topline">
+          <p>Estúdio independente de experiências digitais</p>
+          <span>São Paulo, Brasil</span>
         </div>
-        <div
-          class="hero-art"
-          role="img"
-          aria-label="Símbolo da WunderHub em preto, vermelho e prata, em uma composição sobre design e desenvolvimento"
-        >
-          <div class="art-note">Uma ideia. Muitas possibilidades.</div>
-          <div class="art-window">
-            <div class="window-bar">
-              <span class="window-dots"><i></i><i></i><i></i></span
-              ><span>wunderhub / canvas</span
-              ><span
-                ><svg
-                  class="star-icon"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.4"
-                  stroke-linecap="round"
-                  aria-hidden="true"
-                >
-                  <path d="M16 3v26M3 16h26M7 7l18 18M7 25 25 7" /></svg
-              ></span>
-            </div>
-            <div class="window-canvas">
-              <span class="canvas-label">Feito para a web.</span
-              ><span class="giant-w"
-                ><img src="./assets/logo.png" alt="" width="512" height="512"
-              /></span>
-              <div class="canvas-bottom">
-                <span>Design encontra código.</span
-                ><span aria-hidden="true"
-                  ><svg
-                    class="icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M6 18 18 6M6 6h12v12" /></svg
-                ></span>
-              </div>
-            </div>
-          </div>
-          <div class="floating-card">
-            <span class="card-asterisk" aria-hidden="true"
-              ><svg
-                class="star-icon"
-                viewBox="0 0 32 32"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.4"
-                stroke-linecap="round"
-                aria-hidden="true"
-              >
-                <path d="M16 3v26M3 16h26M7 7l18 18M7 25 25 7" /></svg></span
-            ><span
-              >Boas ideias<br />merecem<br /><strong>bons sites.</strong></span
-            >
-            <div class="card-lines"><i></i><i></i></div>
-          </div>
-          <span class="art-cursor" aria-hidden="true"
-            ><svg viewBox="0 0 30 36"><path d="M3 2 27 21 16 23 10 33Z" /></svg
-            ><span>vamos criar</span></span
-          >
-          <div class="art-caption">
-            <span>Um pequeno laboratório de possibilidades.</span
-            ><span aria-hidden="true">↓</span>
-          </div>
-        </div>
-      </section>
-
-      <div class="focus-strip" aria-label="Áreas de interesse">
-        <div class="wrap">
-          <span>Design com intenção</span
-          ><span aria-hidden="true"
-            ><svg
-              class="star-icon"
-              viewBox="0 0 32 32"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.4"
-              stroke-linecap="round"
-              aria-hidden="true"
-            >
-              <path d="M16 3v26M3 16h26M7 7l18 18M7 25 25 7" /></svg></span
-          ><span>Código com cuidado</span
-          ><span aria-hidden="true"
-            ><svg
-              class="star-icon"
-              viewBox="0 0 32 32"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.4"
-              stroke-linecap="round"
-              aria-hidden="true"
-            >
-              <path d="M16 3v26M3 16h26M7 7l18 18M7 25 25 7" /></svg></span
-          ><span>Web para todos</span>
-        </div>
-      </div>
-
-      <section
-        class="projects wrap section-space"
-        id="projetos"
-        aria-labelledby="projects-title"
-      >
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Portfólio em construção</p>
-            <h2 id="projects-title">O primeiro capítulo.</h2>
-          </div>
-          <p>
-            Este espaço também é um projeto.<br />Veja como ele está tomando
-            forma.
-          </p>
-        </div>
-        <article class="featured-project">
-          <a
-            class="project-visual"
-            href="https://github.com/WunderHub/Portfolio.io"
-            aria-label="Ver o código do portfólio WunderHub no GitHub"
-          >
-            <div class="preview-browser" aria-hidden="true">
-              <div class="preview-bar">
-                <span>● ● ●</span><span>WunderHub</span>
-              </div>
-              <div class="preview-content">
-                <div class="preview-nav">
-                  <b>w.</b><span>Projeto &nbsp; Sobre &nbsp; Contato</span>
-                </div>
-                <div class="preview-layout">
-                  <div>
-                    <span class="preview-tag">Um lugar para suas ideias.</span
-                    ><strong>Ideias que<br />ganham forma<br />na web.</strong
-                    ><span class="preview-button"
-                      >Explorar portfólio
-                      <svg
-                        class="icon icon-down-right"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.6"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M6 18 18 6M6 6h12v12" /></svg
-                    ></span>
-                  </div>
-                  <div class="preview-poster">
-                    <img
-                      src="./assets/logo.png"
-                      alt=""
-                      width="512"
-                      height="512"
-                    /><small>Design encontra código.</small>
-                  </div>
-                </div>
-                <div class="preview-line">
-                  Design com intenção
-                  <span
-                    ><svg
-                      class="star-icon"
-                      viewBox="0 0 32 32"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.4"
-                      stroke-linecap="round"
-                      aria-hidden="true"
-                    >
-                      <path d="M16 3v26M3 16h26M7 7l18 18M7 25 25 7" /></svg
-                  ></span>
-                  Código com cuidado
-                </div>
-              </div>
-            </div>
-            <span class="project-open" aria-hidden="true"
-              ><svg
-                class="icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M6 18 18 6M6 6h12v12" /></svg
+        <div class="hero-grid">
+          <h1 id="hero-title">
+            Design à altura<br />da sua próxima<br class="small-only" />
+            ideia.
+          </h1>
+          <div class="hero-aside">
+            <span class="hero-glyph" aria-hidden="true"
+              ><i></i><i></i><i></i
             ></span>
-          </a>
-          <div class="project-description">
-            <div class="project-tags">
-              <span>Design de interface</span><span>Desenvolvimento web</span>
-            </div>
-            <h3>WunderHub</h3>
             <p>
-              O portfólio que você está explorando: uma página para reunir
-              ideias, apresentar o trabalho e abrir novas conversas.
+              Sites, interfaces e movimento.<br />Uma visão criativa, da
+              direção<br />visual ao desenvolvimento.
             </p>
-            <a
-              class="text-link"
-              href="https://github.com/WunderHub/Portfolio.io"
-              >Explorar o código no GitHub
-              <span aria-hidden="true"
-                ><svg
-                  class="icon"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M6 18 18 6M6 6h12v12" /></svg></span
-            ></a>
-            <p class="project-caption">
-              HTML, CSS e JavaScript · Preparado para GitHub Pages
-            </p>
+            <button class="reel-trigger" data-open="reel" disabled>
+              <span class="play-circle"
+                ><svg class="icon"><use href="#play" /></svg></span
+              ><span
+                >Conheça em 14 segundos<small
+                  >Filme autoral · Remotion</small
+                ></span
+              >
+            </button>
           </div>
-        </article>
+        </div>
+        <div class="hero-bottom">
+          <a href="#trabalhos"
+            >Explore os estudos <span aria-hidden="true">↓</span></a
+          >
+          <p>Por Kauê Ribeiro</p>
+        </div>
       </section>
 
-      <section class="about-section" id="sobre" aria-labelledby="about-title">
-        <div class="wrap about-grid section-space">
-          <div class="about-heading">
-            <p class="section-kicker">Por trás da WunderHub</p>
-            <h2 id="about-title">Um olhar curioso.<br />Vontade de criar.</h2>
-            <img
-              class="about-logo"
-              src="./assets/logo.png"
-              alt="Símbolo da WunderHub"
-              width="165"
-              height="106"
-            />
-          </div>
-          <div class="about-content">
-            <p class="about-lead">
-              A WunderHub começa como um espaço para dar forma a ideias e
-              experimentar possibilidades na web.
-            </p>
-            <p>
-              A proposta é aproximar design e desenvolvimento: pensar na
-              mensagem, cuidar da interface e construir uma página que funcione
-              bem em diferentes telas.
-            </p>
-            <div class="principles">
+      <section class="work shell" id="trabalhos" aria-labelledby="work-title">
+        <div class="work-heading">
+          <h2 id="work-title">Em exploração</h2>
+          <p>
+            Estudos autorais. Ideias desenvolvidas para demonstrar
+            possibilidades.
+          </p>
+        </div>
+        <div class="work-grid">
+          <article class="project project-aura">
+            <button
+              class="project-cover aura-cover"
+              data-open="aura"
+              disabled
+              aria-label="Explorar protótipo Aura, estudo de e-commerce"
+            >
+              <img
+                class="product-photo"
+                src="./assets/aura-headphones.webp"
+                width="1440"
+                height="960"
+                alt="Headphone conceitual de alumínio escovado e couro preto"
+                fetchpriority="high"
+              />
+              <span class="cover-top"
+                ><span class="aura-wordmark">aura.</span
+                ><span class="concept-badge">Estudo conceitual</span></span
+              >
+              <span class="aura-copy">O som encontra<br />sua forma.</span
+              ><span class="cover-action"
+                ><span>Explorar protótipo</span
+                ><svg class="icon"><use href="#arrow" /></svg
+              ></span>
+            </button>
+            <div class="project-caption">
               <div>
-                <h3>Clareza em cada tela</h3>
-                <p>
-                  Conteúdo organizado para que cada pessoa encontre o que
-                  procura.
-                </p>
+                <h3>Aura Audio</h3>
+                <p>Direção de arte / Interface de produto</p>
               </div>
-              <div>
-                <h3>Personalidade nos detalhes</h3>
-                <p>
-                  Cores, tipografia e composição que fazem parte da mesma ideia.
-                </p>
-              </div>
-              <div>
-                <h3>Cuidado com quem navega</h3>
-                <p>
-                  Leitura confortável, navegação por teclado e respeito ao
-                  movimento reduzido.
-                </p>
-              </div>
+              <span class="tool-label">Motion</span>
             </div>
+          </article>
+          <article class="project project-frame">
+            <button
+              class="project-cover frame-cover"
+              data-open="frame"
+              disabled
+              aria-label="Reproduzir Frame, estudo de tipografia com HyperFrames"
+            >
+              <span class="cover-top"
+                ><span class="frame-wordmark">Frame / 001</span
+                ><span class="concept-badge">Estudo de movimento</span></span
+              >
+              <span class="frame-art" aria-hidden="true"
+                ><span class="frame-line">MAKE</span
+                ><span class="frame-middle"><i></i><b>IT</b><i></i></span
+                ><span class="frame-line">MOVE.</span></span
+              >
+              <span class="frame-footer">Forma, tempo &amp; expressão.</span
+              ><span class="cover-action"
+                ><span>Reproduzir estudo</span
+                ><svg class="icon"><use href="#play" /></svg
+              ></span>
+            </button>
+            <div class="project-caption">
+              <div>
+                <h3>Frame — Type in motion</h3>
+                <p>Tipografia cinética / Composição HTML</p>
+              </div>
+              <span class="tool-label">HyperFrames</span>
+            </div>
+          </article>
+        </div>
+        <noscript
+          ><p class="notice">
+            Ative o JavaScript para experimentar os protótipos. Você pode
+            conhecer o trabalho nesta página e conversar pelo WhatsApp.
+          </p></noscript
+        >
+      </section>
+
+      <section
+        class="approach shell section-space"
+        id="abordagem"
+        aria-labelledby="approach-title"
+      >
+        <div class="section-intro">
+          <p class="section-label">O que a experiência precisa entregar</p>
+          <h2 id="approach-title">
+            Bonito é o começo.<br />O resto você sente<br />quando usa.
+          </h2>
+          <p class="section-description">
+            Uma página precisa apresentar bem o negócio, orientar quem chega e
+            tornar o próximo passo simples.
+          </p>
+          <a class="underlined-link" href="https://wa.me/5511959300903"
+            >Conversar sobre o meu projeto
+            <svg class="icon"><use href="#arrow" /></svg
+          ></a>
+        </div>
+        <div class="capabilities">
+          <details open>
+            <summary>
+              <span>Uma identidade que faz sentido</span
+              ><svg class="icon"><use href="#plus" /></svg>
+            </summary>
+            <div>
+              <p>
+                Hierarquia, tipografia e direção visual construídas a partir do
+                seu conteúdo. Cada escolha ajuda a contar a mesma história.
+              </p>
+              <span>Direção de arte / UI design / Responsividade</span>
+            </div>
+          </details>
+          <details>
+            <summary>
+              <span>Interações que respondem</span
+              ><svg class="icon"><use href="#plus" /></svg>
+            </summary>
+            <div>
+              <p>
+                Transições que deixam as ações claras. Estados de carregamento,
+                feedback e navegação por teclado recebem o mesmo cuidado que a
+                primeira tela.
+              </p>
+              <span>Motion / JavaScript / Acessibilidade</span>
+            </div>
+          </details>
+          <details>
+            <summary>
+              <span>Movimento com propósito</span
+              ><svg class="icon"><use href="#plus" /></svg>
+            </summary>
+            <div>
+              <p>
+                Composições para apresentar um produto, explicar uma ideia ou
+                dar ritmo a uma marca. Controle de tempo e reprodução
+                diretamente no navegador.
+              </p>
+              <span>Remotion / HyperFrames / React</span>
+            </div>
+          </details>
+          <details>
+            <summary>
+              <span>Uma entrega pronta para a web</span
+              ><svg class="icon"><use href="#plus" /></svg>
+            </summary>
+            <div>
+              <p>
+                Arquivos otimizados, conteúdo legível e recursos carregados
+                conforme a necessidade. Da tela pequena à publicação, com testes
+                no navegador.
+              </p>
+              <span>Performance / SEO técnico / Deploy</span>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section class="film-section" aria-labelledby="film-title">
+        <div class="film-layout shell">
+          <div class="film-copy">
+            <p class="section-label">WunderHub em movimento</p>
+            <h2 id="film-title">A mesma marca.<br />Outro ritmo.</h2>
+            <p>
+              Um experimento visual sobre forma, código e movimento. Criado como
+              uma composição de vídeo em React.
+            </p>
+            <button class="light-button" data-open="reel" disabled>
+              Assistir ao filme
+              <svg class="icon"><use href="#play" /></svg></button
+            ><span class="film-meta">14 segundos / Sem áudio / Remotion</span>
           </div>
+          <button
+            class="film-poster"
+            data-open="reel"
+            disabled
+            aria-label="Assistir ao filme autoral WunderHub"
+          >
+            <span class="poster-coordinate">WunderHub / Motion study</span
+            ><span class="poster-type" aria-hidden="true"
+              >BUILD.<br /><span>FEEL.</span><br />REPEAT.</span
+            ><span class="poster-orbit" aria-hidden="true"></span
+            ><span class="poster-play"
+              ><svg class="icon"><use href="#play" /></svg></span
+            ><span class="poster-caption"
+              >Uma ideia pode ter muitas formas.</span
+            >
+          </button>
         </div>
       </section>
 
       <section
-        class="contact wrap section-space"
+        class="studio shell section-space"
+        id="estudio"
+        aria-labelledby="studio-title"
+      >
+        <div class="studio-signature">
+          <img
+            src="./assets/logo.webp"
+            width="177"
+            height="89"
+            loading="lazy"
+            alt="Símbolo da WunderHub"
+          /><span>Kauê Ribeiro</span>
+          <p>Design &amp; desenvolvimento</p>
+        </div>
+        <div class="studio-text">
+          <p class="section-label">Quem está por trás</p>
+          <h2 id="studio-title">
+            Da ideia à publicação,<br />uma conversa direta.
+          </h2>
+          <p>
+            Você fala com quem desenha e desenvolve. A WunderHub é meu espaço
+            para criar experiências digitais, testar novas ferramentas e
+            transformar ideias em projetos navegáveis.
+          </p>
+          <p>
+            Os trabalhos apresentados aqui são estudos autorais. Cada um explora
+            uma parte da experiência: o produto, a interação ou o movimento.
+          </p>
+          <a
+            class="underlined-link"
+            href="https://github.com/WunderHub/Portfolio.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Ver o código deste portfólio
+            <svg class="icon"><use href="#arrow" /></svg
+          ></a>
+        </div>
+      </section>
+
+      <section
+        class="contact-section shell"
         id="contato"
         aria-labelledby="contact-title"
       >
-        <div>
-          <p class="section-kicker">A conversa continua</p>
-          <h2 id="contact-title">Toda boa conexão<br />começa com um olá.</h2>
-          <p>
-            Tem uma ideia para um site? Conte um pouco<br />sobre ela pelo
-            WhatsApp.
-          </p>
-          <a class="button button-primary" href="https://wa.me/5511959300903"
-            >Conversar no WhatsApp
-            <span aria-hidden="true"
-              ><svg
-                class="icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M6 18 18 6M6 6h12v12" /></svg></span
+        <div class="contact-top">
+          <p>O próximo projeto pode ser o seu.</p>
+          <span>Contato direto pelo WhatsApp</span>
+        </div>
+        <div class="contact-main">
+          <h2 id="contact-title">Vamos fazer<br />acontecer.</h2>
+          <a
+            class="contact-circle"
+            href="https://wa.me/5511959300903"
+            aria-label="Conversar com Kauê no WhatsApp"
+            ><svg class="icon"><use href="#arrow" /></svg
           ></a>
         </div>
-        <div class="contact-art" aria-hidden="true">
-          <span>olá<span class="contact-dot">.</span></span
-          ><svg viewBox="0 0 240 90">
-            <path d="M10 43C53 83 123 82 218 22M186 17l38 2-9 35" />
-          </svg>
+        <div class="contact-bottom">
+          <a href="https://wa.me/5511959300903">+55 (11) 95930-0903</a>
+          <p>Conte a ideia. A gente começa por aí.</p>
         </div>
       </section>
     </main>
-
-    <footer class="site-footer wrap">
-      <a class="brand footer-brand" href="#inicio"
-        ><img
-          class="brand-logo"
-          src="./assets/logo.png"
-          alt=""
-          width="52"
-          height="43"
-        /><span>WunderHub</span></a
+    <footer class="footer shell">
+      <a class="brand" href="#inicio"
+        ><span>WunderHub<span class="brand-period">.</span></span></a
       >
-      <p>Feito com atenção aos detalhes.</p>
-      <a href="#inicio">Voltar ao início <span aria-hidden="true">↑</span></a>
+      <p>© <span id="year">2026</span> Kauê Ribeiro</p>
+      <a href="#inicio">Voltar ao topo <span aria-hidden="true">↑</span></a>
     </footer>
+
+    <dialog id="aura-dialog" class="demo-dialog" aria-labelledby="aura-title">
+      <div class="dialog-top">
+        <span>Estudo autoral / Produto fictício</span
+        ><button class="close-dialog" aria-label="Fechar demonstração">
+          ×
+        </button>
+      </div>
+      <div class="aura-demo">
+        <div class="aura-image">
+          <img
+            src="./assets/aura-headphones.webp"
+            width="1440"
+            height="960"
+            alt="Headphone Aura, produto conceitual"
+          /><span>AURA / STUDIO SERIES</span>
+        </div>
+        <div class="aura-info">
+          <p class="section-label">Protótipo de e-commerce</p>
+          <h2 id="aura-title">Aura One.</h2>
+          <p class="aura-lead">Menos distração.<br />Mais espaço para ouvir.</p>
+          <div
+            class="product-tabs"
+            role="tablist"
+            aria-label="Detalhes do produto"
+          >
+            <button
+              role="tab"
+              id="overview-tab"
+              aria-controls="overview-panel"
+              aria-selected="true"
+              tabindex="0"
+            >
+              Visão geral</button
+            ><button
+              role="tab"
+              id="details-tab"
+              aria-controls="details-panel"
+              aria-selected="false"
+              tabindex="-1"
+            >
+              Ficha técnica
+            </button>
+          </div>
+          <div
+            id="overview-panel"
+            role="tabpanel"
+            aria-labelledby="overview-tab"
+          >
+            <p>
+              Uma experiência de compra que coloca o produto em primeiro plano.
+              Fotografia, hierarquia e interações trabalhando juntas.
+            </p>
+          </div>
+          <div
+            id="details-panel"
+            role="tabpanel"
+            aria-labelledby="details-tab"
+            hidden
+          >
+            <dl>
+              <div>
+                <dt>Acabamento</dt>
+                <dd>Alumínio escovado</dd>
+              </div>
+              <div>
+                <dt>Formato</dt>
+                <dd>Over-ear</dd>
+              </div>
+              <div>
+                <dt>Projeto</dt>
+                <dd>Conceito digital</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="purchase-row">
+            <div class="quantity">
+              <button id="quantity-minus" aria-label="Diminuir quantidade">
+                −</button
+              ><output id="quantity-output" aria-live="polite">1</output
+              ><button id="quantity-plus" aria-label="Aumentar quantidade">
+                +
+              </button>
+            </div>
+            <button id="add-selection" class="solid-button">
+              Adicionar à seleção
+            </button>
+          </div>
+          <div id="selection-status" class="selection-status" role="status">
+            Experimente os controles. Nenhuma compra será realizada.
+          </div>
+          <button id="clear-selection" class="clear-selection" hidden>
+            Limpar seleção
+          </button>
+        </div>
+      </div>
+    </dialog>
+    <dialog
+      id="reel-dialog"
+      class="demo-dialog player-dialog"
+      aria-labelledby="reel-title"
+    >
+      <div class="dialog-top">
+        <h2 id="reel-title">WunderHub / Filme autoral</h2>
+        <button class="close-dialog" aria-label="Fechar filme">×</button>
+      </div>
+      <div id="reel-mount" class="player-mount">
+        <p role="status">Preparando o filme…</p>
+      </div>
+      <p class="dialog-caption">
+        Composição em Remotion · 14 segundos · Sem áudio
+      </p>
+    </dialog>
+    <dialog
+      id="frame-dialog"
+      class="demo-dialog player-dialog"
+      aria-labelledby="frame-title"
+    >
+      <div class="dialog-top">
+        <h2 id="frame-title">Frame / Type in motion</h2>
+        <button class="close-dialog" aria-label="Fechar composição">×</button>
+      </div>
+      <div id="frame-mount" class="player-mount">
+        <p role="status">Preparando a composição…</p>
+      </div>
+      <p class="dialog-caption">
+        Estudo autoral em HyperFrames · 10 segundos · Sem áudio
+      </p>
+    </dialog>
   </body>
 </html>

@@ -1,38 +1,65 @@
-# WunderHub — Portfólio
+# WunderHub
 
-Landing page responsiva em português, feita com HTML, CSS e JavaScript e preparada para GitHub Pages. Não precisa instalar dependências nem executar um build.
+Portfólio de Kauê Ribeiro com design, desenvolvimento e experiências de movimento. Publicação: <https://wunderhub.github.io/Portfolio.io/>.
 
-## Executar localmente
+Os trabalhos são **estudos autorais**, não projetos de clientes. Aura é um produto fictício com imagem conceitual gerada para a demonstração; seus controles não realizam compras. O contato real é o WhatsApp **+55 (11) 95930-0903**.
 
-Na pasta do repositório:
+## Experiências implementadas
+
+- **Aura Audio:** protótipo de interface de produto com abas acessíveis, quantidade, seleção e reset. Motion dá feedback às interações.
+- **Frame:** composição HTML de 10 segundos, com timeline GSAP e player HyperFrames. Permite reproduzir, pausar e buscar qualquer instante.
+- **Filme WunderHub:** composição Remotion de 14 segundos com controles de reprodução, executada em React no navegador. Não é um MP4 pré-renderizado.
+
+As duas experiências de vídeo são silenciosas e carregadas somente quando abertas. O filme não inicia automaticamente quando o visitante prefere movimento reduzido. Fechar a janela interrompe e desmonta o player. Texto, links, WhatsApp e acordeões funcionam sem JavaScript.
+
+## Desenvolver
+
+Requisitos: Node.js 22 ou superior e Python 3 para o servidor local.
 
 ```sh
-python3 -m http.server 8000
+npm ci
+npm run build
+npm run dev
 ```
 
-Abra a porta 8000 no seu navegador local. O conteúdo e a navegação também funcionam sem JavaScript.
+O servidor local usa a porta 8000. Não requer chaves, serviços pagos ou backend.
 
-## Personalizar
+Arquivos principais:
 
-- `index.html`: nome, apresentação, projeto, descrição e links de contato.
-- `assets/styles.css`: paleta, tipografia, espaçamento e estilos para celular.
-- `assets/logo.png`: versão do símbolo com fundo transparente, preparada a partir do logo enviado pelo proprietário e usada também como ícone da página.
-- `assets/main.js`: animação inicial opcional.
+- `index.html`: conteúdo, estrutura e protótipo Aura.
+- `assets/styles.css`: layout responsivo e identidade visual.
+- `src/main.js`: interação com Motion e carregamento dos players.
+- `src/reel.jsx`: composição e player Remotion.
+- `frame.html`: composição GSAP/HyperFrames.
+- `scripts/build.mjs`: bundle ESM, divisão dos players, fontes e otimização das imagens.
 
-A marca é **WunderHub**. Os botões principais levam ao WhatsApp **+55 (11) 95930-0903**, usando `https://wa.me/5511959300903`. O único projeto apresentado é este próprio portfólio. O símbolo foi preparado a partir do logo enviado pelo proprietário, removendo o fundo e os textos para uso na interface. A paleta usa preto, vermelho e prata. Os textos de apresentação e os demais projetos ainda podem ser personalizados.
+As dependências têm versões exatas e lockfile. Bibliotecas, fontes, imagens e runtime são servidos pelo próprio site; o visitante não depende de CDNs para executar as demonstrações. Consulte `THIRD_PARTY_NOTICES.md` para fontes e licenças.
 
-## Publicar no GitHub Pages
+## Validar
 
-O Pages está configurado para **Deploy from a branch → main → / (root)**.
+```sh
+npm run build
+npm run check
+```
 
-1. Envie `index.html`, `assets/` e `.nojekyll` para a branch `main` de `WunderHub/Portfolio.io`.
-2. O GitHub executará automaticamente a publicação. Acompanhe em **Actions → pages build and deployment**.
-3. Após a execução terminar, acesse `https://wunderhub.github.io/Portfolio.io/`.
+O check valida recursos locais, limite do JavaScript inicial, separação dos players e a composição pelo linter oficial do HyperFrames.
 
-Atualizações enviadas para `main` publicam uma nova versão automaticamente. Não é necessário configurar um workflow próprio nem um domínio personalizado. O arquivo `.nojekyll` permite servir os arquivos estáticos diretamente, e os caminhos relativos funcionam no subdiretório `/Portfolio.io/`.
+O teste funcional usa Python Playwright e Chromium:
 
-Não há formulário com backend, integração de e-mail ou ferramentas de rastreamento. Os botões abrem uma conversa no WhatsApp.
+```sh
+# Terminal 1, na pasta do projeto
+python3 -m http.server 8000
 
-## Validação desta versão
+# Terminal 2, com Playwright e Chromium disponíveis
+PORTFOLIO_URL=http://127.0.0.1:8000/ CHROMIUM_PATH=/usr/bin/chromium python3 tests/browser_smoke.py
+```
 
-Verificado em Chromium em larguras de 320, 390, 768, 1024 e 1440 pixels: carregamento dos recursos, ausência de transbordamento horizontal, links internos e atalho de teclado para o conteúdo. Também foi verificado o funcionamento sem JavaScript e com preferência por movimento reduzido. A publicação remota precisa ser validada após o deploy automático do GitHub.
+O teste cobre teclado, abas, quantidades, reset, foco, carregamento tardio, reprodução Remotion, busca e reprodução HyperFrames, ausência de erros de runtime e layout em 320, 390, 768, 1024 e 1440 pixels. As capturas são gravadas em `/tmp/wunder-v2-*.png`.
+
+## GitHub Pages
+
+Mantenha **Settings → Pages → Deploy from a branch → main → / (root)**.
+
+Após alterar o código, execute `npm ci`, `npm run build` e `npm run check`, e envie também os arquivos compilados de `assets/dist/`, `assets/vendor/`, `assets/fonts/` e as imagens otimizadas para `main`. Eles são versionados para que o Pages publique diretamente, sem workflow personalizado. `.nojekyll` mantém o site estático. Os caminhos relativos suportam `/Portfolio.io/`.
+
+Cada push para `main` dispara o deploy padrão do GitHub Pages. O envio do commit e a conclusão do deploy são etapas diferentes; acompanhe **Actions → pages build and deployment**.
