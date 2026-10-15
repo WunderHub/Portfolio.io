@@ -43,6 +43,8 @@
       crossorigin
     />
     <link rel="stylesheet" href="./assets/styles.css" />
+    <link rel="stylesheet" href="./assets/logo-scroll.css" />
+    <script src="./assets/logo-scroll.js" defer></script>
     <script type="module" src="./assets/dist/main.js"></script>
   </head>
   <body>
@@ -79,6 +81,58 @@
       ></a>
     </header>
     <main id="conteudo">
+      <section
+        class="logo-sequence"
+        data-logo-sequence
+        data-frame-count="240"
+        data-frames-root="./assets/logo-sequence"
+        data-fit="contain"
+        aria-labelledby="logo-sequence-title"
+      >
+        <h2 id="logo-sequence-title" class="logo-sequence-sr-only">
+          A marca WunderHub em movimento
+        </h2>
+        <div class="logo-sequence-stage">
+          <picture class="logo-sequence-poster">
+            <source
+              media="(max-width: 760px)"
+              srcset="./assets/logo-sequence/poster-mobile.webp"
+            />
+            <img
+              src="./assets/logo-sequence/poster.webp"
+              width="1280"
+              height="720"
+              alt="Símbolo metálico da WunderHub com contornos vermelhos e luzes diagonais nas laterais"
+              fetchpriority="high"
+            />
+          </picture>
+          <canvas width="1280" height="720" aria-hidden="true"></canvas>
+          <div class="logo-sequence-top">
+            <p>WunderHub / Design em movimento</p>
+            <a class="logo-sequence-skip" href="#inicio"
+              >Pular apresentação <span aria-hidden="true">↓</span></a
+            >
+          </div>
+          <div class="logo-sequence-name" aria-hidden="true">
+            <strong>WunderHub.</strong>
+            <p>Design, código e movimento.</p>
+          </div>
+          <div class="logo-sequence-bottom">
+            <p class="logo-sequence-hint">
+              Role para revelar <span aria-hidden="true">↓</span>
+            </p>
+            <p
+              class="logo-sequence-status"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </div>
+          <div class="logo-sequence-progress" aria-hidden="true">
+            <span></span>
+          </div>
+        </div>
+      </section>
+
       <section class="hero shell" id="inicio" aria-labelledby="hero-title">
         <div class="hero-topline">
           <p>Estúdio independente de experiências digitais</p>
@@ -138,7 +192,7 @@
                 width="1440"
                 height="960"
                 alt="Headphone conceitual de alumínio escovado e couro preto"
-                fetchpriority="high"
+                loading="lazy"
               />
               <span class="cover-top"
                 ><span class="aura-wordmark">aura.</span

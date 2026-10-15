@@ -6,11 +6,43 @@ Os trabalhos são **estudos autorais**, não projetos de clientes. Aura é um pr
 
 ## Experiências implementadas
 
+- **Revelação no scroll:** sequência de 240 WEBP em canvas responsivo, fixo durante a rolagem. Implementada em HTML, CSS e JavaScript puros, sem depender das bibliotecas das outras demonstrações.
+
 - **Aura Audio:** protótipo de interface de produto com abas acessíveis, quantidade, seleção e reset. Motion dá feedback às interações.
 - **Frame:** composição HTML de 10 segundos, com timeline GSAP e player HyperFrames. Permite reproduzir, pausar e buscar qualquer instante.
 - **Filme WunderHub:** composição Remotion de 14 segundos com controles de reprodução, executada em React no navegador. Não é um MP4 pré-renderizado.
 
 As duas experiências de vídeo são silenciosas e carregadas somente quando abertas. O filme não inicia automaticamente quando o visitante prefere movimento reduzido. Fechar a janela interrompe e desmonta o player. Texto, links, WhatsApp e acordeões funcionam sem JavaScript.
+
+## Animação de scroll do logo
+
+O arquivo enviado pelo proprietário é um MP4 de 8 segundos, 1280×720 a 24 fps (192 quadros). A sequência contém **240 arquivos a 30 fps**, obtidos por repetição de quadros para preservar a duração, sem interpolação de movimento. Há duas variantes: desktop em 1280×720 (~2,72 MiB) e mobile em 768×432 (~1,30 MiB).
+
+A seção usa `position: sticky` e o scroll nativo, inclusive na subida. O `requestAnimationFrame` suaviza o índice e desenha apenas quando necessário. A seção ocupa uma tela, com um percurso adicional de 2,2 telas no desktop (`220svh`) e 1,8 no celular (`180svh`). O botão “Pular apresentação” leva diretamente ao conteúdo.
+
+- `assets/logo-scroll.js`: implementação independente, carregada com `defer`; não precisa de build.
+- `assets/logo-scroll.css`: viewport, sticky, controles e fallback.
+- `assets/logo-sequence/desktop/frame-0001.webp` até `frame-0240.webp`: sequência desktop.
+- `assets/logo-sequence/mobile/`: os mesmos 240 frames em menor resolução.
+- `assets/logo-sequence/poster.webp` e `poster-mobile.webp`: quadro final estático.
+- `assets/logo-sequence/manifest.json`: dimensões, duração e origem dos arquivos.
+- `src/media/logo-reveal.mp4`: vídeo original fornecido pelo proprietário.
+
+O canvas preenche a tela. `data-fit="contain"` mantém a imagem inteira e sua proporção; por isso há margens pretas nas telas com proporção diferente do vídeo, especialmente em retrato. `data-fit="cover"` pode preencher a área cortando bordas, mas não é o padrão para preservar o símbolo e os efeitos laterais.
+
+São permitidos até quatro downloads simultâneos e duas decodificações simultâneas. Os arquivos comprimidos são pré-carregados progressivamente quando a seção está próxima da tela; o cache mantém até 20 imagens decodificadas no desktop e 14 no celular. Ao sair da seção, são liberadas as imagens decodificadas que não estão sendo exibidas. A densidade do canvas é limitada a 2× e aproximadamente 3 milhões de pixels.
+
+Com `prefers-reduced-motion: reduce`, o site mostra apenas o quadro final, não baixa os frames e remove o percurso extra de rolagem. Sem JavaScript ou em falha de carregamento, há a mesma imagem estática e navegação normal. A preferência também pode mudar enquanto a página está aberta.
+
+Para regenerar os frames (exige FFmpeg com `libwebp` e FFprobe):
+
+```sh
+npm run frames
+# Ou usar outro vídeo; a conversão sempre gera 240 arquivos por variante:
+npm run frames -- /caminho/para/video.mp4
+```
+
+Se você já tiver uma sequência pronta, substitua os WEBP mantendo os nomes e atualize dimensões e origem no manifesto. O build normal não executa FFmpeg.
 
 ## Desenvolver
 
@@ -52,14 +84,15 @@ python3 -m http.server 8000
 
 # Terminal 2, com Playwright e Chromium disponíveis
 PORTFOLIO_URL=http://127.0.0.1:8000/ CHROMIUM_PATH=/usr/bin/chromium python3 tests/browser_smoke.py
+PORTFOLIO_URL=http://127.0.0.1:8000/ CHROMIUM_PATH=/usr/bin/chromium python3 tests/scroll_sequence.py
 ```
 
-O teste cobre teclado, abas, quantidades, reset, foco, carregamento tardio, reprodução Remotion, busca e reprodução HyperFrames, ausência de erros de runtime e layout em 320, 390, 768, 1024 e 1440 pixels. As capturas são gravadas em `/tmp/wunder-v2-*.png`.
+O teste cobre teclado, abas, quantidades, reset, foco, carregamento tardio, reprodução Remotion, busca e reprodução HyperFrames, ausência de erros de runtime e layout em 320, 390, 768, 1024 e 1440 pixels. O teste da sequência verifica os extremos e pontos intermediários na ida e volta, sticky, troca de orientação, limite de memória, preferência de movimento reduzido, independência do bundle principal, fallback sem JavaScript e frames indisponíveis. As capturas são gravadas em `/tmp/wunder-v2-*.png` e `/tmp/wunder-scroll-*.png`.
 
 ## GitHub Pages
 
 Mantenha **Settings → Pages → Deploy from a branch → main → / (root)**.
 
-Após alterar o código, execute `npm ci`, `npm run build` e `npm run check`, e envie também os arquivos compilados de `assets/dist/`, `assets/vendor/`, `assets/fonts/` e as imagens otimizadas para `main`. Eles são versionados para que o Pages publique diretamente, sem workflow personalizado. `.nojekyll` mantém o site estático. Os caminhos relativos suportam `/Portfolio.io/`.
+Após alterar o código, execute `npm ci`, `npm run build` e `npm run check`, e envie também os arquivos compilados de `assets/dist/`, `assets/vendor/`, `assets/fonts/` e as imagens otimizadas para `main`. Inclua também `assets/logo-scroll.js`, `assets/logo-scroll.css` e `assets/logo-sequence/`, que são servidos diretamente. Esses arquivos são versionados para que o Pages publique diretamente, sem workflow personalizado. `.nojekyll` mantém o site estático. Os caminhos relativos suportam `/Portfolio.io/`.
 
 Cada push para `main` dispara o deploy padrão do GitHub Pages. O envio do commit e a conclusão do deploy são etapas diferentes; acompanhe **Actions → pages build and deployment**.

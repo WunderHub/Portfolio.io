@@ -1,0 +1,224 @@
+/* This component works without the site's Motion, React, GSAP or player bundles. */
+.logo-sequence {
+  --sequence-height: 100vh;
+  --sequence-travel: 220vh;
+  position: relative;
+  height: var(--sequence-height);
+  background: #000;
+  color: #f1f0ec;
+  isolation: isolate;
+}
+@supports (height: 100svh) {
+  .logo-sequence {
+    --sequence-height: 100svh;
+    --sequence-travel: 220svh;
+  }
+}
+.logo-sequence[data-mode="scroll"] {
+  height: calc(var(--sequence-height) + var(--sequence-travel));
+}
+.logo-sequence-stage {
+  position: relative;
+  width: 100%;
+  height: var(--sequence-height);
+  overflow: hidden;
+  background: #000;
+}
+.logo-sequence[data-mode="scroll"] .logo-sequence-stage {
+  position: sticky;
+  top: 0;
+}
+.logo-sequence canvas,
+.logo-sequence-poster,
+.logo-sequence-poster img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.logo-sequence-poster img {
+  object-fit: contain;
+}
+.logo-sequence canvas {
+  visibility: hidden;
+}
+.logo-sequence[data-state="ready"] canvas {
+  visibility: visible;
+}
+.logo-sequence[data-mode="scroll"] .logo-sequence-poster {
+  visibility: hidden;
+}
+.logo-sequence-top {
+  position: absolute;
+  inset: max(24px, env(safe-area-inset-top)) clamp(20px, 4vw, 60px) auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  z-index: 1;
+  font-size: 11px;
+  text-shadow: 0 1px 8px #000;
+}
+.logo-sequence-top p {
+  color: #c5c5c0;
+}
+.logo-sequence-skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border: 1px solid #ffffff50;
+  border-radius: 3px;
+  background: #000b;
+  color: #fff;
+}
+.logo-sequence-skip:hover {
+  background: #272727;
+}
+.logo-sequence-skip:focus-visible {
+  outline: 2px solid #ef423b;
+  outline-offset: 5px;
+}
+.logo-sequence-name {
+  position: absolute;
+  bottom: clamp(78px, 13vh, 130px);
+  left: 20px;
+  right: 20px;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 2px 15px #000;
+}
+.logo-sequence-name strong {
+  display: block;
+  font-family: var(--heading, sans-serif);
+  font-size: clamp(28px, 4.5vw, 62px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.05em;
+}
+.logo-sequence-name p {
+  margin-top: 12px;
+  color: #bfbfba;
+  font-size: 12px;
+}
+.logo-sequence-bottom {
+  position: absolute;
+  bottom: max(25px, env(safe-area-inset-bottom));
+  left: clamp(20px, 4vw, 60px);
+  right: clamp(20px, 4vw, 60px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 11px;
+  color: #d5d5d0;
+  text-shadow: 0 1px 8px #000;
+}
+.logo-sequence-hint {
+  display: none;
+}
+.logo-sequence[data-mode="scroll"] .logo-sequence-hint {
+  display: block;
+}
+.logo-sequence-status:empty {
+  display: none;
+}
+.logo-sequence-status {
+  margin-left: auto;
+  max-width: 260px;
+  text-align: right;
+}
+.logo-sequence-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  display: none;
+  background: #ffffff15;
+}
+.logo-sequence[data-mode="scroll"] .logo-sequence-progress {
+  display: block;
+}
+.logo-sequence-progress > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #ef423b;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.logo-sequence-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  .logo-sequence {
+    --sequence-travel: 180vh;
+  }
+  @supports (height: 100svh) {
+    .logo-sequence {
+      --sequence-travel: 180svh;
+    }
+  }
+  .logo-sequence-top {
+    font-size: 10px;
+  }
+  .logo-sequence-name {
+    bottom: 16%;
+  }
+  .logo-sequence-name strong {
+    font-size: clamp(32px, 9vw, 52px);
+  }
+  .logo-sequence-name p {
+    font-size: 11px;
+  }
+  .logo-sequence-bottom {
+    font-size: 10px;
+  }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .logo-sequence-name {
+    bottom: 45px;
+  }
+  .logo-sequence-name strong {
+    font-size: 24px;
+  }
+  .logo-sequence-name p {
+    margin-top: 4px;
+    font-size: 10px;
+  }
+  .logo-sequence-top {
+    top: max(12px, env(safe-area-inset-top));
+  }
+  .logo-sequence-bottom {
+    bottom: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-sequence[data-mode="scroll"] {
+    height: var(--sequence-height);
+  }
+  .logo-sequence[data-mode="scroll"] .logo-sequence-stage {
+    position: relative;
+  }
+  .logo-sequence[data-mode="scroll"] .logo-sequence-poster {
+    visibility: visible;
+  }
+  .logo-sequence canvas,
+  .logo-sequence[data-mode="scroll"] .logo-sequence-hint,
+  .logo-sequence[data-mode="scroll"] .logo-sequence-progress {
+    display: none;
+  }
+}
+
+.logo-sequence[data-fit="cover"] .logo-sequence-poster img {
+  object-fit: cover;
+}

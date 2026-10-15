@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, access } from "node:fs/promises";
+import { readFile, access, readdir, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { lintHyperframeHtml } from "@hyperframes/core/lint";
 const html = await readFile("index.html", "utf8");
@@ -33,3 +33,24 @@ for (const match of composition.matchAll(/(?:src|href)=["'](\.[^"']+)["']/g))
 console.log(
   `PASS public assets, initial bundle (${Math.round(initial.bytes / 1024)}kB), lazy players, HyperFrames lint (${result.errorCount} errors, ${result.warningCount} warnings).`,
 );
+
+const sequence = JSON.parse(
+  await readFile("assets/logo-sequence/manifest.json", "utf8"),
+);
+assert.equal(sequence.frames, 240);
+for (const variant of sequence.variants) {
+  const root = `assets/logo-sequence/${variant.name}`;
+  const files = (await readdir(root)).filter((name) =>
+    /^frame-\d{4}\.webp$/.test(name),
+  );
+  assert.equal(files.length, 240);
+  for (let i = 1; i <= 240; i++)
+    assert(
+      (await stat(`${root}/frame-${String(i).padStart(4, "0")}.webp`)).size > 0,
+    );
+}
+assert(
+  (await stat("assets/logo-scroll.js")).size < 25_000,
+  "Native scroll script exceeded 25kB",
+);
+console.log("PASS 240 WEBP frames per variant and native scroll script size.");
