@@ -3,1013 +3,944 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#101010" />
+    <title>WunderHub — Sites com design autoral, por Kauê Ribeiro</title>
     <meta
       name="description"
-      content="WunderHub, por Kauê Ribeiro. Design e desenvolvimento de sites, interfaces interativas e motion design. Encontre uma direção para o seu site e converse sobre seu projeto."
+      content="Landing pages, sites institucionais e lojas virtuais com design autoral e código sob medida. Fale direto com quem desenha e desenvolve: Kauê Ribeiro, São Paulo."
     />
-    <meta
-      property="og:title"
-      content="WunderHub — Design, código e movimento"
-    />
+    <meta name="theme-color" content="#0a0a0b" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="canonical" href="https://wunderhub.github.io/Portfolio.io/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="WunderHub" />
+    <meta property="og:title" content="WunderHub — Um site à altura do que você construiu" />
     <meta
       property="og:description"
-      content="Design à altura da sua próxima ideia. Um estúdio independente de experiências digitais por Kauê Ribeiro."
+      content="Landing pages, sites institucionais e lojas virtuais com design autoral e código sob medida, por Kauê Ribeiro."
     />
-    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://wunderhub.github.io/Portfolio.io/" />
+    <meta property="og:image" content="https://wunderhub.github.io/Portfolio.io/assets/brand/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta
-      property="og:image"
-      content="https://wunderhub.github.io/Portfolio.io/assets/logo.png"
+      property="og:image:alt"
+      content="Símbolo metálico da WunderHub ao lado do texto: Um site à altura do que você construiu."
     />
-    <meta
-      property="og:url"
-      content="https://wunderhub.github.io/Portfolio.io/"
-    />
-    <title>WunderHub — Design, código e movimento</title>
-    <link rel="canonical" href="https://wunderhub.github.io/Portfolio.io/" />
+    <meta name="twitter:card" content="summary_large_image" />
+
     <link rel="icon" href="./assets/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./assets/brand/apple-touch-icon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="preload"
-      href="./assets/fonts/sora.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap"
     />
-    <link
-      rel="preload"
-      href="./assets/fonts/dm-sans.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link rel="stylesheet" href="./assets/styles.css" />
-    <link rel="stylesheet" href="./assets/logo-scroll.css" />
-    <link rel="stylesheet" href="./assets/showcase.css" />
-    <script src="./assets/showcase.js" defer></script>
-    <script src="./assets/logo-scroll.js" defer></script>
-    <script type="module" src="./assets/dist/main.js"></script>
+    <link rel="preload" href="./assets/brand/w-mark.webp" as="image" type="image/webp" />
+    <link rel="stylesheet" href="./assets/site.css" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+    <script src="./assets/site.js" defer></script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "WunderHub",
+        "description": "Design e desenvolvimento de landing pages, sites institucionais e lojas virtuais.",
+        "url": "https://wunderhub.github.io/Portfolio.io/",
+        "image": "https://wunderhub.github.io/Portfolio.io/assets/brand/og-image.jpg",
+        "telephone": "+55-11-95930-0903",
+        "founder": { "@type": "Person", "name": "Kauê Ribeiro" },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "São Paulo",
+          "addressRegion": "SP",
+          "addressCountry": "BR"
+        },
+        "areaServed": "BR"
+      }
+    </script>
   </head>
   <body>
-    <svg
-      class="svg-definitions"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <defs>
-        <symbol id="arrow" viewBox="0 0 24 24">
-          <path d="M5 19 19 5M5 5h14v14" />
-        </symbol>
-        <symbol id="play" viewBox="0 0 24 24">
-          <path d="m9 5 11 7-11 7Z" />
-        </symbol>
-        <symbol id="plus" viewBox="0 0 24 24">
-          <path d="M12 5v14M5 12h14" />
-        </symbol>
-      </defs>
+    <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M6 18 18 6M8 6h10v10" />
+      </symbol>
+      <symbol id="i-down" viewBox="0 0 24 24">
+        <path d="M12 4v16M6 14l6 6 6-6" />
+      </symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14" />
+      </symbol>
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="M6 6l12 12M18 6 6 18" />
+      </symbol>
+      <symbol id="i-desktop" viewBox="0 0 24 24">
+        <path d="M3 5h18v11H3zM9 20h6M12 16v4" />
+      </symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24">
+        <path d="M7 3h10v18H7zM11 18h2" />
+      </symbol>
+      <symbol id="i-whatsapp" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 4.54 0 8.24 3.7 8.24 8.24 0 4.54-3.7 8.24-8.24 8.24Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.35-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.08.15-1.18-.06-.11-.23-.17-.48-.29Z"
+        />
+      </symbol>
     </svg>
+
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
-    <header class="header shell">
-      <a class="brand" href="#inicio" aria-label="WunderHub, início"
-        ><img src="./assets/logo.webp" width="50" height="31" alt="" /><span
-          >WunderHub<span class="brand-period">.</span></span
-        ></a
-      >
-      <nav aria-label="Navegação principal">
-        <a href="#trabalhos">Vitrine de sites</a
-        ><a href="#abordagem">Abordagem</a><a href="#estudio">Estúdio</a>
-      </nav>
-      <a class="header-contact" href="https://wa.me/5511959300903"
-        >Vamos conversar <span class="contact-dot" aria-hidden="true"></span
-      ></a>
-    </header>
-    <main id="conteudo">
-      <section
-        class="logo-sequence"
-        data-logo-sequence
-        data-frame-count="240"
-        data-frames-root="./assets/logo-sequence"
-        data-fit="contain"
-        aria-labelledby="logo-sequence-title"
-      >
-        <h2 id="logo-sequence-title" class="logo-sequence-sr-only">
-          A marca WunderHub em movimento
-        </h2>
-        <div class="logo-sequence-stage">
-          <picture class="logo-sequence-poster">
-            <source
-              media="(max-width: 760px)"
-              srcset="./assets/logo-sequence/poster-mobile.webp"
-            />
-            <img
-              src="./assets/logo-sequence/poster.webp"
-              width="1280"
-              height="720"
-              alt="Símbolo metálico da WunderHub com contornos vermelhos e luzes diagonais nas laterais"
-              fetchpriority="high"
-            />
-          </picture>
-          <canvas width="1280" height="720" aria-hidden="true"></canvas>
-          <div class="logo-sequence-top">
-            <p>WunderHub / Design em movimento</p>
-            <a class="logo-sequence-skip" href="#inicio"
-              >Pular apresentação <span aria-hidden="true">↓</span></a
-            >
-          </div>
-          <div class="logo-sequence-name" aria-hidden="true">
-            <strong>WunderHub.</strong>
-            <p>Design, código e movimento.</p>
-          </div>
-          <div class="logo-sequence-bottom">
-            <p class="logo-sequence-hint">
-              Role para revelar <span aria-hidden="true">↓</span>
-            </p>
-            <p
-              class="logo-sequence-status"
-              role="status"
-              aria-live="polite"
-            ></p>
-          </div>
-        </div>
-      </section>
 
-      <section class="hero shell" id="inicio" aria-labelledby="hero-title">
-        <div class="hero-topline">
-          <p>Estúdio independente de experiências digitais</p>
-          <span>São Paulo, Brasil</span>
-        </div>
-        <div class="hero-grid">
-          <h1 id="hero-title">
-            Design à altura<br />da sua próxima<br class="small-only" />
-            ideia.
-          </h1>
-          <div class="hero-aside">
-            <span class="hero-glyph" aria-hidden="true"
-              ><i></i><i></i><i></i
-            ></span>
-            <p>
-              Uma loja, um serviço, uma nova marca. Seu negócio ganha uma
-              presença feita para despertar interesse e facilitar o contato.
-            </p>
-            <button class="reel-trigger" data-open="reel" disabled>
-              <span class="play-circle"
-                ><svg class="icon"><use href="#play" /></svg></span
-              ><span
-                >Conheça em 14 segundos<small
-                  >Filme autoral · Remotion</small
-                ></span
-              >
-            </button>
-          </div>
-        </div>
-        <div class="hero-bottom">
-          <a href="#trabalhos"
-            >Encontre uma direção para o seu site
-            <span aria-hidden="true">↓</span></a
-          >
-          <p>Por Kauê Ribeiro</p>
-        </div>
-      </section>
-
-      <div class="offer-strip shell" aria-label="Tipos de projeto">
-        <span>Landing pages</span><span>Sites institucionais</span
-        ><span>Lojas virtuais</span><span>Experiências interativas</span>
-      </div>
-      <section class="showcase" id="trabalhos" aria-labelledby="showcase-title">
-        <div class="shell">
-          <div class="showcase-intro">
-            <div>
-              <p class="showcase-kicker">Vitrine de possibilidades</p>
-              <h2 id="showcase-title">
-                Imagine seu negócio<br />em uma dessas telas.
-              </h2>
-            </div>
-            <div class="showcase-intro-copy">
-              <p>
-                Explore estilos, navegue pelos exemplos e encontre um ponto de
-                partida para o seu projeto.
-              </p>
-              <p class="concept-disclosure">
-                Marcas fictícias. Conceitos autorais criados para mostrar o que
-                podemos desenvolver juntos.
-              </p>
-            </div>
-          </div>
-          <div class="showcase-toolbar">
-            <div
-              class="showcase-filters"
-              role="group"
-              aria-label="Filtrar conceitos por segmento"
-              hidden
-            >
-              <button type="button" data-filter="all" aria-pressed="true">
-                Todos <span>5</span></button
-              ><button
-                type="button"
-                data-filter="comercio"
-                aria-pressed="false"
-              >
-                Lojas</button
-              ><button
-                type="button"
-                data-filter="servicos"
-                aria-pressed="false"
-              >
-                Serviços & saúde</button
-              ><button
-                type="button"
-                data-filter="gastronomia"
-                aria-pressed="false"
-              >
-                Gastronomia</button
-              ><button type="button" data-filter="imoveis" aria-pressed="false">
-                Imóveis
-              </button>
-            </div>
-            <p class="showcase-count" role="status" aria-live="polite">
-              5 conceitos para explorar
-            </p>
-          </div>
-          <div class="showcase-grid">
-            <article
-              class="showcase-card showcase-aura"
-              data-category="comercio"
-            >
-              <a
-                class="showcase-preview"
-                href="./concepts/aura.html"
-                aria-label="Explorar conceito Aura Audio"
-                ><div class="preview-chrome" aria-hidden="true">
-                  <span class="browser-dots"><i></i><i></i><i></i></span
-                  ><span>aura audio / conceito</span
-                  ><span
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg
-                  ></span>
-                </div>
-                <img
-                  src="./assets/showcase/aura-preview.webp"
-                  width="1280"
-                  height="880"
-                  loading="lazy"
-                  decoding="async"
-                  alt="Prévia da página de loja & produto Aura Audio" /><span
-                  class="preview-open"
-                  >Explorar o site
-                  <span aria-hidden="true"
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg></span></span
-              ></a>
-              <div class="showcase-card-info">
-                <div class="showcase-meta">
-                  <span>Loja & produto</span><span>Conceito autoral</span>
-                </div>
-                <h3>
-                  <a href="./concepts/aura.html"
-                    >Aura Audio
-                    <span aria-hidden="true"
-                      ><svg
-                        class="glyph-arrow"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path d="M5 19 19 5M5 5h14v14" /></svg></span
-                  ></a>
-                </h3>
-                <p class="showcase-tagline">
-                  Design que dá vontade de conhecer de perto.
-                </p>
-                <p class="showcase-description">
-                  Uma vitrine de produto com foco na imagem, nos detalhes e na
-                  experiência de escolha.
-                </p>
-                <div
-                  class="showcase-tags"
-                  aria-label="Possibilidades para o projeto"
-                >
-                  <span>Catálogo</span><span>Página de produto</span
-                  ><span>Identidade visual</span>
-                </div>
-              </div>
-            </article>
-            <article
-              class="showcase-card showcase-serena"
-              data-category="servicos"
-            >
-              <a
-                class="showcase-preview"
-                href="./concepts/serena.html"
-                aria-label="Explorar conceito Serena"
-                ><div class="preview-chrome" aria-hidden="true">
-                  <span class="browser-dots"><i></i><i></i><i></i></span
-                  ><span>serena / conceito</span
-                  ><span
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg
-                  ></span>
-                </div>
-                <img
-                  src="./assets/showcase/serena-preview.webp"
-                  width="1280"
-                  height="880"
-                  loading="lazy"
-                  decoding="async"
-                  alt="Prévia da página de clínica & bem-estar Serena" /><span
-                  class="preview-open"
-                  >Explorar o site
-                  <span aria-hidden="true"
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg></span></span
-              ></a>
-              <div class="showcase-card-info">
-                <div class="showcase-meta">
-                  <span>Clínica & bem-estar</span><span>Conceito autoral</span>
-                </div>
-                <h3>
-                  <a href="./concepts/serena.html"
-                    >Serena
-                    <span aria-hidden="true"
-                      ><svg
-                        class="glyph-arrow"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path d="M5 19 19 5M5 5h14v14" /></svg></span
-                  ></a>
-                </h3>
-                <p class="showcase-tagline">
-                  O cuidado começa no primeiro contato.
-                </p>
-                <p class="showcase-description">
-                  Uma presença acolhedora para apresentar especialidades,
-                  profissionais e formas de atendimento.
-                </p>
-                <div
-                  class="showcase-tags"
-                  aria-label="Possibilidades para o projeto"
-                >
-                  <span>Especialidades</span><span>Equipe</span
-                  ><span>Contato</span>
-                </div>
-              </div>
-            </article>
-            <article
-              class="showcase-card showcase-brasa"
-              data-category="gastronomia"
-            >
-              <a
-                class="showcase-preview"
-                href="./concepts/brasa.html"
-                aria-label="Explorar conceito Brasa"
-                ><div class="preview-chrome" aria-hidden="true">
-                  <span class="browser-dots"><i></i><i></i><i></i></span
-                  ><span>brasa / conceito</span
-                  ><span
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg
-                  ></span>
-                </div>
-                <img
-                  src="./assets/showcase/brasa-preview.webp"
-                  width="1280"
-                  height="880"
-                  loading="lazy"
-                  decoding="async"
-                  alt="Prévia da página de restaurante & gastronomia Brasa" /><span
-                  class="preview-open"
-                  >Explorar o site
-                  <span aria-hidden="true"
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg></span></span
-              ></a>
-              <div class="showcase-card-info">
-                <div class="showcase-meta">
-                  <span>Restaurante & gastronomia</span
-                  ><span>Conceito autoral</span>
-                </div>
-                <h3>
-                  <a href="./concepts/brasa.html"
-                    >Brasa
-                    <span aria-hidden="true"
-                      ><svg
-                        class="glyph-arrow"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path d="M5 19 19 5M5 5h14v14" /></svg></span
-                  ></a>
-                </h3>
-                <p class="showcase-tagline">
-                  Uma experiência que abre o apetite.
-                </p>
-                <p class="showcase-description">
-                  Cardápio, personalidade e uma boa história para levar o
-                  visitante da tela para a mesa.
-                </p>
-                <div
-                  class="showcase-tags"
-                  aria-label="Possibilidades para o projeto"
-                >
-                  <span>Cardápio digital</span><span>Reservas</span
-                  ><span>Localização</span>
-                </div>
-              </div>
-            </article>
-            <article
-              class="showcase-card showcase-forma"
-              data-category="imoveis"
-            >
-              <a
-                class="showcase-preview"
-                href="./concepts/forma.html"
-                aria-label="Explorar conceito Forma"
-                ><div class="preview-chrome" aria-hidden="true">
-                  <span class="browser-dots"><i></i><i></i><i></i></span
-                  ><span>forma / conceito</span
-                  ><span
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg
-                  ></span>
-                </div>
-                <img
-                  src="./assets/showcase/forma-preview.webp"
-                  width="1280"
-                  height="880"
-                  loading="lazy"
-                  decoding="async"
-                  alt="Prévia da página de imobiliária & arquitetura Forma" /><span
-                  class="preview-open"
-                  >Explorar o site
-                  <span aria-hidden="true"
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg></span></span
-              ></a>
-              <div class="showcase-card-info">
-                <div class="showcase-meta">
-                  <span>Imobiliária & arquitetura</span
-                  ><span>Conceito autoral</span>
-                </div>
-                <h3>
-                  <a href="./concepts/forma.html"
-                    >Forma
-                    <span aria-hidden="true"
-                      ><svg
-                        class="glyph-arrow"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path d="M5 19 19 5M5 5h14v14" /></svg></span
-                  ></a>
-                </h3>
-                <p class="showcase-tagline">
-                  Espaço para imaginar uma nova vida.
-                </p>
-                <p class="showcase-description">
-                  Fotografia em destaque e informações organizadas para
-                  valorizar cada imóvel ou projeto.
-                </p>
-                <div
-                  class="showcase-tags"
-                  aria-label="Possibilidades para o projeto"
-                >
-                  <span>Vitrine de imóveis</span><span>Galerias</span
-                  ><span>Visitas</span>
-                </div>
-              </div>
-            </article>
-            <article
-              class="showcase-card showcase-orbit"
-              data-category="servicos"
-            >
-              <a
-                class="showcase-preview"
-                href="./concepts/orbit.html"
-                aria-label="Explorar conceito Orbit"
-                ><div class="preview-chrome" aria-hidden="true">
-                  <span class="browser-dots"><i></i><i></i><i></i></span
-                  ><span>orbit / conceito</span
-                  ><span
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg
-                  ></span>
-                </div>
-                <img
-                  src="./assets/showcase/orbit-preview.webp"
-                  width="1280"
-                  height="880"
-                  loading="lazy"
-                  decoding="async"
-                  alt="Prévia da página de serviços & consultoria Orbit" /><span
-                  class="preview-open"
-                  >Explorar o site
-                  <span aria-hidden="true"
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg></span></span
-              ></a>
-              <div class="showcase-card-info">
-                <div class="showcase-meta">
-                  <span>Serviços & consultoria</span
-                  ><span>Conceito autoral</span>
-                </div>
-                <h3>
-                  <a href="./concepts/orbit.html"
-                    >Orbit
-                    <span aria-hidden="true"
-                      ><svg
-                        class="glyph-arrow"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path d="M5 19 19 5M5 5h14v14" /></svg></span
-                  ></a>
-                </h3>
-                <p class="showcase-tagline">
-                  Seu valor, explicado com clareza.
-                </p>
-                <p class="showcase-description">
-                  Uma apresentação direta para transformar serviços em propostas
-                  que o cliente entende.
-                </p>
-                <div
-                  class="showcase-tags"
-                  aria-label="Possibilidades para o projeto"
-                >
-                  <span>Serviços</span><span>Método</span
-                  ><span>Captação de contatos</span>
-                </div>
-              </div>
-            </article>
-            <aside class="showcase-invite">
-              <span class="invite-symbol" aria-hidden="true"
-                ><svg
-                  class="glyph-arrow"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M5 19 19 5M5 5h14v14" /></svg
-              ></span>
-              <div>
-                <p>Seu segmento não está aqui?</p>
-                <h3>A próxima direção<br />pode ser a sua.</h3>
-                <p>
-                  O catálogo é um começo de conversa. Me conte o que você faz e
-                  o que gostaria que seu site entregasse.
-                </p>
-                <a
-                  href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA!%20Quero%20conversar%20sobre%20um%20site%20para%20o%20meu%20neg%C3%B3cio."
-                  >Vamos desenhar essa ideia
-                  <span aria-hidden="true"
-                    ><svg
-                      class="glyph-arrow"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 19 19 5M5 5h14v14" /></svg></span
-                ></a>
-              </div>
-            </aside>
-          </div>
-          <p class="showcase-footnote">
-            Cada projeto recebe sua própria identidade. As funcionalidades
-            finais são definidas de acordo com o seu negócio.
-          </p>
-        </div>
-      </section>
-      <section
-        class="work shell"
-        id="experimentos"
-        aria-labelledby="work-title"
-      >
-        <div class="work-heading">
-          <h2 id="work-title">Experimente o movimento</h2>
-          <p>
-            Abra, interaja e veja de perto. Estudos de produto e animação
-            desenvolvidos para este portfólio.
-          </p>
-        </div>
-        <div class="work-grid">
-          <article class="project project-aura">
-            <button
-              class="project-cover aura-cover"
-              data-open="aura"
-              disabled
-              aria-label="Explorar protótipo Aura, estudo de e-commerce"
-            >
-              <img
-                class="product-photo"
-                src="./assets/aura-headphones.webp"
-                width="1440"
-                height="960"
-                alt="Headphone conceitual de alumínio escovado e couro preto"
-                loading="lazy"
-              />
-              <span class="cover-top"
-                ><span class="aura-wordmark">aura.</span
-                ><span class="concept-badge">Estudo conceitual</span></span
-              >
-              <span class="aura-copy">O som encontra<br />sua forma.</span
-              ><span class="cover-action"
-                ><span>Explorar protótipo</span
-                ><svg class="icon"><use href="#arrow" /></svg
-              ></span>
-            </button>
-            <div class="project-caption">
-              <div>
-                <h3>Aura Audio</h3>
-                <p>Direção de arte / Interface de produto</p>
-              </div>
-              <span class="tool-label">Motion</span>
-            </div>
-          </article>
-          <article class="project project-frame">
-            <button
-              class="project-cover frame-cover"
-              data-open="frame"
-              disabled
-              aria-label="Reproduzir Frame, estudo de tipografia com HyperFrames"
-            >
-              <span class="cover-top"
-                ><span class="frame-wordmark">Frame / 001</span
-                ><span class="concept-badge">Estudo de movimento</span></span
-              >
-              <span class="frame-art" aria-hidden="true"
-                ><span class="frame-line">MAKE</span
-                ><span class="frame-middle"><i></i><b>IT</b><i></i></span
-                ><span class="frame-line">MOVE.</span></span
-              >
-              <span class="frame-footer">Forma, tempo &amp; expressão.</span
-              ><span class="cover-action"
-                ><span>Reproduzir estudo</span
-                ><svg class="icon"><use href="#play" /></svg
-              ></span>
-            </button>
-            <div class="project-caption">
-              <div>
-                <h3>Frame — Type in motion</h3>
-                <p>Tipografia cinética / Composição HTML</p>
-              </div>
-              <span class="tool-label">HyperFrames</span>
-            </div>
-          </article>
-        </div>
-        <noscript
-          ><p class="notice">
-            Ative o JavaScript para experimentar os protótipos. Você pode
-            conhecer o trabalho nesta página e conversar pelo WhatsApp.
-          </p></noscript
+    <header class="header" data-header>
+      <div class="header-inner container">
+        <a class="brand" href="#topo" aria-label="WunderHub, voltar ao início">
+          <img src="./assets/brand/w-mark.webp" width="1200" height="600" alt="" />
+          <span>WunderHub<b>.</b></span>
+        </a>
+        <nav class="nav" aria-label="Seções do site">
+          <a href="#trabalhos">Trabalhos</a>
+          <a href="#servicos">Serviços</a>
+          <a href="#processo">Processo</a>
+          <a href="#sobre">Sobre</a>
+          <a href="#duvidas">Dúvidas</a>
+        </nav>
+        <a
+          class="btn btn-red btn-sm header-cta"
+          href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20portf%C3%B3lio%20da%20WunderHub%20e%20quero%20conversar%20sobre%20um%20site%20para%20o%20meu%20neg%C3%B3cio."
+          target="_blank"
+          rel="noopener"
+          ><svg class="icon"><use href="#i-whatsapp" /></svg>Pedir orçamento</a
         >
-      </section>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="menu"
+          data-menu-toggle
+        >
+          <span class="menu-toggle-label">Menu</span>
+          <span class="menu-toggle-bars" aria-hidden="true"><i></i><i></i></span>
+        </button>
+      </div>
+      <div class="progress" aria-hidden="true"><i data-progress></i></div>
+    </header>
 
-      <section
-        class="approach shell section-space"
-        id="abordagem"
-        aria-labelledby="approach-title"
-      >
-        <div class="section-intro">
-          <p class="section-label">O que a experiência precisa entregar</p>
-          <h2 id="approach-title">
-            Bonito é o começo.<br />O resto você sente<br />quando usa.
-          </h2>
-          <p class="section-description">
-            Uma página precisa apresentar bem o negócio, orientar quem chega e
-            tornar o próximo passo simples.
+    <div class="menu" id="menu" data-menu hidden>
+      <nav class="menu-nav container" aria-label="Menu">
+        <a href="#trabalhos"><span>01</span>Trabalhos</a>
+        <a href="#servicos"><span>02</span>Serviços</a>
+        <a href="#processo"><span>03</span>Processo</a>
+        <a href="#sobre"><span>04</span>Sobre</a>
+        <a href="#duvidas"><span>05</span>Dúvidas</a>
+      </nav>
+      <div class="menu-foot container">
+        <a
+          class="btn btn-red"
+          href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20portf%C3%B3lio%20da%20WunderHub%20e%20quero%20conversar%20sobre%20um%20site%20para%20o%20meu%20neg%C3%B3cio."
+          target="_blank"
+          rel="noopener"
+          ><svg class="icon"><use href="#i-whatsapp" /></svg>Pedir orçamento no WhatsApp</a
+        >
+        <p class="mono">+55 (11) 95930-0903</p>
+      </div>
+    </div>
+
+    <main id="conteudo">
+      <!-- HERO -->
+      <section class="hero" id="topo" aria-labelledby="hero-title" data-hero>
+        <div class="hero-bg" aria-hidden="true">
+          <div class="hero-grid"></div>
+          <div class="hero-glow"></div>
+          <span class="streak" style="--x: 58%; --y: 44%; --d: 0s"></span>
+          <span class="streak" style="--x: 74%; --y: 62%; --d: -2.4s"></span>
+          <span class="streak streak-dim" style="--x: 90%; --y: 30%; --d: -4.1s"></span>
+          <span class="streak streak-dim" style="--x: 40%; --y: 86%; --d: -1.2s"></span>
+        </div>
+
+        <div class="hero-inner container">
+          <p class="kicker hero-kicker" data-intro style="--o: 0">
+            <i class="slash" aria-hidden="true"></i>Estúdio de design &amp; desenvolvimento
+            <span class="hero-kicker-city"><span aria-hidden="true">/</span> São Paulo, BR</span>
           </p>
-          <a class="underlined-link" href="https://wa.me/5511959300903"
-            >Conversar sobre o meu projeto
-            <svg class="icon"><use href="#arrow" /></svg
-          ></a>
-        </div>
-        <div class="capabilities">
-          <details open>
-            <summary>
-              <span>Uma identidade que faz sentido</span
-              ><svg class="icon"><use href="#plus" /></svg>
-            </summary>
-            <div>
-              <p>
-                Hierarquia, tipografia e direção visual construídas a partir do
-                seu conteúdo. Cada escolha ajuda a contar a mesma história.
-              </p>
-              <span>Direção de arte / UI design / Responsividade</span>
-            </div>
-          </details>
-          <details>
-            <summary>
-              <span>Interações que respondem</span
-              ><svg class="icon"><use href="#plus" /></svg>
-            </summary>
-            <div>
-              <p>
-                Transições que deixam as ações claras. Estados de carregamento,
-                feedback e navegação por teclado recebem o mesmo cuidado que a
-                primeira tela.
-              </p>
-              <span>Motion / JavaScript / Acessibilidade</span>
-            </div>
-          </details>
-          <details>
-            <summary>
-              <span>Movimento com propósito</span
-              ><svg class="icon"><use href="#plus" /></svg>
-            </summary>
-            <div>
-              <p>
-                Composições para apresentar um produto, explicar uma ideia ou
-                dar ritmo a uma marca. Controle de tempo e reprodução
-                diretamente no navegador.
-              </p>
-              <span>Remotion / HyperFrames / React</span>
-            </div>
-          </details>
-          <details>
-            <summary>
-              <span>Uma entrega pronta para a web</span
-              ><svg class="icon"><use href="#plus" /></svg>
-            </summary>
-            <div>
-              <p>
-                Arquivos otimizados, conteúdo legível e recursos carregados
-                conforme a necessidade. Da tela pequena à publicação, com testes
-                no navegador.
-              </p>
-              <span>Performance / SEO técnico / Deploy</span>
-            </div>
-          </details>
-        </div>
-      </section>
 
-      <section class="film-section" aria-labelledby="film-title">
-        <div class="film-layout shell">
-          <div class="film-copy">
-            <p class="section-label">WunderHub em movimento</p>
-            <h2 id="film-title">A mesma marca.<br />Outro ritmo.</h2>
-            <p>
-              Um experimento visual sobre forma, código e movimento. Criado como
-              uma composição de vídeo em React.
-            </p>
-            <button class="light-button" data-open="reel" disabled>
-              Assistir ao filme
-              <svg class="icon"><use href="#play" /></svg></button
-            ><span class="film-meta">14 segundos / Sem áudio / Remotion</span>
+          <div class="hero-mark" aria-hidden="true" data-tilt>
+            <div class="hero-mark-tilt">
+              <img src="./assets/brand/w-mark.webp" width="1200" height="600" alt="" fetchpriority="high" />
+              <span class="hero-mark-shine"></span>
+            </div>
           </div>
-          <button
-            class="film-poster"
-            data-open="reel"
-            disabled
-            aria-label="Assistir ao filme autoral WunderHub"
-          >
-            <span class="poster-coordinate">WunderHub / Motion study</span
-            ><span class="poster-type" aria-hidden="true"
-              >BUILD.<br /><span>FEEL.</span><br />REPEAT.</span
-            ><span class="poster-orbit" aria-hidden="true"></span
-            ><span class="poster-play"
-              ><svg class="icon"><use href="#play" /></svg></span
-            ><span class="poster-caption"
-              >Uma ideia pode ter muitas formas.</span
-            >
-          </button>
+
+          <h1 class="hero-title" id="hero-title">
+            <span class="line"><span data-intro style="--o: 1">Um site à altura</span></span>
+            <span class="line"><span data-intro style="--o: 2">do que você</span></span>
+            <span class="line"><span data-intro style="--o: 3">construiu<b class="dot">.</b></span></span>
+          </h1>
+
+          <div class="hero-foot">
+            <p class="hero-lead" data-intro style="--o: 4">
+              Landing pages, sites institucionais e lojas virtuais com design autoral e código sob
+              medida. Você conversa direto com quem desenha e desenvolve.
+            </p>
+            <div class="hero-actions" data-intro style="--o: 5">
+              <a
+                class="btn btn-red btn-lg"
+                href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20portf%C3%B3lio%20da%20WunderHub%20e%20quero%20conversar%20sobre%20um%20site%20para%20o%20meu%20neg%C3%B3cio."
+                target="_blank"
+                rel="noopener"
+                ><svg class="icon"><use href="#i-whatsapp" /></svg>Pedir orçamento</a
+              >
+              <a class="btn btn-ghost btn-lg" href="#trabalhos"
+                >Ver trabalhos<svg class="icon"><use href="#i-down" /></svg
+              ></a>
+            </div>
+          </div>
+
+          <ul class="hero-points" data-intro style="--o: 6">
+            <li><span class="mono">01</span>Design autoral</li>
+            <li><span class="mono">02</span>Código sob medida</li>
+            <li><span class="mono">03</span>Pensado para o celular</li>
+            <li><span class="mono">04</span>Contato direto</li>
+          </ul>
         </div>
       </section>
 
-      <section
-        class="studio shell section-space"
-        id="estudio"
-        aria-labelledby="studio-title"
-      >
-        <div class="studio-signature">
-          <img
-            src="./assets/logo.webp"
-            width="177"
-            height="89"
-            loading="lazy"
-            alt="Símbolo da WunderHub"
-          /><span>Kauê Ribeiro</span>
-          <p>Design &amp; desenvolvimento</p>
+      <!-- BANDS -->
+      <div class="bands" aria-hidden="true">
+        <div class="band band-dark">
+          <div class="band-track">
+            <span>Design</span><i></i><span>Código</span><i></i><span>Movimento</span><i></i>
+            <span>Design</span><i></i><span>Código</span><i></i><span>Movimento</span><i></i>
+            <span>Design</span><i></i><span>Código</span><i></i><span>Movimento</span><i></i>
+            <span>Design</span><i></i><span>Código</span><i></i><span>Movimento</span><i></i>
+          </div>
         </div>
-        <div class="studio-text">
-          <p class="section-label">Quem está por trás</p>
-          <h2 id="studio-title">
-            Da ideia à publicação,<br />uma conversa direta.
-          </h2>
-          <p>
-            Você fala com quem desenha e desenvolve. A WunderHub é meu espaço
-            para criar experiências digitais, testar novas ferramentas e
-            transformar ideias em projetos navegáveis.
-          </p>
-          <p>
-            A vitrine reúne conceitos autorais, sem projetos de clientes
-            fictícios. Cada exemplo mostra uma possibilidade de linguagem,
-            conteúdo e navegação para o seu negócio.
-          </p>
+        <div class="band band-red">
+          <div class="band-track">
+            <span>Landing pages</span><i></i><span>Sites institucionais</span><i></i>
+            <span>Lojas virtuais</span><i></i><span>Experiências interativas</span><i></i>
+            <span>Landing pages</span><i></i><span>Sites institucionais</span><i></i>
+            <span>Lojas virtuais</span><i></i><span>Experiências interativas</span><i></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORK -->
+      <section class="section work" id="trabalhos" aria-labelledby="work-title">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="kicker" data-reveal><i class="slash" aria-hidden="true"></i>01 — Vitrine</p>
+              <h2 class="h2" id="work-title" data-reveal>Cinco direções.<br />Uma pode ser a&nbsp;sua.</h2>
+            </div>
+            <div class="section-aside" data-reveal>
+              <p>
+                Conceitos autorais para segmentos diferentes. Percorra as páginas ou teste cada site ao
+                vivo, no computador e no celular.
+              </p>
+              <p class="note">
+                <span class="mono">Nota</span> Marcas fictícias, criadas para demonstração. Cada projeto
+                real recebe identidade própria.
+              </p>
+            </div>
+          </div>
+
+          <ol class="stack" data-stack>
+            <li class="stack-item" style="--i: 0">
+              <article
+                class="work-card"
+                style="--card: #842e23; --card-ink: #f3e8d4; --card-soft: rgba(243, 232, 212, 0.72)"
+                aria-labelledby="w-brasa"
+              >
+                <div class="work-info">
+                  <p class="work-meta mono"><span>01 / 05</span><span>Restaurante &amp; gastronomia</span></p>
+                  <h3 class="work-title" id="w-brasa">Brasa</h3>
+                  <p class="work-tagline">Uma experiência que abre o apetite.</p>
+                  <p class="work-desc">
+                    Cardápio, personalidade e uma boa história para levar o visitante da tela para a mesa.
+                  </p>
+                  <ul class="work-tags" aria-label="Recursos do conceito">
+                    <li>Cardápio digital</li>
+                    <li>Reservas</li>
+                    <li>Localização</li>
+                  </ul>
+                  <div class="work-actions">
+                    <a class="btn btn-card" href="./concepts/brasa.html" data-preview="./concepts/brasa.html" data-name="Brasa">
+                      Testar ao vivo<svg class="icon"><use href="#i-arrow" /></svg>
+                    </a>
+                    <a class="link" href="./concepts/brasa.html">Abrir página</a>
+                  </div>
+                </div>
+                <div class="work-media">
+                  <a
+                    class="browser"
+                    href="./concepts/brasa.html"
+                    data-preview="./concepts/brasa.html"
+                    data-name="Brasa"
+                    data-mode="desktop"
+                    aria-label="Testar o conceito Brasa no computador"
+                  >
+                    <span class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><em>brasa — conceito</em></span>
+                    <span class="browser-view">
+                      <img
+                        src="./assets/work/brasa-desktop.webp"
+                        width="800"
+                        height="1366"
+                        loading="lazy"
+                        decoding="async"
+                        alt="Página completa do conceito Brasa, com prato em destaque, cardápio e contato"
+                      />
+                    </span>
+                    <span class="browser-hint" aria-hidden="true">Testar no computador</span>
+                  </a>
+                  <a
+                    class="phone"
+                    href="./concepts/brasa.html"
+                    data-preview="./concepts/brasa.html"
+                    data-name="Brasa"
+                    data-mode="mobile"
+                    aria-label="Testar o conceito Brasa no celular"
+                  >
+                    <img
+                      src="./assets/work/brasa-mobile.webp"
+                      width="468"
+                      height="1013"
+                      loading="lazy"
+                      decoding="async"
+                      alt="Primeira tela do conceito Brasa no celular"
+                    />
+                  </a>
+                </div>
+              </article>
+            </li>
+
+            <li class="stack-item" style="--i: 1">
+              <article
+                class="work-card"
+                style="--card: #e9e4dc; --card-ink: #1d1d1c; --card-soft: rgba(29, 29, 28, 0.7)"
+                aria-labelledby="w-aura"
+              >
+                <div class="work-info">
+                  <p class="work-meta mono"><span>02 / 05</span><span>Loja &amp; produto</span></p>
+                  <h3 class="work-title" id="w-aura">Aura Audio</h3>
+                  <p class="work-tagline">Design que dá vontade de conhecer de perto.</p>
+                  <p class="work-desc">
+                    Uma vitrine de produto com foco na imagem, nos detalhes e na experiência de escolha.
+                  </p>
+                  <ul class="work-tags" aria-label="Recursos do conceito">
+                    <li>Catálogo</li>
+                    <li>Página de produto</li>
+                    <li>Identidade visual</li>
+                  </ul>
+                  <div class="work-actions">
+                    <a class="btn btn-card" href="./concepts/aura.html" data-preview="./concepts/aura.html" data-name="Aura Audio">
+                      Testar ao vivo<svg class="icon"><use href="#i-arrow" /></svg>
+                    </a>
+                    <a class="link" href="./concepts/aura.html">Abrir página</a>
+                  </div>
+                </div>
+                <div class="work-media">
+                  <a
+                    class="browser"
+                    href="./concepts/aura.html"
+                    data-preview="./concepts/aura.html"
+                    data-name="Aura Audio"
+                    data-mode="desktop"
+                    aria-label="Testar o conceito Aura Audio no computador"
+                  >
+                    <span class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><em>aura audio — conceito</em></span>
+                    <span class="browser-view">
+                      <img
+                        src="./assets/work/aura-desktop.webp"
+                        width="800"
+                        height="1427"
+                        loading="lazy"
+                        decoding="async"
+                        alt="Página completa do conceito Aura Audio, com fone de ouvido em destaque e detalhes do produto"
+                      />
+                    </span>
+                    <span class="browser-hint" aria-hidden="true">Testar no computador</span>
+                  </a>
+                  <a
+                    class="phone"
+                    href="./concepts/aura.html"
+                    data-preview="./concepts/aura.html"
+                    data-name="Aura Audio"
+                    data-mode="mobile"
+                    aria-label="Testar o conceito Aura Audio no celular"
+                  >
+                    <img
+                      src="./assets/work/aura-mobile.webp"
+                      width="468"
+                      height="1013"
+                      loading="lazy"
+                      decoding="async"
+                      alt="Primeira tela do conceito Aura Audio no celular"
+                    />
+                  </a>
+                </div>
+              </article>
+            </li>
+
+            <li class="stack-item" style="--i: 2">
+              <article
+                class="work-card"
+                style="--card: #2c3b33; --card-ink: #f7f7f2; --card-soft: rgba(247, 247, 242, 0.7)"
+                aria-labelledby="w-forma"
+              >
+                <div class="work-info">
+                  <p class="work-meta mono"><span>03 / 05</span><span>Imobiliária &amp; arquitetura</span></p>
+                  <h3 class="work-title" id="w-forma">Forma</h3>
+                  <p class="work-tagline">Espaço para imaginar uma nova vida.</p>
+                  <p class="work-desc">
+                    Fotografia em destaque e informações organizadas para valorizar cada imóvel ou projeto.
+                  </p>
+                  <ul class="work-tags" aria-label="Recursos do conceito">
+                    <li>Vitrine de imóveis</li>
+                    <li>Galerias</li>
+                    <li>Visitas</li>
+                  </ul>
+                  <div class="work-actions">
+                    <a class="btn btn-card" href="./concepts/forma.html" data-preview="./concepts/forma.html" data-name="Forma">
+                      Testar ao vivo<svg class="icon"><use href="#i-arrow" /></svg>
+                    </a>
+                    <a class="link" href="./concepts/forma.html">Abrir página</a>
+                  </div>
+                </div>
+                <div class="work-media">
+                  <a
+                    class="browser"
+                    href="./concepts/forma.html"
+                    data-preview="./concepts/forma.html"
+                    data-name="Forma"
+                    data-mode="desktop"
+                    aria-label="Testar o conceito Forma no computador"
+                  >
+                    <span class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><em>forma — conceito</em></span>
+                    <span class="browser-view">
+                      <img
+                        src="./assets/work/forma-desktop.webp"
+                        width="800"
+                        height="1339"
+                        loading="lazy"
+                        decoding="async"
+                        alt="Página completa do conceito Forma, com casa contemporânea, piscina e seleção de imóveis"
+                      />
+                    </span>
+                    <span class="browser-hint" aria-hidden="true">Testar no computador</span>
+                  </a>
+                  <a
+                    class="phone"
+                    href="./concepts/forma.html"
+                    data-preview="./concepts/forma.html"
+                    data-name="Forma"
+                    data-mode="mobile"
+                    aria-label="Testar o conceito Forma no celular"
+                  >
+                    <img
+                      src="./assets/work/forma-mobile.webp"
+                      width="468"
+                      height="1013"
+                      loading="lazy"
+                      decoding="async"
+                      alt="Primeira tela do conceito Forma no celular"
+                    />
+                  </a>
+                </div>
+              </article>
+            </li>
+
+            <li class="stack-item" style="--i: 3">
+              <article
+                class="work-card"
+                style="--card: #dde5d4; --card-ink: #1f4637; --card-soft: rgba(31, 70, 55, 0.74)"
+                aria-labelledby="w-serena"
+              >
+                <div class="work-info">
+                  <p class="work-meta mono"><span>04 / 05</span><span>Clínica &amp; bem-estar</span></p>
+                  <h3 class="work-title" id="w-serena">Serena</h3>
+                  <p class="work-tagline">O cuidado começa no primeiro contato.</p>
+                  <p class="work-desc">
+                    Uma presença acolhedora para apresentar especialidades, profissionais e formas de
+                    atendimento.
+                  </p>
+                  <ul class="work-tags" aria-label="Recursos do conceito">
+                    <li>Especialidades</li>
+                    <li>Equipe</li>
+                    <li>Contato</li>
+                  </ul>
+                  <div class="work-actions">
+                    <a class="btn btn-card" href="./concepts/serena.html" data-preview="./concepts/serena.html" data-name="Serena">
+                      Testar ao vivo<svg class="icon"><use href="#i-arrow" /></svg>
+                    </a>
+                    <a class="link" href="./concepts/serena.html">Abrir página</a>
+                  </div>
+                </div>
+                <div class="work-media">
+                  <a
+                    class="browser"
+                    href="./concepts/serena.html"
+                    data-preview="./concepts/serena.html"
+                    data-name="Serena"
+                    data-mode="desktop"
+                    aria-label="Testar o conceito Serena no computador"
+                  >
+                    <span class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><em>serena — conceito</em></span>
+                    <span class="browser-view">
+                      <img
+                        src="./assets/work/serena-desktop.webp"
+                        width="800"
+                        height="1285"
+                        loading="lazy"
+                        decoding="async"
+                        alt="Página completa do conceito Serena, com ilustração de planta, especialidades e contato"
+                      />
+                    </span>
+                    <span class="browser-hint" aria-hidden="true">Testar no computador</span>
+                  </a>
+                  <a
+                    class="phone"
+                    href="./concepts/serena.html"
+                    data-preview="./concepts/serena.html"
+                    data-name="Serena"
+                    data-mode="mobile"
+                    aria-label="Testar o conceito Serena no celular"
+                  >
+                    <img
+                      src="./assets/work/serena-mobile.webp"
+                      width="468"
+                      height="1013"
+                      loading="lazy"
+                      decoding="async"
+                      alt="Primeira tela do conceito Serena no celular"
+                    />
+                  </a>
+                </div>
+              </article>
+            </li>
+
+            <li class="stack-item" style="--i: 4">
+              <article
+                class="work-card"
+                style="--card: #1434bd; --card-ink: #f4f6ff; --card-soft: rgba(244, 246, 255, 0.74)"
+                aria-labelledby="w-orbit"
+              >
+                <div class="work-info">
+                  <p class="work-meta mono"><span>05 / 05</span><span>Serviços &amp; consultoria</span></p>
+                  <h3 class="work-title" id="w-orbit">Orbit</h3>
+                  <p class="work-tagline">Seu valor, explicado com clareza.</p>
+                  <p class="work-desc">
+                    Uma apresentação direta para transformar serviços em propostas que o cliente entende.
+                  </p>
+                  <ul class="work-tags" aria-label="Recursos do conceito">
+                    <li>Serviços</li>
+                    <li>Método</li>
+                    <li>Captação de contatos</li>
+                  </ul>
+                  <div class="work-actions">
+                    <a class="btn btn-card" href="./concepts/orbit.html" data-preview="./concepts/orbit.html" data-name="Orbit">
+                      Testar ao vivo<svg class="icon"><use href="#i-arrow" /></svg>
+                    </a>
+                    <a class="link" href="./concepts/orbit.html">Abrir página</a>
+                  </div>
+                </div>
+                <div class="work-media">
+                  <a
+                    class="browser"
+                    href="./concepts/orbit.html"
+                    data-preview="./concepts/orbit.html"
+                    data-name="Orbit"
+                    data-mode="desktop"
+                    aria-label="Testar o conceito Orbit no computador"
+                  >
+                    <span class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><em>orbit — conceito</em></span>
+                    <span class="browser-view">
+                      <img
+                        src="./assets/work/orbit-desktop.webp"
+                        width="800"
+                        height="1223"
+                        loading="lazy"
+                        decoding="async"
+                        alt="Página completa do conceito Orbit, com método em três etapas e perguntas frequentes"
+                      />
+                    </span>
+                    <span class="browser-hint" aria-hidden="true">Testar no computador</span>
+                  </a>
+                  <a
+                    class="phone"
+                    href="./concepts/orbit.html"
+                    data-preview="./concepts/orbit.html"
+                    data-name="Orbit"
+                    data-mode="mobile"
+                    aria-label="Testar o conceito Orbit no celular"
+                  >
+                    <img
+                      src="./assets/work/orbit-mobile.webp"
+                      width="468"
+                      height="1013"
+                      loading="lazy"
+                      decoding="async"
+                      alt="Primeira tela do conceito Orbit no celular"
+                    />
+                  </a>
+                </div>
+              </article>
+            </li>
+          </ol>
+
           <a
-            class="underlined-link"
-            href="https://github.com/WunderHub/Portfolio.io"
+            class="work-more"
+            href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20a%20vitrine%20da%20WunderHub.%20Meu%20neg%C3%B3cio%20%C3%A9%20de%20outro%20segmento%20e%20quero%20conversar%20sobre%20um%20site."
             target="_blank"
-            rel="noopener noreferrer"
-            >Ver o código deste portfólio
-            <svg class="icon"><use href="#arrow" /></svg
-          ></a>
+            rel="noopener"
+            data-reveal
+          >
+            <span class="work-more-q">Seu segmento não está aqui?</span>
+            <span class="work-more-a">Me conte o que você faz<svg class="icon"><use href="#i-arrow" /></svg></span>
+          </a>
         </div>
       </section>
 
-      <section
-        class="contact-section shell"
-        id="contato"
-        aria-labelledby="contact-title"
-      >
-        <div class="contact-top">
-          <p>O próximo projeto pode ser o seu.</p>
-          <span>Contato direto pelo WhatsApp</span>
+      <!-- SERVICES -->
+      <section class="section services" id="servicos" aria-labelledby="services-title">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="kicker" data-reveal><i class="slash" aria-hidden="true"></i>02 — Serviços</p>
+              <h2 class="h2" id="services-title" data-reveal>Do clique<br />à conversa.</h2>
+            </div>
+            <div class="section-aside" data-reveal>
+              <p>
+                Cada formato tem um trabalho a fazer. Em todos, o objetivo é o mesmo: apresentar bem o seu
+                negócio e deixar o próximo passo óbvio.
+              </p>
+            </div>
+          </div>
+
+          <ul class="services-grid">
+            <li class="service" data-reveal style="--d: 0">
+              <span class="service-num mono">01</span>
+              <svg class="service-art art-lp" viewBox="0 0 120 80" aria-hidden="true">
+                <rect x="6" y="4" width="108" height="72" rx="4" />
+                <path d="M6 14h108M12 9h.01M17 9h.01M22 9h.01" />
+                <path d="M16 28h46M16 36h34M16 43h40" />
+                <rect x="72" y="24" width="32" height="40" rx="2" />
+                <path d="M72 57l9-9 7 6 6-5 10 9" />
+                <rect class="a" x="16" y="53" width="26" height="9" rx="4.5" />
+              </svg>
+              <h3>Landing page</h3>
+              <p>Uma página, um objetivo. Para lançar um produto, divulgar um serviço ou receber contatos de uma campanha.</p>
+              <p class="service-for mono">Lançamentos · Campanhas · Serviços</p>
+            </li>
+            <li class="service" data-reveal style="--d: 1">
+              <span class="service-num mono">02</span>
+              <svg class="service-art art-site" viewBox="0 0 120 80" aria-hidden="true">
+                <rect class="p1" x="36" y="4" width="72" height="52" rx="3" />
+                <rect class="p2 solid" x="25" y="13" width="72" height="52" rx="3" />
+                <rect class="solid" x="14" y="22" width="72" height="54" rx="3" />
+                <path d="M20 31h14M46 31h8M58 31h8M70 31h8" />
+                <path d="M20 43h46M20 50h32" />
+                <rect class="a" x="20" y="60" width="22" height="8" rx="4" />
+              </svg>
+              <h3>Site institucional</h3>
+              <p>Quem você é, o que faz e como falar com você, organizados numa presença que passa confiança.</p>
+              <p class="service-for mono">Clínicas · Escritórios · Restaurantes</p>
+            </li>
+            <li class="service" data-reveal style="--d: 2">
+              <span class="service-num mono">03</span>
+              <svg class="service-art art-shop" viewBox="0 0 120 80" aria-hidden="true">
+                <rect x="6" y="10" width="32" height="62" rx="3" />
+                <rect x="82" y="10" width="32" height="62" rx="3" />
+                <path d="M6 46h32M82 46h32M11 54h18M11 61h10M87 54h20M87 61h10" />
+                <g class="lift">
+                  <rect class="solid" x="44" y="10" width="32" height="62" rx="3" />
+                  <path d="M44 46h32M49 54h16M49 61h10" />
+                  <circle class="a" cx="60" cy="28" r="9" />
+                </g>
+              </svg>
+              <h3>Loja virtual</h3>
+              <p>Catálogo e páginas de produto que valorizam cada item e facilitam a escolha de quem compra.</p>
+              <p class="service-for mono">Lojas · Marcas · Produtos</p>
+            </li>
+            <li class="service" data-reveal style="--d: 3">
+              <span class="service-num mono">04</span>
+              <svg class="service-art art-motion" viewBox="0 0 120 80" aria-hidden="true">
+                <circle cx="44" cy="40" r="27" />
+                <circle class="dash" cx="44" cy="40" r="13" />
+                <path d="M82 13c8 3 14 9 17 17M88 9c10 4 17 11 21 21" />
+                <path d="M88 50v20l5-5 4.5 8.5 3.6-1.8-4.4-8.2h7.3z" />
+                <g class="orbit"><circle class="a" cx="71" cy="40" r="6" /></g>
+              </svg>
+              <h3>Experiências interativas</h3>
+              <p>Animações e interações que dão ritmo à marca e fazem o site ficar na memória.</p>
+              <p class="service-for mono">Lançamentos · Marcas · Portfólios</p>
+            </li>
+          </ul>
+
+          <div class="included" data-reveal>
+            <p class="included-title"><i class="slash" aria-hidden="true"></i>Em todo projeto</p>
+            <ul class="included-list">
+              <li>Layout para celular, tablet e computador</li>
+              <li>WhatsApp e contato a um toque</li>
+              <li>SEO técnico e prévia bonita ao compartilhar</li>
+              <li>Imagens otimizadas e carregamento rápido</li>
+              <li>Acessibilidade: contraste, leitura e teclado</li>
+              <li>Publicação do site no ar</li>
+            </ul>
+          </div>
         </div>
-        <div class="contact-main">
-          <h2 id="contact-title">Vamos fazer<br />acontecer.</h2>
-          <a
-            class="contact-circle"
-            href="https://wa.me/5511959300903"
-            aria-label="Conversar com Kauê no WhatsApp"
-            ><svg class="icon"><use href="#arrow" /></svg
-          ></a>
+      </section>
+
+      <!-- PROCESS -->
+      <section class="section process" id="processo" aria-labelledby="process-title" data-process>
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="kicker" data-reveal><i class="slash" aria-hidden="true"></i>03 — Processo</p>
+              <h2 class="h2" id="process-title" data-reveal>Da ideia ao ar,<br />sem complicação.</h2>
+            </div>
+            <div class="section-aside" data-reveal>
+              <p>Quatro etapas claras, com você por perto em cada uma delas.</p>
+            </div>
+          </div>
+
+          <ol class="steps">
+            <li class="step" data-reveal style="--d: 0">
+              <span class="step-num">01</span>
+              <h3>Conversa</h3>
+              <p>
+                Você me conta sobre o negócio, o público e o que o site precisa resolver. Tudo pelo
+                WhatsApp, sem formulário longo.
+              </p>
+            </li>
+            <li class="step" data-reveal style="--d: 1">
+              <span class="step-num">02</span>
+              <h3>Direção</h3>
+              <p>Defino estrutura, linguagem visual e conteúdo das telas. Você aprova o caminho antes do código.</p>
+            </li>
+            <li class="step" data-reveal style="--d: 2">
+              <span class="step-num">03</span>
+              <h3>Desenvolvimento</h3>
+              <p>O site ganha forma com prévias para você acompanhar, comentar e ajustar.</p>
+            </li>
+            <li class="step" data-reveal style="--d: 3">
+              <span class="step-num">04</span>
+              <h3>Publicação</h3>
+              <p>Testes no celular e no computador, otimização final e o site no ar.</p>
+            </li>
+          </ol>
+          <div class="steps-line" aria-hidden="true"><i data-steps-line></i></div>
         </div>
-        <div class="contact-bottom">
-          <a href="https://wa.me/5511959300903">+55 (11) 95930-0903</a>
-          <p>Conte a ideia. A gente começa por aí.</p>
+      </section>
+
+      <!-- ABOUT -->
+      <section class="section about" id="sobre" aria-labelledby="about-title">
+        <div class="container about-grid">
+          <div class="id-card" data-reveal data-tilt>
+            <div class="id-card-tilt">
+              <div class="id-card-top mono">
+                <span>WunderHub / ID</span>
+                <span>SP — BR</span>
+              </div>
+              <img src="./assets/brand/w-mark.webp" width="1200" height="600" loading="lazy" alt="" />
+              <p class="id-card-name">Kauê Ribeiro</p>
+              <p class="id-card-role">Design &amp; desenvolvimento</p>
+              <dl class="id-card-data">
+                <div>
+                  <dt class="mono">Base</dt>
+                  <dd>São Paulo, Brasil</dd>
+                </div>
+                <div>
+                  <dt class="mono">Faz</dt>
+                  <dd>Design · Código · Movimento</dd>
+                </div>
+                <div>
+                  <dt class="mono">Contato</dt>
+                  <dd>WhatsApp, direto comigo</dd>
+                </div>
+              </dl>
+              <span class="id-card-shine" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <div class="about-text">
+            <p class="kicker" data-reveal><i class="slash" aria-hidden="true"></i>04 — Quem faz</p>
+            <h2 class="h2" id="about-title" data-reveal>Você fala<br />com quem faz.</h2>
+            <p class="about-lead" data-reveal>
+              Sou Kauê Ribeiro, designer e desenvolvedor em São Paulo. A WunderHub é o meu estúdio: um
+              espaço para transformar ideias em sites que as pessoas gostam de usar.
+            </p>
+            <p data-reveal>
+              Sem intermediários. Quem entende o seu negócio é a mesma pessoa que desenha as telas,
+              escreve o código e coloca o site no ar.
+            </p>
+            <a
+              class="link link-arrow"
+              href="https://github.com/WunderHub/Portfolio.io"
+              target="_blank"
+              rel="noopener"
+              data-reveal
+              >Ver o código deste site no GitHub<svg class="icon"><use href="#i-arrow" /></svg
+            ></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="section faq" id="duvidas" aria-labelledby="faq-title">
+        <div class="container faq-grid">
+          <div class="faq-head">
+            <p class="kicker" data-reveal><i class="slash" aria-hidden="true"></i>05 — Dúvidas</p>
+            <h2 class="h2" id="faq-title" data-reveal>Perguntas<br />frequentes.</h2>
+            <p class="faq-more" data-reveal>
+              Ficou alguma dúvida?
+              <a
+                class="link"
+                href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20portf%C3%B3lio%20da%20WunderHub%20e%20quero%20conversar%20sobre%20um%20site%20para%20o%20meu%20neg%C3%B3cio."
+                target="_blank"
+                rel="noopener"
+                >Pergunte no WhatsApp</a
+              >
+            </p>
+          </div>
+          <div class="faq-list" data-reveal>
+            <details class="faq-item" open>
+              <summary>Quanto custa um site?<svg class="icon"><use href="#i-plus" /></svg></summary>
+              <div class="faq-body">
+                <p>
+                  Depende do que o seu negócio precisa: quantidade de páginas, funcionalidades e
+                  conteúdo. Me conte sua ideia pelo WhatsApp e eu envio uma proposta com escopo e valor
+                  definidos.
+                </p>
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>Quanto tempo leva para ficar pronto?<svg class="icon"><use href="#i-plus" /></svg></summary>
+              <div class="faq-body">
+                <p>
+                  O prazo acompanha o tamanho do projeto: uma landing page fica pronta antes de um site
+                  com várias páginas ou de uma loja. Ele é combinado antes do início, junto com a
+                  proposta.
+                </p>
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>O site vai funcionar bem no celular?<svg class="icon"><use href="#i-plus" /></svg></summary>
+              <div class="faq-body">
+                <p>
+                  Sim. Todo projeto é desenhado e testado para celular, tablet e computador. É no
+                  celular que boa parte dos seus clientes vai encontrar você.
+                </p>
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>Preciso ter textos e fotos prontos?<svg class="icon"><use href="#i-plus" /></svg></summary>
+              <div class="faq-body">
+                <p>
+                  Ajuda, mas não é obrigatório. Na conversa inicial a gente organiza o conteúdo que você
+                  já tem e define o que falta antes de começar.
+                </p>
+              </div>
+            </details>
+            <details class="faq-item">
+              <summary>Os sites da vitrine são de clientes reais?<svg class="icon"><use href="#i-plus" /></svg></summary>
+              <div class="faq-body">
+                <p>
+                  Não. São conceitos autorais com marcas fictícias, criados para mostrar possibilidades
+                  de linguagem, conteúdo e navegação. O seu projeto recebe uma identidade própria.
+                </p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta" id="contato" aria-labelledby="cta-title">
+        <div class="cta-shapes" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="container cta-inner">
+          <p class="kicker kicker-dark" data-reveal><i class="slash" aria-hidden="true"></i>Vamos conversar</p>
+          <h2 class="cta-title" id="cta-title" data-reveal>Pronto para ter<br />um site à&nbsp;altura?</h2>
+          <div class="cta-foot" data-reveal>
+            <p>
+              Conte o que você faz e o que o site precisa resolver. A conversa começa no WhatsApp, sem
+              compromisso.
+            </p>
+            <div class="cta-actions">
+              <a
+                class="btn btn-ink btn-lg"
+                href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20portf%C3%B3lio%20da%20WunderHub%20e%20quero%20conversar%20sobre%20um%20site%20para%20o%20meu%20neg%C3%B3cio."
+                target="_blank"
+                rel="noopener"
+                ><svg class="icon"><use href="#i-whatsapp" /></svg>Chamar no WhatsApp</a
+              >
+              <a class="cta-phone mono" href="https://wa.me/5511959300903" target="_blank" rel="noopener"
+                >+55 (11) 95930-0903</a
+              >
+            </div>
+          </div>
         </div>
       </section>
     </main>
-    <footer class="footer shell">
-      <a class="brand" href="#inicio"
-        ><span>WunderHub<span class="brand-period">.</span></span></a
-      >
-      <p>© <span id="year">2026</span> Kauê Ribeiro</p>
-      <a href="#inicio">Voltar ao topo <span aria-hidden="true">↑</span></a>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-word" aria-hidden="true">WunderHub<b>.</b></p>
+        <div class="footer-row">
+          <p>© <span data-year>2026</span> Kauê Ribeiro · Design, código e movimento.</p>
+          <nav class="footer-links" aria-label="Links do rodapé">
+            <a href="https://wa.me/5511959300903" target="_blank" rel="noopener">WhatsApp</a>
+            <a href="https://github.com/WunderHub" target="_blank" rel="noopener">GitHub</a>
+            <a href="#topo">Voltar ao topo ↑</a>
+          </nav>
+        </div>
+      </div>
     </footer>
 
-    <dialog id="aura-dialog" class="demo-dialog" aria-labelledby="aura-title">
-      <div class="dialog-top">
-        <span>Estudo autoral / Produto fictício</span
-        ><button class="close-dialog" aria-label="Fechar demonstração">
-          ×
-        </button>
-      </div>
-      <div class="aura-demo">
-        <div class="aura-image">
-          <img
-            src="./assets/aura-headphones.webp"
-            width="1440"
-            height="960"
-            alt="Headphone Aura, produto conceitual"
-          /><span>AURA / STUDIO SERIES</span>
+    <a
+      class="fab"
+      href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20portf%C3%B3lio%20da%20WunderHub%20e%20quero%20conversar%20sobre%20um%20site%20para%20o%20meu%20neg%C3%B3cio."
+      target="_blank"
+      rel="noopener"
+      aria-label="Pedir orçamento no WhatsApp"
+      data-fab
+      ><svg class="icon"><use href="#i-whatsapp" /></svg
+    ></a>
+
+    <dialog class="viewer" data-viewer aria-labelledby="viewer-title">
+      <div class="viewer-bar">
+        <div class="viewer-name">
+          <span class="mono">Prévia ao vivo</span>
+          <h2 id="viewer-title" data-viewer-title>Conceito</h2>
         </div>
-        <div class="aura-info">
-          <p class="section-label">Protótipo de e-commerce</p>
-          <h2 id="aura-title">Aura One.</h2>
-          <p class="aura-lead">Menos distração.<br />Mais espaço para ouvir.</p>
-          <div
-            class="product-tabs"
-            role="tablist"
-            aria-label="Detalhes do produto"
-          >
-            <button
-              role="tab"
-              id="overview-tab"
-              aria-controls="overview-panel"
-              aria-selected="true"
-              tabindex="0"
-            >
-              Visão geral</button
-            ><button
-              role="tab"
-              id="details-tab"
-              aria-controls="details-panel"
-              aria-selected="false"
-              tabindex="-1"
-            >
-              Ficha técnica
-            </button>
-          </div>
-          <div
-            id="overview-panel"
-            role="tabpanel"
-            aria-labelledby="overview-tab"
-          >
-            <p>
-              Uma experiência de compra que coloca o produto em primeiro plano.
-              Fotografia, hierarquia e interações trabalhando juntas.
-            </p>
-          </div>
-          <div
-            id="details-panel"
-            role="tabpanel"
-            aria-labelledby="details-tab"
-            hidden
-          >
-            <dl>
-              <div>
-                <dt>Acabamento</dt>
-                <dd>Alumínio escovado</dd>
-              </div>
-              <div>
-                <dt>Formato</dt>
-                <dd>Over-ear</dd>
-              </div>
-              <div>
-                <dt>Projeto</dt>
-                <dd>Conceito digital</dd>
-              </div>
-            </dl>
-          </div>
-          <div class="purchase-row">
-            <div class="quantity">
-              <button id="quantity-minus" aria-label="Diminuir quantidade">
-                −</button
-              ><output id="quantity-output" aria-live="polite">1</output
-              ><button id="quantity-plus" aria-label="Aumentar quantidade">
-                +
-              </button>
-            </div>
-            <button id="add-selection" class="solid-button">
-              Adicionar à seleção
-            </button>
-          </div>
-          <div id="selection-status" class="selection-status" role="status">
-            Experimente os controles. Nenhuma compra será realizada.
-          </div>
-          <button id="clear-selection" class="clear-selection" hidden>
-            Limpar seleção
+        <div class="viewer-modes" role="group" aria-label="Tamanho da tela">
+          <button type="button" data-viewer-mode="desktop" aria-pressed="true">
+            <svg class="icon"><use href="#i-desktop" /></svg><span>Computador</span>
+          </button>
+          <button type="button" data-viewer-mode="mobile" aria-pressed="false">
+            <svg class="icon"><use href="#i-phone" /></svg><span>Celular</span>
+          </button>
+        </div>
+        <div class="viewer-actions">
+          <a class="viewer-open" href="./concepts/brasa.html" target="_blank" rel="noopener" data-viewer-open
+            ><span>Nova aba</span><svg class="icon"><use href="#i-arrow" /></svg
+          ></a>
+          <button class="viewer-close" type="button" aria-label="Fechar prévia" data-viewer-close>
+            <svg class="icon"><use href="#i-close" /></svg>
           </button>
         </div>
       </div>
-    </dialog>
-    <dialog
-      id="reel-dialog"
-      class="demo-dialog player-dialog"
-      aria-labelledby="reel-title"
-    >
-      <div class="dialog-top">
-        <h2 id="reel-title">WunderHub / Filme autoral</h2>
-        <button class="close-dialog" aria-label="Fechar filme">×</button>
+      <div class="viewer-stage" data-viewer-stage data-mode="desktop">
+        <div class="viewer-device" data-viewer-device>
+          <iframe title="Prévia do conceito" data-viewer-frame></iframe>
+        </div>
+        <p class="viewer-loading mono" data-viewer-loading>Carregando prévia…</p>
       </div>
-      <div id="reel-mount" class="player-mount">
-        <p role="status">Preparando o filme…</p>
-      </div>
-      <p class="dialog-caption">
-        Composição em Remotion · 14 segundos · Sem áudio
-      </p>
-    </dialog>
-    <dialog
-      id="frame-dialog"
-      class="demo-dialog player-dialog"
-      aria-labelledby="frame-title"
-    >
-      <div class="dialog-top">
-        <h2 id="frame-title">Frame / Type in motion</h2>
-        <button class="close-dialog" aria-label="Fechar composição">×</button>
-      </div>
-      <div id="frame-mount" class="player-mount">
-        <p role="status">Preparando a composição…</p>
-      </div>
-      <p class="dialog-caption">
-        Estudo autoral em HyperFrames · 10 segundos · Sem áudio
-      </p>
     </dialog>
   </body>
 </html>
