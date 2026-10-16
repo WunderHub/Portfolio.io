@@ -70,6 +70,8 @@ with sync_playwright() as p:
     assert page.locator('.logo-sequence-stage').evaluate('(el)=>getComputedStyle(el).position')=='relative'
     assert int(page.locator('[data-logo-sequence]').get_attribute('data-decoded-frames'))==0
     page.emulate_media(reduced_motion='no-preference')
+    # matchMedia change handlers run asynchronously; wait for scroll geometry to return.
+    page.wait_for_function('document.querySelector("[data-logo-sequence]").dataset.mode==="scroll"')
     scroll_to(page,.75)
     wait_frame(page,180)
     print('PASS live prefers-reduced-motion toggle and cache disposal',flush=True)

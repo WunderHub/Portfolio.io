@@ -5,7 +5,6 @@
   if (!section) return;
   const stage = section.querySelector(".logo-sequence-stage");
   const canvas = section.querySelector("canvas");
-  const progressBar = section.querySelector(".logo-sequence-progress > span");
   const status = section.querySelector('[role="status"]');
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const smallScreen = matchMedia("(max-width: 760px)");
@@ -271,7 +270,6 @@
       section.dataset.state = "ready";
       status.textContent = "";
     }
-    progressBar.style.transform = `scaleX(${position / (count - 1)})`;
     if (position !== target) requestDraw();
   }
   function stop() {

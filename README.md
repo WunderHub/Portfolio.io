@@ -96,3 +96,34 @@ Mantenha **Settings → Pages → Deploy from a branch → main → / (root)**.
 Após alterar o código, execute `npm ci`, `npm run build` e `npm run check`, e envie também os arquivos compilados de `assets/dist/`, `assets/vendor/`, `assets/fonts/` e as imagens otimizadas para `main`. Inclua também `assets/logo-scroll.js`, `assets/logo-scroll.css` e `assets/logo-sequence/`, que são servidos diretamente. Esses arquivos são versionados para que o Pages publique diretamente, sem workflow personalizado. `.nojekyll` mantém o site estático. Os caminhos relativos suportam `/Portfolio.io/`.
 
 Cada push para `main` dispara o deploy padrão do GitHub Pages. O envio do commit e a conclusão do deploy são etapas diferentes; acompanhe **Actions → pages build and deployment**.
+
+## Vitrine de sites
+
+O catálogo em `#trabalhos` apresenta cinco conceitos autorais: Aura Audio (loja), Serena (clínica), Brasa (restaurante), Forma (imóveis) e Orbit (serviços). Cada prévia abre uma página HTML real em `concepts/`, com navegação, conteúdo e contato contextual pelo WhatsApp. As marcas são fictícias e os exemplos não representam trabalhos de clientes. Não há checkout, reservas ou agendamento real nesses conceitos; essas funcionalidades são possibilidades de escopo.
+
+- `assets/showcase.css`: fundos, catálogo e adaptação responsiva.
+- `assets/showcase.js`: filtros acessíveis por segmento, sem dependências; sem JavaScript, todos os conceitos continuam disponíveis.
+- `concepts/concepts.css` e `concepts/*.html`: identidades e páginas dos exemplos.
+- `assets/showcase/`: imagens locais otimizadas e capturas reais das páginas.
+
+Para verificar os filtros, a navegação, os contatos, o layout de 320 a 1440 pixels e a experiência sem JavaScript, com o servidor local iniciado:
+
+```sh
+PORTFOLIO_URL=http://127.0.0.1:8000/ python3 tests/showcase.py
+```
+
+Ao mudar o visual dos conceitos, atualize as capturas com Python Playwright e Chromium disponíveis:
+
+```sh
+PORTFOLIO_URL=http://127.0.0.1:8000/ python3 scripts/capture-concepts.py
+node --input-type=module - <<'JS'
+import sharp from 'sharp';
+for (const slug of ['aura', 'serena', 'brasa', 'forma', 'orbit']) {
+  await sharp(`/tmp/wunder-concept-captures/${slug}.png`)
+    .webp({ quality: 88 })
+    .toFile(`assets/showcase/${slug}-preview.webp`);
+}
+JS
+```
+
+As páginas e imagens de `concepts/` e `assets/showcase/` também são versionadas e publicadas diretamente pelo Pages. A sequência do logo continua em canvas, sem barra de progresso visual.

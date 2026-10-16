@@ -78,6 +78,7 @@ with sync_playwright() as p:
 
     page.goto(URL,wait_until='networkidle')
     page.locator('#estudio').scroll_into_view_if_needed()
+    page.evaluate('document.querySelectorAll("img").forEach(i => i.loading = "eager")')
     page.wait_for_function("Array.from(document.images).every(i=>i.complete && i.naturalWidth>0)")
     page.evaluate('window.scrollTo(0,0)')
     for width,height in [(1440,1000),(1024,768),(768,1024),(390,844),(320,740)]:

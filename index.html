@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#101010" />
     <meta
       name="description"
-      content="WunderHub, por Kauê Ribeiro. Design e desenvolvimento de sites, interfaces interativas e motion design. Explore os estudos e converse sobre seu projeto."
+      content="WunderHub, por Kauê Ribeiro. Design e desenvolvimento de sites, interfaces interativas e motion design. Encontre uma direção para o seu site e converse sobre seu projeto."
     />
     <meta
       property="og:title"
@@ -44,6 +44,8 @@
     />
     <link rel="stylesheet" href="./assets/styles.css" />
     <link rel="stylesheet" href="./assets/logo-scroll.css" />
+    <link rel="stylesheet" href="./assets/showcase.css" />
+    <script src="./assets/showcase.js" defer></script>
     <script src="./assets/logo-scroll.js" defer></script>
     <script type="module" src="./assets/dist/main.js"></script>
   </head>
@@ -73,8 +75,8 @@
         ></a
       >
       <nav aria-label="Navegação principal">
-        <a href="#trabalhos">Trabalhos</a><a href="#abordagem">Abordagem</a
-        ><a href="#estudio">Estúdio</a>
+        <a href="#trabalhos">Vitrine de sites</a
+        ><a href="#abordagem">Abordagem</a><a href="#estudio">Estúdio</a>
       </nav>
       <a class="header-contact" href="https://wa.me/5511959300903"
         >Vamos conversar <span class="contact-dot" aria-hidden="true"></span
@@ -127,9 +129,6 @@
               aria-live="polite"
             ></p>
           </div>
-          <div class="logo-sequence-progress" aria-hidden="true">
-            <span></span>
-          </div>
         </div>
       </section>
 
@@ -148,8 +147,8 @@
               ><i></i><i></i><i></i
             ></span>
             <p>
-              Sites, interfaces e movimento.<br />Uma visão criativa, da
-              direção<br />visual ao desenvolvimento.
+              Uma loja, um serviço, uma nova marca. Seu negócio ganha uma
+              presença feita para despertar interesse e facilitar o contato.
             </p>
             <button class="reel-trigger" data-open="reel" disabled>
               <span class="play-circle"
@@ -164,18 +163,467 @@
         </div>
         <div class="hero-bottom">
           <a href="#trabalhos"
-            >Explore os estudos <span aria-hidden="true">↓</span></a
+            >Encontre uma direção para o seu site
+            <span aria-hidden="true">↓</span></a
           >
           <p>Por Kauê Ribeiro</p>
         </div>
       </section>
 
-      <section class="work shell" id="trabalhos" aria-labelledby="work-title">
+      <div class="offer-strip shell" aria-label="Tipos de projeto">
+        <span>Landing pages</span><span>Sites institucionais</span
+        ><span>Lojas virtuais</span><span>Experiências interativas</span>
+      </div>
+      <section class="showcase" id="trabalhos" aria-labelledby="showcase-title">
+        <div class="shell">
+          <div class="showcase-intro">
+            <div>
+              <p class="showcase-kicker">Vitrine de possibilidades</p>
+              <h2 id="showcase-title">
+                Imagine seu negócio<br />em uma dessas telas.
+              </h2>
+            </div>
+            <div class="showcase-intro-copy">
+              <p>
+                Explore estilos, navegue pelos exemplos e encontre um ponto de
+                partida para o seu projeto.
+              </p>
+              <p class="concept-disclosure">
+                Marcas fictícias. Conceitos autorais criados para mostrar o que
+                podemos desenvolver juntos.
+              </p>
+            </div>
+          </div>
+          <div class="showcase-toolbar">
+            <div
+              class="showcase-filters"
+              role="group"
+              aria-label="Filtrar conceitos por segmento"
+              hidden
+            >
+              <button type="button" data-filter="all" aria-pressed="true">
+                Todos <span>5</span></button
+              ><button
+                type="button"
+                data-filter="comercio"
+                aria-pressed="false"
+              >
+                Lojas</button
+              ><button
+                type="button"
+                data-filter="servicos"
+                aria-pressed="false"
+              >
+                Serviços & saúde</button
+              ><button
+                type="button"
+                data-filter="gastronomia"
+                aria-pressed="false"
+              >
+                Gastronomia</button
+              ><button type="button" data-filter="imoveis" aria-pressed="false">
+                Imóveis
+              </button>
+            </div>
+            <p class="showcase-count" role="status" aria-live="polite">
+              5 conceitos para explorar
+            </p>
+          </div>
+          <div class="showcase-grid">
+            <article
+              class="showcase-card showcase-aura"
+              data-category="comercio"
+            >
+              <a
+                class="showcase-preview"
+                href="./concepts/aura.html"
+                aria-label="Explorar conceito Aura Audio"
+                ><div class="preview-chrome" aria-hidden="true">
+                  <span class="browser-dots"><i></i><i></i><i></i></span
+                  ><span>aura audio / conceito</span
+                  ><span
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg
+                  ></span>
+                </div>
+                <img
+                  src="./assets/showcase/aura-preview.webp"
+                  width="1280"
+                  height="880"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Prévia da página de loja & produto Aura Audio" /><span
+                  class="preview-open"
+                  >Explorar o site
+                  <span aria-hidden="true"
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg></span></span
+              ></a>
+              <div class="showcase-card-info">
+                <div class="showcase-meta">
+                  <span>Loja & produto</span><span>Conceito autoral</span>
+                </div>
+                <h3>
+                  <a href="./concepts/aura.html"
+                    >Aura Audio
+                    <span aria-hidden="true"
+                      ><svg
+                        class="glyph-arrow"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 19 19 5M5 5h14v14" /></svg></span
+                  ></a>
+                </h3>
+                <p class="showcase-tagline">
+                  Design que dá vontade de conhecer de perto.
+                </p>
+                <p class="showcase-description">
+                  Uma vitrine de produto com foco na imagem, nos detalhes e na
+                  experiência de escolha.
+                </p>
+                <div
+                  class="showcase-tags"
+                  aria-label="Possibilidades para o projeto"
+                >
+                  <span>Catálogo</span><span>Página de produto</span
+                  ><span>Identidade visual</span>
+                </div>
+              </div>
+            </article>
+            <article
+              class="showcase-card showcase-serena"
+              data-category="servicos"
+            >
+              <a
+                class="showcase-preview"
+                href="./concepts/serena.html"
+                aria-label="Explorar conceito Serena"
+                ><div class="preview-chrome" aria-hidden="true">
+                  <span class="browser-dots"><i></i><i></i><i></i></span
+                  ><span>serena / conceito</span
+                  ><span
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg
+                  ></span>
+                </div>
+                <img
+                  src="./assets/showcase/serena-preview.webp"
+                  width="1280"
+                  height="880"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Prévia da página de clínica & bem-estar Serena" /><span
+                  class="preview-open"
+                  >Explorar o site
+                  <span aria-hidden="true"
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg></span></span
+              ></a>
+              <div class="showcase-card-info">
+                <div class="showcase-meta">
+                  <span>Clínica & bem-estar</span><span>Conceito autoral</span>
+                </div>
+                <h3>
+                  <a href="./concepts/serena.html"
+                    >Serena
+                    <span aria-hidden="true"
+                      ><svg
+                        class="glyph-arrow"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 19 19 5M5 5h14v14" /></svg></span
+                  ></a>
+                </h3>
+                <p class="showcase-tagline">
+                  O cuidado começa no primeiro contato.
+                </p>
+                <p class="showcase-description">
+                  Uma presença acolhedora para apresentar especialidades,
+                  profissionais e formas de atendimento.
+                </p>
+                <div
+                  class="showcase-tags"
+                  aria-label="Possibilidades para o projeto"
+                >
+                  <span>Especialidades</span><span>Equipe</span
+                  ><span>Contato</span>
+                </div>
+              </div>
+            </article>
+            <article
+              class="showcase-card showcase-brasa"
+              data-category="gastronomia"
+            >
+              <a
+                class="showcase-preview"
+                href="./concepts/brasa.html"
+                aria-label="Explorar conceito Brasa"
+                ><div class="preview-chrome" aria-hidden="true">
+                  <span class="browser-dots"><i></i><i></i><i></i></span
+                  ><span>brasa / conceito</span
+                  ><span
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg
+                  ></span>
+                </div>
+                <img
+                  src="./assets/showcase/brasa-preview.webp"
+                  width="1280"
+                  height="880"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Prévia da página de restaurante & gastronomia Brasa" /><span
+                  class="preview-open"
+                  >Explorar o site
+                  <span aria-hidden="true"
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg></span></span
+              ></a>
+              <div class="showcase-card-info">
+                <div class="showcase-meta">
+                  <span>Restaurante & gastronomia</span
+                  ><span>Conceito autoral</span>
+                </div>
+                <h3>
+                  <a href="./concepts/brasa.html"
+                    >Brasa
+                    <span aria-hidden="true"
+                      ><svg
+                        class="glyph-arrow"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 19 19 5M5 5h14v14" /></svg></span
+                  ></a>
+                </h3>
+                <p class="showcase-tagline">
+                  Uma experiência que abre o apetite.
+                </p>
+                <p class="showcase-description">
+                  Cardápio, personalidade e uma boa história para levar o
+                  visitante da tela para a mesa.
+                </p>
+                <div
+                  class="showcase-tags"
+                  aria-label="Possibilidades para o projeto"
+                >
+                  <span>Cardápio digital</span><span>Reservas</span
+                  ><span>Localização</span>
+                </div>
+              </div>
+            </article>
+            <article
+              class="showcase-card showcase-forma"
+              data-category="imoveis"
+            >
+              <a
+                class="showcase-preview"
+                href="./concepts/forma.html"
+                aria-label="Explorar conceito Forma"
+                ><div class="preview-chrome" aria-hidden="true">
+                  <span class="browser-dots"><i></i><i></i><i></i></span
+                  ><span>forma / conceito</span
+                  ><span
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg
+                  ></span>
+                </div>
+                <img
+                  src="./assets/showcase/forma-preview.webp"
+                  width="1280"
+                  height="880"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Prévia da página de imobiliária & arquitetura Forma" /><span
+                  class="preview-open"
+                  >Explorar o site
+                  <span aria-hidden="true"
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg></span></span
+              ></a>
+              <div class="showcase-card-info">
+                <div class="showcase-meta">
+                  <span>Imobiliária & arquitetura</span
+                  ><span>Conceito autoral</span>
+                </div>
+                <h3>
+                  <a href="./concepts/forma.html"
+                    >Forma
+                    <span aria-hidden="true"
+                      ><svg
+                        class="glyph-arrow"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 19 19 5M5 5h14v14" /></svg></span
+                  ></a>
+                </h3>
+                <p class="showcase-tagline">
+                  Espaço para imaginar uma nova vida.
+                </p>
+                <p class="showcase-description">
+                  Fotografia em destaque e informações organizadas para
+                  valorizar cada imóvel ou projeto.
+                </p>
+                <div
+                  class="showcase-tags"
+                  aria-label="Possibilidades para o projeto"
+                >
+                  <span>Vitrine de imóveis</span><span>Galerias</span
+                  ><span>Visitas</span>
+                </div>
+              </div>
+            </article>
+            <article
+              class="showcase-card showcase-orbit"
+              data-category="servicos"
+            >
+              <a
+                class="showcase-preview"
+                href="./concepts/orbit.html"
+                aria-label="Explorar conceito Orbit"
+                ><div class="preview-chrome" aria-hidden="true">
+                  <span class="browser-dots"><i></i><i></i><i></i></span
+                  ><span>orbit / conceito</span
+                  ><span
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg
+                  ></span>
+                </div>
+                <img
+                  src="./assets/showcase/orbit-preview.webp"
+                  width="1280"
+                  height="880"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Prévia da página de serviços & consultoria Orbit" /><span
+                  class="preview-open"
+                  >Explorar o site
+                  <span aria-hidden="true"
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg></span></span
+              ></a>
+              <div class="showcase-card-info">
+                <div class="showcase-meta">
+                  <span>Serviços & consultoria</span
+                  ><span>Conceito autoral</span>
+                </div>
+                <h3>
+                  <a href="./concepts/orbit.html"
+                    >Orbit
+                    <span aria-hidden="true"
+                      ><svg
+                        class="glyph-arrow"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 19 19 5M5 5h14v14" /></svg></span
+                  ></a>
+                </h3>
+                <p class="showcase-tagline">
+                  Seu valor, explicado com clareza.
+                </p>
+                <p class="showcase-description">
+                  Uma apresentação direta para transformar serviços em propostas
+                  que o cliente entende.
+                </p>
+                <div
+                  class="showcase-tags"
+                  aria-label="Possibilidades para o projeto"
+                >
+                  <span>Serviços</span><span>Método</span
+                  ><span>Captação de contatos</span>
+                </div>
+              </div>
+            </article>
+            <aside class="showcase-invite">
+              <span class="invite-symbol" aria-hidden="true"
+                ><svg
+                  class="glyph-arrow"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M5 19 19 5M5 5h14v14" /></svg
+              ></span>
+              <div>
+                <p>Seu segmento não está aqui?</p>
+                <h3>A próxima direção<br />pode ser a sua.</h3>
+                <p>
+                  O catálogo é um começo de conversa. Me conte o que você faz e
+                  o que gostaria que seu site entregasse.
+                </p>
+                <a
+                  href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA!%20Quero%20conversar%20sobre%20um%20site%20para%20o%20meu%20neg%C3%B3cio."
+                  >Vamos desenhar essa ideia
+                  <span aria-hidden="true"
+                    ><svg
+                      class="glyph-arrow"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 19 19 5M5 5h14v14" /></svg></span
+                ></a>
+              </div>
+            </aside>
+          </div>
+          <p class="showcase-footnote">
+            Cada projeto recebe sua própria identidade. As funcionalidades
+            finais são definidas de acordo com o seu negócio.
+          </p>
+        </div>
+      </section>
+      <section
+        class="work shell"
+        id="experimentos"
+        aria-labelledby="work-title"
+      >
         <div class="work-heading">
-          <h2 id="work-title">Em exploração</h2>
+          <h2 id="work-title">Experimente o movimento</h2>
           <p>
-            Estudos autorais. Ideias desenvolvidas para demonstrar
-            possibilidades.
+            Abra, interaja e veja de perto. Estudos de produto e animação
+            desenvolvidos para este portfólio.
           </p>
         </div>
         <div class="work-grid">
@@ -388,8 +836,9 @@
             transformar ideias em projetos navegáveis.
           </p>
           <p>
-            Os trabalhos apresentados aqui são estudos autorais. Cada um explora
-            uma parte da experiência: o produto, a interação ou o movimento.
+            A vitrine reúne conceitos autorais, sem projetos de clientes
+            fictícios. Cada exemplo mostra uma possibilidade de linguagem,
+            conteúdo e navegação para o seu negócio.
           </p>
           <a
             class="underlined-link"

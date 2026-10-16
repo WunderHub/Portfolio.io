@@ -129,26 +129,6 @@
   max-width: 260px;
   text-align: right;
 }
-.logo-sequence-progress {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  display: none;
-  background: #ffffff15;
-}
-.logo-sequence[data-mode="scroll"] .logo-sequence-progress {
-  display: block;
-}
-.logo-sequence-progress > span {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: #ef423b;
-  transform-origin: left;
-  transform: scaleX(0);
-}
 .logo-sequence-sr-only {
   position: absolute;
   width: 1px;
@@ -213,8 +193,7 @@
     visibility: visible;
   }
   .logo-sequence canvas,
-  .logo-sequence[data-mode="scroll"] .logo-sequence-hint,
-  .logo-sequence[data-mode="scroll"] .logo-sequence-progress {
+  .logo-sequence[data-mode="scroll"] .logo-sequence-hint {
     display: none;
   }
 }

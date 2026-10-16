@@ -15,3 +15,5 @@ Versões exatas estão em `package.json` e `package-lock.json`. Os avisos embuti
 O símbolo WunderHub foi preparado a partir do logo fornecido pelo proprietário. A imagem do headphone Aura foi gerada para este estudo conceitual e não representa um produto comercial ou cliente real. Layout, conteúdo, controles e composições deste projeto foram criados para a WunderHub.
 
 A sequência WEBP de revelação foi extraída do vídeo enviado pelo proprietário (`src/media/logo-reveal.mp4`). A conversão mantém o enquadramento e repete quadros de 24 para 30 fps.
+
+As imagens `assets/showcase/forma-house.webp` e `brasa-food.webp` foram geradas para os conceitos de imóveis e gastronomia. Não retratam imóveis, restaurantes ou produtos disponíveis para contratação ou compra. A ilustração botânica Serena e o diagrama Orbit foram criados como elementos dos layouts. As prévias `*-preview.webp` são capturas das páginas HTML reais em `concepts/`. Aura Audio, Serena, Brasa, Forma e Orbit são marcas fictícias usadas apenas como estudos autorais.
