@@ -1324,7 +1324,7 @@ html.menu-open .header {
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: url("./apoio-circuito.jpg") right center / cover no-repeat;
+  background: right center / cover no-repeat;
   opacity: 0.85;
 }
 
@@ -1848,7 +1848,7 @@ html.menu-open .header {
   position: absolute;
   z-index: -1;
   inset: -12% 0;
-  background: url("./apoio-cidade.jpg") center / cover no-repeat;
+  background: center / cover no-repeat;
   transform: translateY(var(--px, 0px));
   will-change: transform;
 }
@@ -2363,6 +2363,25 @@ html.menu-open .header {
   }
 }
 
+/* imagens de fundo só carregam perto da tela */
+.promise.bg-on::before {
+  background-image: url("./apoio-circuito.jpg");
+}
+
+.interlude-img.bg-on {
+  background-image: url("./apoio-cidade.jpg");
+}
+
+.contact-bg.bg-on {
+  background-image: url("./hero-ending.jpg");
+}
+
+@media (max-width: 720px) {
+  .contact-bg.bg-on {
+    background-image: url("./hero-ending-m.jpg");
+  }
+}
+
 /* ---------- 08 contato ---------- */
 
 .contact {
@@ -2380,7 +2399,7 @@ html.menu-open .header {
   z-index: -1;
   inset: 0 0 auto;
   height: min(70%, 56.25vw + 60px);
-  background: url("./hero-ending.jpg") center 50% / cover no-repeat;
+  background: center 50% / cover no-repeat;
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 62%, transparent 100%);
   mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 62%, transparent 100%);
 }
@@ -2400,7 +2419,6 @@ html.menu-open .header {
 
   .contact-bg {
     height: 78vw;
-    background-image: url("./hero-ending-m.jpg");
     background-size: 160vw auto;
     background-position: center 0;
   }

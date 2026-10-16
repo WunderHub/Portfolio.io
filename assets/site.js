@@ -535,9 +535,22 @@
       for (const e of entries) e.target.classList.toggle("live", e.isIntersecting);
     });
     $$("[data-live]").forEach((el) => live.observe(el));
+
+    // imagens de fundo das seções só baixam quando a pessoa se aproxima
+    const bg = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add("bg-on");
+          bg.unobserve(e.target);
+        }
+      },
+      { rootMargin: "900px 0px" },
+    );
+    $$("[data-bg]").forEach((el) => bg.observe(el));
   } else {
     revealTargets.forEach((el) => el.classList.add("in", "settled"));
-    $$("[data-live]").forEach((el) => el.classList.add("live"));
+    $$("[data-live], [data-bg]").forEach((el) => el.classList.add("live", "bg-on"));
   }
 
   document.addEventListener("visibilitychange", () => {
