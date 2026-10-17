@@ -1266,7 +1266,7 @@ html.menu-open .header {
 }
 
 .noise-wave::after {
-  content: "sem sinal";
+  content: none;
   display: inline-block;
   padding: 0.1rem 0.45rem;
   border: 1px solid rgba(227, 18, 28, 0.55);
@@ -1345,7 +1345,7 @@ html.menu-open .header {
 
 .promise-list li {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.35rem 1.1rem;
   align-items: baseline;
 }
