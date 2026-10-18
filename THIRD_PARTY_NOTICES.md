@@ -3,8 +3,7 @@
 | Recurso     | Origem                         | Licença                                                            |
 | ----------- | ------------------------------ | ------------------------------------------------------------------ |
 | Lexend Tera | Google Fonts                   | SIL Open Font License 1.1                                          |
-| Geist       | Google Fonts                   | SIL Open Font License 1.1                                          |
-| Geist Mono  | Google Fonts                   | SIL Open Font License 1.1                                          |
+| Lexend      | Google Fonts                   | SIL Open Font License 1.1                                          |
 | Sora        | Fontsource / Sora (conceitos)  | SIL Open Font License; texto em `assets/fonts/Sora-LICENSE.txt`    |
 | DM Sans     | Fontsource / DM Sans (conceitos) | SIL Open Font License; texto em `assets/fonts/DM-Sans-LICENSE.txt` |
 

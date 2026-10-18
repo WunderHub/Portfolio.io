@@ -4,9 +4,9 @@ Portfólio de Kauê Ribeiro: landing pages, sites institucionais e lojas virtuai
 
 Os trabalhos da vitrine são **conceitos autorais com marcas fictícias**, não projetos de clientes. O contato real é o WhatsApp **+55 (11) 95930-0903**.
 
-## O conceito: Núcleo
+## O topo
 
-O topo do site é uma descida cinematográfica guiada pela rolagem: a câmera sai do alto de uma cidade de chips, segue os pulsos vermelhos do circuito e chega ao núcleo, onde está o W da WunderHub. Rolar para baixo avança o vídeo; rolar para cima volta. Os textos aparecem em trechos ao longo da descida e o site termina de assentar quando o W chega.
+No computador, o topo é um vídeo guiado pela rolagem: a câmera sai do alto de uma cidade de chips, segue os pulsos vermelhos do circuito e chega ao W da WunderHub. Rolar para baixo avança o vídeo; rolar para cima volta. Três legendas aparecem ao longo da descida e o título assenta quando o W chega.
 
 Imagens e vídeo foram gerados no Magnific (Seedream 5 Pro para as imagens, Seedance 2.5 para o vídeo) a partir de cenas aprovadas uma a uma.
 
@@ -16,14 +16,24 @@ Site estático em HTML, CSS e JavaScript puros, sem build e sem dependências.
 
 - `index.html`: a página inteira, com textos em português.
 - `assets/site.css`: identidade visual, layout e animações.
-- `assets/site.js`: vídeo guiado pela rolagem, textos que montam letra a letra, trilha de circuito, vitrine, prévia ao vivo, "segure para ligar" e menu.
+- `assets/site.js`: vídeo guiado pela rolagem, legendas que montam letra a letra, vitrine, prévia ao vivo e menu.
 - `assets/hero-scrub.mp4`: o vídeo do topo, recodificado com um quadro-chave a cada 8 para a rolagem ficar suave.
 - `assets/hero-poster.jpg` e `assets/hero-ending.jpg`: primeiro e último quadro (o último vira a imagem fixa no celular e o fundo do contato).
-- `assets/apoio-*.jpg`: imagens de apoio das seções.
+- `assets/apoio-*.jpg`: imagens de apoio geradas no Magnific, fora de uso na página atual.
 - `assets/brand/`: logos novos (`w-mark.svg` em vetor, `w-3d.webp` em 3D), ícones e imagem de compartilhamento. Os arquivos originais ficam em `assets/brand/originais/`.
 - `assets/work/`: capturas dos conceitos usadas na vitrine.
 - `concepts/`: as páginas reais dos cinco conceitos.
 - `scripts/capture-work.mjs`: gera de novo as capturas de `assets/work/`.
+
+## Texto e visual: o que evitar
+
+A página foi revisada para não ter a cara de site gerado por IA. Ao mexer nela, mantenha:
+
+- Títulos diretos, sem etiqueta pequena em maiúsculas acima deles e sem numeração de seção ("01 ·").
+- Texto concreto, em primeira pessoa, sem slogans em frases soltas ("Pagou. Esperou."), sem metáforas forçadas e sem a mesma ideia repetida em várias seções.
+- Nada de brilhos, bolhas de luz, grade ou granulado no fundo, cards iguais com ícone, borda colorida na lateral dos cards ou barra falsa de navegador.
+- Animação só onde ajuda: o vídeo do topo e a troca de abas da vitrine.
+- No máximo dois links de WhatsApp: o botão "Orçamento" no cabeçalho e o botão da seção de contato.
 
 ## Celular e acessibilidade
 
