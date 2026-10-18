@@ -481,7 +481,7 @@ html.menu-open .header {
 .h2 {
   max-width: 20ch;
   font-family: var(--display);
-  font-size: clamp(1.5rem, 0.95rem + 2.2vw, 2.75rem);
+  font-size: clamp(1.75rem, 1rem + 2.6vw, 3.1rem);
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.045em;
@@ -498,10 +498,6 @@ html.menu-open .header {
 .section {
   position: relative;
   padding-block: clamp(4.5rem, 3rem + 5vw, 8rem);
-}
-
-.section + .section {
-  border-top: 1px solid var(--line);
 }
 
 .sec-head {
@@ -522,6 +518,25 @@ html.menu-open .header {
   .sec-head-split .lede {
     margin-top: 0;
   }
+}
+
+/* seções claras: cinza aço, para dar respiro entre as seções escuras */
+.section-light {
+  --text-primary: #0b0d11;
+  --text-secondary: #49515c;
+  --line: rgba(11, 13, 17, 0.14);
+  --line-strong: #8d96a2;
+  --steel: #0b0d11;
+  background: #e4e7eb;
+  color: #0b0d11;
+}
+
+.section-light ::selection {
+  color: #fff;
+}
+
+.section-light .btn-steel:hover {
+  background: rgba(11, 13, 17, 0.06);
 }
 
 /* ---------- topo: vídeo guiado pela rolagem ---------- */
@@ -952,6 +967,15 @@ html.menu-open .header {
   background: var(--panel-2);
 }
 
+.section-light .pin[aria-selected="true"] {
+  background: #0b0d11;
+  color: #eef1f5;
+}
+
+.section-light .pin[aria-selected="true"] .pin-seg {
+  color: #9ea7b3;
+}
+
 .pin-name {
   font-family: var(--display);
   font-size: 0.95rem;
@@ -995,6 +1019,7 @@ html.menu-open .header {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: #fff;
+  box-shadow: 0 28px 56px -30px rgba(11, 13, 17, 0.55);
   text-decoration: none;
 }
 
@@ -1089,8 +1114,10 @@ html.menu-open .header {
 
 .included {
   margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--line);
+  padding: 1.4rem 1.5rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
 }
 
 .included-title {
@@ -1116,25 +1143,47 @@ html.menu-open .header {
 }
 
 .formats {
-  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 2.75rem;
 }
 
 .format {
   display: grid;
-  gap: 0.4rem;
-  padding-block: 1.5rem;
-  border-bottom: 1px solid var(--line);
+  align-content: start;
+  gap: 0.45rem;
+}
+
+.format-art {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+}
+
+.format-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.6s var(--ease-out);
+}
+
+a.format-art:hover img {
+  transform: scale(1.03);
 }
 
 .format h3 {
   font-family: var(--display);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: -0.04em;
 }
 
 .format p {
-  max-width: 52ch;
+  max-width: 46ch;
   color: var(--text-secondary);
 }
 
@@ -1144,10 +1193,9 @@ html.menu-open .header {
     column-gap: 2rem;
   }
 
-  .format {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    gap: 2rem;
-    align-items: baseline;
+  .formats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3rem 1.5rem;
   }
 }
 
@@ -1170,34 +1218,57 @@ html.menu-open .header {
 
 /* ---------- como funciona ---------- */
 
+.process {
+  padding-top: 0;
+}
+
+.process-art {
+  height: clamp(250px, 50vw, 620px);
+  background: #0b0d11 center 64% / cover no-repeat;
+  -webkit-mask-image: linear-gradient(180deg, #000 40%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 40%, transparent 100%);
+}
+
+.process-art.bg-on {
+  background-image: url("./apoio-cidade.jpg");
+}
+
+/* o título sobe e fica por cima da parte escurecida da imagem */
+.process-head {
+  position: relative;
+  margin-top: calc(-1 * clamp(3.5rem, 9vw, 9rem));
+}
+
 .steps {
   display: grid;
-  gap: 0;
   counter-reset: step;
   border-top: 1px solid var(--line);
 }
 
 .step {
-  padding-block: 1.5rem;
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  gap: 0.35rem 1rem;
+  padding-block: 1.6rem;
   border-bottom: 1px solid var(--line);
   counter-increment: step;
 }
 
-.step h3 {
-  display: flex;
-  gap: 0.75rem;
-  align-items: baseline;
-  margin-bottom: 0.5rem;
+.step::before {
+  content: counter(step);
+  grid-row: span 2;
+  color: var(--accent);
   font-family: var(--display);
-  font-size: 1.05rem;
+  font-size: 2.6rem;
   font-weight: 700;
-  letter-spacing: -0.04em;
+  line-height: 0.9;
 }
 
-.step h3::before {
-  content: counter(step);
-  color: var(--accent-text);
-  font-size: 0.9rem;
+.step h3 {
+  font-family: var(--display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
 }
 
 .step p {
@@ -1213,14 +1284,17 @@ html.menu-open .header {
   }
 
   .step {
-    padding-block: 1.5rem 0;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    padding-block: 1.75rem 0;
     border-top: 1px solid var(--line-strong);
     border-bottom: 0;
   }
 
-  .step h3 {
-    flex-direction: column;
-    gap: 0.6rem;
+  .step::before {
+    grid-row: auto;
+    margin-bottom: 1.25rem;
+    font-size: 3.4rem;
   }
 }
 
@@ -1232,12 +1306,23 @@ html.menu-open .header {
   align-items: center;
 }
 
-.about-mark {
-  display: none;
+.about-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: #0e1014 32% 50% / cover no-repeat;
 }
 
-.about-mark img {
-  width: 100%;
+.about-art.bg-on {
+  background-image: url("./apoio-circuito.jpg");
+}
+
+.about-art img {
+  width: 66%;
 }
 
 .about-copy .h2 {
@@ -1262,9 +1347,8 @@ html.menu-open .header {
     gap: clamp(3rem, 7vw, 7rem);
   }
 
-  .about-mark {
-    display: block;
-    padding: 0 6%;
+  .about-art {
+    aspect-ratio: 5 / 4;
   }
 }
 
@@ -1363,7 +1447,6 @@ html.menu-open .header {
   min-height: max(100svh, 860px);
   overflow: hidden;
   padding-block: clamp(5rem, 10vh, 8rem) clamp(4rem, 9vh, 7rem);
-  border-top: 1px solid var(--line);
 }
 
 .contact-bg {
