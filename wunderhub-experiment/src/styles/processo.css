@@ -1,0 +1,89 @@
+/* Como trabalho, sobre a Chapa (seções 3.4 e 5.3). Frente: meio.
+   Provisório da fundação: o estado sem JS (lista com as cinco mini-palavras mostrando a progressão). */
+
+.processo__cabeca {
+  display: grid;
+  gap: var(--e-3);
+  margin-bottom: var(--e-8);
+}
+.processo__cabeca p,
+.processo__final {
+  color: var(--preto-acm);
+}
+.etapas {
+  display: grid;
+  gap: var(--e-4);
+}
+.etapa {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-2);
+  align-content: start;
+  padding-top: var(--e-2);
+  border-top: 4px solid var(--grafite-parede);
+  color: var(--grafite-parede); /* 8,79:1 sobre a Chapa */
+}
+.etapa__nome {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-1);
+  font-size: var(--t-24);
+  line-height: 1.1;
+}
+.etapa__numero {
+  font-family: var(--fonte-leitura);
+  font-size: var(--t-16);
+  font-weight: 650;
+}
+.etapa__mini {
+  font-family: var(--fonte-estrutura);
+  /* 28px, ou menos quando a coluna não comporta a etapa mais larga (900/150, 10,835em) */
+  font-size: min(28px, 100cqi / var(--seu-negocio-em-5));
+  line-height: .74;
+  white-space: nowrap;
+  color: var(--preto-acm);
+}
+.etapa[data-etapa='1'] .etapa__mini { font-weight: 100; font-stretch: 50%; color: transparent; -webkit-text-stroke: max(1px, .05em) var(--preto-acm); }
+.etapa[data-etapa='2'] .etapa__mini { font-weight: 300; font-stretch: 50%; color: transparent; -webkit-text-stroke: max(1px, .05em) var(--preto-acm); }
+.etapa[data-etapa='3'] .etapa__mini { font-weight: 560; font-stretch: 62%; color: var(--grafite-fio); }
+.etapa[data-etapa='4'] .etapa__mini { font-weight: 850; font-stretch: 62%; }
+.etapa[data-etapa='5'] .etapa__mini { font-weight: 900; font-stretch: 150%; }
+.etapa__detalhes {
+  display: grid;
+  gap: var(--e-2);
+  font-size: var(--t-16);
+  line-height: 1.5;
+}
+.etapa__detalhes dt {
+  font-weight: 650;
+  color: var(--preto-acm);
+}
+.processo__final {
+  margin-top: var(--e-8);
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
+}
+
+@media (min-width: 768px) {
+  .etapas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+}
+@media (min-width: 1024px) {
+  .processo__cabeca {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: end;
+  }
+  .processo__cabeca h2 {
+    grid-column: 1 / span 5;
+  }
+  .processo__cabeca p {
+    grid-column: 7 / span 6;
+  }
+  .etapas {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}

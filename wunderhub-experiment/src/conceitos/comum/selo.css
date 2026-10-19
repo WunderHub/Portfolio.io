@@ -1,0 +1,48 @@
+/* Selo das demos: faixa preta com texto Prata Luz (18,38:1) e o link "Voltar ao portfólio".
+   Usa a fonte do sistema para não baixar as fontes da WunderHub nas demos. Frente: fundação. */
+
+.selo {
+  --selo-preto: #000000;
+  --selo-luz: #EEF0F2;
+  --selo-sinal: #E5243B;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 24px;
+  padding: 4px max(16px, env(safe-area-inset-left)) 4px max(16px, env(safe-area-inset-right));
+  background: var(--selo-preto);
+  color: var(--selo-luz);
+  font: 400 14px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.selo__texto {
+  margin: 0;
+  padding-block: 10px;
+  max-width: none;
+}
+.selo__voltar {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--selo-luz);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .22em;
+}
+.selo__voltar:hover,
+.selo__voltar:focus-visible {
+  text-decoration-thickness: 2px;
+}
+.selo__voltar:focus-visible {
+  outline: 2px solid var(--selo-luz);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--selo-preto), 0 0 0 7px var(--selo-sinal);
+}
+@media (prefers-reduced-motion: reduce) {
+  .selo * {
+    transition: none !important;
+  }
+}

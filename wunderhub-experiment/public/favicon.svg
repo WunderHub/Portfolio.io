@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3200 3200" role="img" aria-labelledby="t">
+<title id="t">Símbolo exploratório</title>
+<rect width="3200" height="3200" fill="#000"/>
+<g fill="#EEF0F2" transform="translate(95 828.9)">
+<defs><clipPath id="f-c"><path d="M-400 -400H3410V1221.2L-400 128.8Z"/></clipPath><clipPath id="f-b"><path d="M-400 128.8L3410 1221.2V1750H-400Z"/></clipPath></defs>
+<path clip-path="url(#f-c)" d="M408 1350L1189 1350L1494 312L1496 312L1802 1350L2583 1350L3010 0L2454 0L2182 990L2180 990L1864 0L1129 0L815 988L811 988L552 0L0 0Z"/>
+<path clip-path="url(#f-b)" transform="translate(-55.2 192.2)" d="M408 1350L1189 1350L1494 312L1496 312L1802 1350L2583 1350L3010 0L2454 0L2182 990L2180 990L1864 0L1129 0L815 988L811 988L552 0L0 0Z"/>
+</g>
+</svg>

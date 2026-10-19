@@ -1,0 +1,187 @@
+{
+  "gerado": "2026-10-19T02:15:05.653Z",
+  "gerador": "scripts/metricas-fallback.mjs",
+  "ambiente": "Chromium 141.0.7390.37, Playwright 1.56.1, fontes @fontsource-variable@5.3.0",
+  "faces": {
+    "Anybody Fallback Estreita": {
+      "referencia": "Roboto Condensed Bold (cópia de referência (@fontsource/roboto-condensed@5.3.0); local ausente nesta máquina)",
+      "texto": "Sites para o seu negócio ser encontrado e chamado.",
+      "fonteWeb": "Anybody wdth 62 wght 800",
+      "sizeAdjustPct": 87.34,
+      "ascentOverridePct": 91.6,
+      "descentOverridePct": 27.48,
+      "lineGapOverridePct": 0,
+      "metricasWeb": {
+        "ascentEm": 0.8,
+        "descentEm": 0.24
+      },
+      "candidatos": [
+        {
+          "local": "Arial Narrow Bold",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "ArialNarrow-Bold",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "Liberation Sans Narrow Bold",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "LiberationSansNarrow-Bold",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "Roboto Condensed Bold",
+          "origem": "cópia de referência (@fontsource/roboto-condensed@5.3.0); local ausente nesta máquina",
+          "razao": 0.8734
+        },
+        {
+          "local": "RobotoCondensed-Bold",
+          "origem": "cópia de referência (@fontsource/roboto-condensed@5.3.0); local ausente nesta máquina",
+          "razao": 0.8734
+        },
+        {
+          "local": "DejaVu Sans Condensed Bold",
+          "origem": "cópia de referência (dejavu-fonts-ttf@2.37.3); local ausente nesta máquina",
+          "razao": 0.6855
+        },
+        {
+          "local": "DejaVuSansCondensed-Bold",
+          "origem": "cópia de referência (dejavu-fonts-ttf@2.37.3); local ausente nesta máquina",
+          "razao": 0.6855
+        }
+      ]
+    },
+    "Anybody Fallback": {
+      "referencia": "Liberation Sans Bold (local)",
+      "texto": "Sites para o seu negócio ser encontrado e chamado.",
+      "fonteWeb": "Anybody wdth 62 wght 800",
+      "sizeAdjustPct": 72.84,
+      "ascentOverridePct": 109.83,
+      "descentOverridePct": 32.95,
+      "lineGapOverridePct": 0,
+      "metricasWeb": {
+        "ascentEm": 0.8,
+        "descentEm": 0.24
+      },
+      "candidatos": [
+        {
+          "local": "Arial Bold",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "Arial-BoldMT",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "Liberation Sans Bold",
+          "origem": "local",
+          "razao": 0.7284
+        },
+        {
+          "local": "LiberationSans-Bold",
+          "origem": "local",
+          "razao": 0.7284
+        },
+        {
+          "local": "Roboto Bold",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "Roboto-Bold",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "Helvetica Neue Bold",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "HelveticaNeue-Bold",
+          "origem": "ausente",
+          "razao": null
+        }
+      ]
+    },
+    "Archivo Fallback": {
+      "referencia": "Liberation Sans (local)",
+      "texto": "Sou Kauê Ribeiro, da WunderHub. Crio landing pages, sites institucionais e lojas virtuais para pequenos negócios e profissionais. Quem atende você sou eu, da primeira conversa à publicação.",
+      "fonteWeb": "Archivo wdth 100 wght 400",
+      "sizeAdjustPct": 98.47,
+      "ascentOverridePct": 89.36,
+      "descentOverridePct": 21.33,
+      "lineGapOverridePct": 0,
+      "metricasWeb": {
+        "ascentEm": 0.88,
+        "descentEm": 0.21
+      },
+      "candidatos": [
+        {
+          "local": "Arial",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "ArialMT",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "Liberation Sans",
+          "origem": "local",
+          "razao": 0.9847
+        },
+        {
+          "local": "LiberationSans",
+          "origem": "local",
+          "razao": 0.9847
+        },
+        {
+          "local": "Roboto",
+          "origem": "ausente",
+          "razao": null
+        },
+        {
+          "local": "Helvetica Neue",
+          "origem": "ausente",
+          "razao": null
+        }
+      ]
+    }
+  },
+  "conferenciaAlturasPx": {
+    "h1-390": {
+      "web": 167.2,
+      "fallback": 167.2
+    },
+    "h1-1440": {
+      "web": 136.8,
+      "fallback": 136.8
+    },
+    "linha-normal-100px": {
+      "anybody": 104,
+      "anybodyFallback": 104,
+      "archivo": 109,
+      "archivoFallback": 109
+    },
+    "lead-390": {
+      "web": 123.2,
+      "fallback": 123.2
+    },
+    "lead-1440": {
+      "web": 121.8,
+      "fallback": 121.8
+    }
+  },
+  "nota": "size-adjust vale para a referência indicada; outras faces da lista local() têm larguras diferentes (ver razao de cada candidato). Meta: CLS da troca de fonte <= 0,02."
+}

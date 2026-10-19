@@ -1,0 +1,26 @@
+<!-- Rodapé (seção 3.4). Frente: contato. #mapa é o destino do "Menu" sem JS. -->
+<footer class="rodape">
+  <div class="rodape__grade conteudo">
+    <div class="rodape__assinatura">
+      <p class="rodape__marca"><!--#include src/partials/simbolo.html --><span class="wordmark">WunderHub</span></p>
+      <p>WunderHub, sites para pequenos negócios e profissionais. Feito por Kauê Ribeiro.</p>
+    </div>
+    <nav class="rodape__mapa" id="mapa" aria-label="Nesta página">
+      <ul role="list">
+        <li><a href="#trabalhos">Trabalhos</a></li>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#processo">Como trabalho</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <ul class="rodape__contatos" role="list">
+      <li><a href="{{whatsappUrl}}" target="_blank" rel="noopener">WhatsApp {{whatsappExibicao}}</a></li>
+      <li><a href="{{mailtoUrl}}">{{email}}</a></li>
+    </ul>
+    <div class="rodape__fim">
+      <p>Côdea, Junco e Louça Torta são marcas fictícias criadas como demonstração.</p>
+      <p>© {{ano}} WunderHub</p>
+      <a class="rodape__topo" href="#topo">Voltar ao topo</a>
+    </div>
+  </div>
+</footer>

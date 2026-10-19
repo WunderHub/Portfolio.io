@@ -1,0 +1,71 @@
+/* Rodapé (seção 3.4). Frente: contato. Preto, quieto. */
+
+.rodape {
+  padding-block: var(--e-8) calc(var(--e-6) + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--grafite-fio);
+  font-size: var(--t-16);
+}
+html.com-barra .rodape {
+  padding-bottom: calc(var(--e-6) + 48px + env(safe-area-inset-bottom));
+}
+.rodape__grade {
+  display: grid;
+  gap: var(--e-4);
+}
+.rodape__marca {
+  display: flex;
+  align-items: center;
+  gap: var(--e-2);
+  margin-bottom: var(--e-2);
+  color: var(--prata-luz);
+}
+.rodape .simbolo {
+  flex: none;
+  height: 24px;
+  width: auto;
+}
+.rodape ul {
+  display: grid;
+  gap: 0;
+}
+.rodape li a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo-min);
+}
+.rodape__fim {
+  display: grid;
+  gap: var(--e-1);
+  color: var(--prata-sombra); /* auxiliar sobre preto (5,49:1) */
+}
+.rodape__topo {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo-min);
+  color: var(--prata);
+}
+
+@media (min-width: 1024px) {
+  .rodape__grade {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+  .rodape__assinatura {
+    grid-column: 1 / span 5;
+  }
+  .rodape__mapa {
+    grid-column: 7 / span 2;
+  }
+  .rodape__contatos {
+    grid-column: 9 / span 4;
+  }
+  .rodape__fim {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: var(--e-4);
+    padding-top: var(--e-4);
+    border-top: 1px solid var(--grafite-fio);
+  }
+}

@@ -1,0 +1,117 @@
+/* Gerado por scripts/metricas-letreiro.mjs (Chromium 141.0.7390.37, Playwright 1.56.1, @fontsource-variable/anybody@5.3.0).
+   Não edite à mão: rode `npm run metricas`. Valores em em do corpo do letreiro.
+
+   Estrutura esperada (seção 5.1):
+   .letreiro.letreiro--linha | --torre | --auto   (auto: torre abaixo de 1024px, linha a partir de 1024px)
+     [data-vao="0|1|2"]                            um por vão (WUN, DER, HUB)
+       [data-linha]                                cada linha de letras (letras, aresta, retorno)
+         .cel[data-i="0|1|2"]                      uma célula por letra, glifo centralizado
+   Coordenadas do corte (--corte-y0 na borda esquerda do vão, --corte-y1 na direita) contam do topo
+   da caixa de linha de .74em. As metades usam a caixa do vão ampliada por --sangria-esq e --sangria-dir
+   nas laterais, --sangria-cima em cima e --sangria-baixo embaixo.
+   Atenção à ordem de pintura: a sangria lateral de um vão cobre a ponta do vizinho. Sugestão: metades
+   de cima com z-index decrescente (WUN acima) e metades de baixo com z-index crescente (HUB acima). */
+
+:root {
+  --corte-tan: 0.2867;
+  --letreiro-linha: 0.74em;
+  --letreiro-versal: 0.675em;
+  --letreiro-desvio-y: 0.0605em; /* desce o texto para centralizar a versal na linha de .74em */
+  --letreiro-base: 0.7075em; /* base com o desvio aplicado */
+  --letreiro-em-linha: 3.5756;
+  --letreiro-em-torre: 3;
+  --seu-negocio-em-1: 0.8965; --seu-em-1: 0.2545; --negocio-em-1: 0.586;
+  --seu-negocio-em-2: 1.5085; --seu-em-2: 0.43; --negocio-em-2: 1.012;
+  --seu-negocio-em-3: 3.332; --seu-em-3: 0.963; --negocio-em-3: 2.247;
+  --seu-negocio-em-4: 4.2305; --seu-em-4: 1.2205; --negocio-em-4: 2.8735;
+  --seu-negocio-em-5: 10.835; --seu-em-5: 3.199; --negocio-em-5: 7.211;
+  --formato-landing-em: 11.235;
+  --formato-institucional-em: 8.5933;
+  --formato-loja-em: 3.1627;
+  --wordmark-em: 10.401;
+}
+
+.letreiro {
+  --sangria-esq: 64px;
+  --sangria-dir: 64px;
+  --sangria-cima: 0px;
+  --sangria-baixo: 0px;
+  line-height: var(--letreiro-linha);
+}
+.letreiro [data-vao] {
+  font-stretch: calc(var(--vao-wdth) * 1%);
+  white-space: nowrap;
+}
+/* Os recortes são calculados em cada elemento do vão, então uma metade pode mudar as próprias sangrias
+   (ex.: .vao__metade--cima { --sangria-dir: 0px }) e o polígono acompanha. Caixa de uma metade:
+   inset: calc(-1 * cima) calc(-1 * dir) calc(-1 * baixo) calc(-1 * esq), com padding igual às sangrias. */
+.letreiro [data-vao],
+.letreiro [data-vao] * {
+  /* reta do corte nas bordas da caixa ampliada pelas sangrias */
+  --corte-ya: calc(var(--sangria-cima) + var(--corte-y0) - var(--sangria-esq) * 0.2867);
+  --corte-yb: calc(var(--sangria-cima) + var(--corte-y1) + var(--sangria-dir) * 0.2867);
+  /* metades (estáticos, 4 pontos) */
+  --clip-cima: polygon(0 0, 100% 0, 100% var(--corte-yb), 0 var(--corte-ya));
+  --clip-baixo: polygon(0 var(--corte-ya), 100% var(--corte-yb), 100% 100%, 0 100%);
+  /* aresta polida (2px acima do corte) e retorno (2px abaixo), na caixa do vão sem sangria */
+  --clip-aresta: polygon(0 calc(var(--corte-y0) - 2px), 100% calc(var(--corte-y1) - 2px), 100% var(--corte-y1), 0 var(--corte-y0));
+  --clip-retorno: polygon(0 var(--corte-y0), 100% var(--corte-y1), 100% calc(var(--corte-y1) + 2px), 0 calc(var(--corte-y0) + 2px));
+}
+/* Linha de letras (letras, aresta, retorno): caixa de .74em com a versal centrada. */
+.letreiro [data-linha] {
+  display: block;
+  box-sizing: border-box;
+  height: var(--letreiro-linha);
+  padding-top: var(--letreiro-desvio-y);
+  line-height: var(--letreiro-linha);
+  white-space: nowrap;
+}
+.letreiro .cel { display: inline-block; text-align: center; }
+.letreiro .cel[data-i="0"] { width: var(--cel-0); }
+.letreiro .cel[data-i="1"] { width: var(--cel-1); }
+.letreiro .cel[data-i="2"] { width: var(--cel-2); }
+
+/* Linha: desktop e Porta (Anybody wdth 50, wght 900) */
+.letreiro--linha [data-vao="0"] { --vao-wdth: 50; --vao-l: 1.462em; --vao-x: 0em; --corte-y0: 0.1604em; --corte-y1: 0.5796em; --cel-0: 0.609em; --cel-1: 0.3725em; --cel-2: 0.4805em; }
+.letreiro--linha [data-vao="1"] { --vao-wdth: 50; --vao-l: 0.9975em; --vao-x: 1.462em; --corte-y0: 0.227em; --corte-y1: 0.513em; --cel-0: 0.3705em; --cel-1: 0.251em; --cel-2: 0.376em; }
+.letreiro--linha [data-vao="2"] { --vao-wdth: 50; --vao-l: 1.116em; --vao-x: 2.4596em; --corte-y0: 0.21em; --corte-y1: 0.53em; --cel-0: 0.3715em; --cel-1: 0.3725em; --cel-2: 0.372em; }
+
+/* Torre: mobile (wdth por andar, cada andar com 3em) */
+.letreiro--torre [data-vao="0"] { --vao-wdth: 110.4; --vao-l: 3em; --vao-x: 0em; --corte-y0: -0.0601em; --corte-y1: 0.8001em; --cel-0: 1.2144em; --cel-1: 0.8347em; --cel-2: 0.9509em; }
+.letreiro--torre [data-vao="1"] { --vao-wdth: 144.4; --vao-l: 3em; --vao-x: 0em; --corte-y0: -0.0601em; --corte-y1: 0.8001em; --cel-0: 1.0445em; --cel-1: 0.9215em; --cel-2: 1.034em; }
+.letreiro--torre [data-vao="2"] { --vao-wdth: 133.9; --vao-l: 3em; --vao-x: 0em; --corte-y0: -0.0601em; --corte-y1: 0.8001em; --cel-0: 1.0062em; --cel-1: 1.0137em; --cel-2: 0.9801em; }
+
+@media (min-width: 1024px) {
+  .letreiro--auto [data-vao="0"] { --vao-wdth: 50; --vao-l: 1.462em; --vao-x: 0em; --corte-y0: 0.1604em; --corte-y1: 0.5796em; --cel-0: 0.609em; --cel-1: 0.3725em; --cel-2: 0.4805em; }
+  .letreiro--auto [data-vao="1"] { --vao-wdth: 50; --vao-l: 0.9975em; --vao-x: 1.462em; --corte-y0: 0.227em; --corte-y1: 0.513em; --cel-0: 0.3705em; --cel-1: 0.251em; --cel-2: 0.376em; }
+  .letreiro--auto [data-vao="2"] { --vao-wdth: 50; --vao-l: 1.116em; --vao-x: 2.4596em; --corte-y0: 0.21em; --corte-y1: 0.53em; --cel-0: 0.3715em; --cel-1: 0.3725em; --cel-2: 0.372em; }
+}
+@media (max-width: 1023.98px) {
+  .letreiro--auto [data-vao="0"] { --vao-wdth: 110.4; --vao-l: 3em; --vao-x: 0em; --corte-y0: -0.0601em; --corte-y1: 0.8001em; --cel-0: 1.2144em; --cel-1: 0.8347em; --cel-2: 0.9509em; }
+  .letreiro--auto [data-vao="1"] { --vao-wdth: 144.4; --vao-l: 3em; --vao-x: 0em; --corte-y0: -0.0601em; --corte-y1: 0.8001em; --cel-0: 1.0445em; --cel-1: 0.9215em; --cel-2: 1.034em; }
+  .letreiro--auto [data-vao="2"] { --vao-wdth: 133.9; --vao-l: 3em; --vao-x: 0em; --corte-y0: -0.0601em; --corte-y1: 0.8001em; --cel-0: 1.0062em; --cel-1: 1.0137em; --cel-2: 0.9801em; }
+}
+
+/* Nomes partidos da vitrine (seção 5.2). Caixa: inline-block, white-space: nowrap, line-height: 1,
+   largura igual à do texto. x em % da largura, y em em a partir do topo da caixa. */
+[data-nome="codea"] {
+  --nome-wdth: 150; --nome-wght: 850; --largura-em: 5.3625;
+  --clip-nome-cima: polygon(-1.34% -0.35em, 104% -0.35em, 104% 1.2698em);
+  --clip-nome-baixo: polygon(-4% -0.35em, -1.34% -0.35em, 104% 1.2698em, 104% 1.35em, -4% 1.35em);
+  --clip-nome-aresta: polygon(-4% calc(-0.3908em + -2px), 104% calc(1.2698em + -2px), 104% calc(1.2698em + 0px), -4% calc(-0.3908em + 0px));
+  --clip-nome-retorno: polygon(-4% calc(-0.3908em + 0px), 104% calc(1.2698em + 0px), 104% calc(1.2698em + 2px), -4% calc(-0.3908em + 2px));
+}
+[data-nome="junco"] {
+  --nome-wdth: 62; --nome-wght: 400; --largura-em: 1.513;
+  --clip-nome-cima: polygon(-4% -0.35em, 104% -0.35em, 104% 0.6738em, -4% 0.2052em);
+  --clip-nome-baixo: polygon(104% 0.6738em, 104% 1.35em, -4% 1.35em, -4% 0.2052em);
+  --clip-nome-aresta: polygon(-4% calc(0.2052em + -2px), 104% calc(0.6738em + -2px), 104% calc(0.6738em + 0px), -4% calc(0.2052em + 0px));
+  --clip-nome-retorno: polygon(-4% calc(0.2052em + 0px), 104% calc(0.6738em + 0px), 104% calc(0.6738em + 2px), -4% calc(0.2052em + 2px));
+}
+[data-nome="louca-torta"] {
+  --nome-wdth: 125; --nome-wght: 250; --largura-em: 7.3208;
+  --clip-nome-cima: polygon(12.39% -0.35em, 104% -0.35em, 104% 1.35em, 93.37% 1.35em);
+  --clip-nome-baixo: polygon(-4% -0.35em, 12.39% -0.35em, 93.37% 1.35em, -4% 1.35em);
+  --clip-nome-aresta: polygon(-4% calc(-0.6941em + -2px), 104% calc(1.5731em + -2px), 104% calc(1.5731em + 0px), -4% calc(-0.6941em + 0px));
+  --clip-nome-retorno: polygon(-4% calc(-0.6941em + 0px), 104% calc(1.5731em + 0px), 104% calc(1.5731em + 2px), -4% calc(-0.6941em + 2px));
+}

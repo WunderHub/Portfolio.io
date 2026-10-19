@@ -1,0 +1,76 @@
+/* Palco e letreiro (seção 5.1). Frente: topo.
+   Provisório da fundação: letreiro estático em repouso (nome contínuo, fenda de 6px, aresta polida),
+   usando as variáveis de src/styles/generated/letreiro.css. Sem plano de trás, sem pista, sem sticky. */
+
+.topo {
+  container-type: inline-size;
+  overflow-x: clip;
+  /* tudo dentro de .topo mede pela largura de .topo (sem a barra de rolagem) */
+  --largura-letreiro: min(100cqi - 2 * var(--margem), 1536px);
+  --fs-letreiro: calc(var(--largura-letreiro) / var(--letreiro-em-torre));
+  --L: calc(3 * .74 * var(--fs-letreiro));
+}
+@media (min-width: 1024px) {
+  .topo {
+    --fs-letreiro: calc(var(--largura-letreiro) / var(--letreiro-em-linha));
+    --L: calc(.74 * var(--fs-letreiro));
+  }
+}
+
+.palco {
+  padding-bottom: var(--e-6);
+}
+.fachada {
+  display: flex;
+  flex-wrap: wrap;
+  padding-inline: max(var(--margem), (100cqi - 1536px) / 2);
+  font-family: var(--fonte-letreiro);
+  font-weight: 900;
+  font-size: var(--fs-letreiro);
+  line-height: var(--letreiro-linha);
+  /* a frente topo põe contain: layout paint style com padding-block U e D (seção 5.1) */
+}
+.vao {
+  position: relative;
+  width: var(--vao-l);
+  height: var(--letreiro-linha);
+}
+.vao__metade {
+  position: absolute;
+  inset: calc(-1 * var(--sangria-cima)) calc(-1 * var(--sangria-dir)) calc(-1 * var(--sangria-baixo)) calc(-1 * var(--sangria-esq));
+  padding: var(--sangria-cima) var(--sangria-dir) var(--sangria-baixo) var(--sangria-esq);
+}
+.vao__metade--cima {
+  clip-path: var(--clip-cima);
+}
+.vao__metade--baixo {
+  clip-path: var(--clip-baixo);
+  /* fenda de 6px na perpendicular do corte */
+  transform: translate(calc(-.276 * 6px), calc(.961 * 6px));
+}
+.vao .aresta,
+.vao .retorno {
+  position: absolute;
+  left: var(--sangria-esq);
+  top: var(--sangria-cima);
+  width: var(--vao-l);
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.vao .aresta {
+  background: var(--prata-luz);
+  clip-path: var(--clip-aresta);
+}
+.vao .retorno {
+  background: var(--prata-sombra);
+  clip-path: var(--clip-retorno);
+}
+
+/* Placas da fachada: provisoriamente abaixo do letreiro (o palco completo as põe nas janelas). */
+.placas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-1) var(--e-2);
+  padding: var(--e-4) max(var(--margem), (100cqi - 1536px) / 2) 0;
+}

@@ -1,0 +1,43 @@
+<!-- Abertura e palco (seções 3.4 e 5.1). Frente: topo.
+     Provisório da fundação: letreiro estático em repouso (p=0) com a geometria gerada em
+     src/styles/generated/letreiro.css. A frente topo troca pelo palco completo (janelas, capturas,
+     placas que entram em p >= 0,85, modo estático em p=0,62). -->
+<div class="topo" id="topo">
+  <div class="abertura">
+    <div class="abertura__grade conteudo">
+      <h1 class="abertura__titulo">Sites para o seu negócio ser encontrado e chamado.</h1>
+      <div class="abertura__texto">
+        <p class="lead">Sou Kauê Ribeiro, da WunderHub. Crio landing pages, sites institucionais e lojas virtuais para pequenos negócios e profissionais. Quem atende você sou eu, da primeira conversa à publicação.</p>
+        <div class="abertura__acoes">
+          <a class="placa abertura__whatsapp" href="{{whatsappUrl}}" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+          <a class="abertura__ver" href="#trabalhos">Ver os trabalhos</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="palco" id="palco">
+    <div class="palco__caixa">
+      <div class="fachada letreiro letreiro--auto" aria-hidden="true">
+        <div class="vao" data-vao="0">
+          <div class="vao__metade vao__metade--cima"><span class="letras aco-escovado" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span><span class="aresta" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></div>
+          <div class="vao__metade vao__metade--baixo"><span class="letras aco-escovado" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span><span class="retorno" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></div>
+        </div>
+        <div class="vao" data-vao="1">
+          <div class="vao__metade vao__metade--cima"><span class="letras aco-escovado" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span><span class="aresta" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></div>
+          <div class="vao__metade vao__metade--baixo"><span class="letras aco-escovado" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span><span class="retorno" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></div>
+        </div>
+        <div class="vao" data-vao="2">
+          <div class="vao__metade vao__metade--cima"><span class="letras aco-escovado" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span><span class="aresta" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></div>
+          <div class="vao__metade vao__metade--baixo"><span class="letras aco-escovado" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span><span class="retorno" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></div>
+        </div>
+      </div>
+      <!-- Sem inert no HTML: sem JS as placas ficam visíveis e focáveis (modo estático). palco.js controla o inert. -->
+      <nav class="placas" aria-label="Conceitos na fachada">
+        <a class="placa placa--compacta" href="#conceito-codea">Côdea, padaria de bairro</a>
+        <a class="placa placa--compacta" href="#conceito-junco">Junco, fisioterapia</a>
+        <a class="placa placa--compacta" href="#conceito-louca-torta">Louça Torta, cerâmica</a>
+      </nav>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+/* Contato: a Porta e o configurador (seções 3.4, 4 e 5.4). Frente: contato.
+   Provisório da fundação: porta aberta (estado sem JS), miolo centralizado. */
+
+.contato {
+  overflow: clip;
+}
+.porta__miolo {
+  display: grid;
+  justify-items: center;
+  gap: var(--e-3);
+  text-align: center;
+  padding-block: var(--e-8);
+}
+.porta__miolo h2 {
+  max-width: 16ch;
+}
+.porta__miolo p {
+  max-width: var(--medida-lead);
+}
+.porta__whatsapp,
+.porta__email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-1) var(--e-3);
+}
+.porta__numero {
+  color: var(--prata-luz);
+  font-weight: 500;
+}
+.porta__email-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo-min);
+  color: var(--prata-luz);
+  font-size: var(--t-lead);
+}
+.configurador {
+  padding: var(--e-6) var(--e-3);
+}

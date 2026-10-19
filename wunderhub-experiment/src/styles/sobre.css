@@ -1,0 +1,20 @@
+/* Quem cuida do seu site (seção 3.4). Frente: meio. Grafite Parede, colunas 3 a 9, só texto. */
+
+.sobre__texto {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--e-3);
+}
+.sobre__texto h2 {
+  margin-bottom: var(--e-2);
+}
+.sobre__texto p {
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
+}
+
+@media (min-width: 1024px) {
+  .sobre__texto {
+    grid-column: 3 / span 7;
+  }
+}

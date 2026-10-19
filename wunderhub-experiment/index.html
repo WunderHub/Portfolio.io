@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>WunderHub, sites para pequenos negócios por Kauê Ribeiro</title>
+  <meta name="description" content="Kauê Ribeiro cria landing pages, sites institucionais e lojas virtuais para pequenos negócios e profissionais. Fale pelo WhatsApp ou por e-mail.">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <meta name="author" content="Kauê Ribeiro">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="WunderHub">
+  <meta property="og:title" content="WunderHub, sites para pequenos negócios por Kauê Ribeiro">
+  <meta property="og:description" content="Kauê Ribeiro cria landing pages, sites institucionais e lojas virtuais para pequenos negócios e profissionais. Fale pelo WhatsApp ou por e-mail.">
+  <meta property="og:image" content="/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Letreiro WUNDERHUB em aço escovado sobre preto, com a frase: Sites para o seu negócio ser encontrado e chamado.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Antes do CSS: marca .js, liga o teto de 3s (vira modo estático se o main.js não chegar),
+       vigia a Anybody (900ms para .fonte-lenta) e marca .economia com saveData. -->
+  <script>
+  (function () {
+    var d = document.documentElement; d.classList.add('js');
+    window.__wh = { teto: setTimeout(function () { d.classList.remove('js'); d.classList.add('js-falhou'); }, 3000) };
+    if (navigator.connection && navigator.connection.saveData) d.classList.add('economia');
+    if (document.fonts && document.fonts.load) {
+      var ok = false;
+      document.fonts.load('900 100px "Anybody Letreiro"').then(function () { ok = true; d.classList.add('fonte-pronta'); });
+      setTimeout(function () { if (!ok) d.classList.add('fonte-lenta'); }, 900);
+    }
+  })();
+  </script>
+
+  <!-- Só a Anybody. No build o href vira a mesma URL com hash usada no fontes.css. -->
+  <link rel="preload" href="/src/assets/fonts/anybody-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+  <a class="pular" href="#trabalhos">Pular para os trabalhos</a>
+
+  <!--#include src/partials/header.html -->
+  <!--#include src/partials/menu.html -->
+
+  <main id="principal">
+    <!--#include src/partials/topo.html -->
+    <!--#include src/partials/trabalhos.html -->
+    <!--#include src/partials/servicos.html -->
+    <!--#include src/partials/processo.html -->
+    <!--#include src/partials/sobre.html -->
+    <!--#include src/partials/contato.html -->
+  </main>
+
+  <!--#include src/partials/rodape.html -->
+  <!--#include src/partials/barra-whatsapp.html -->
+</body>
+</html>

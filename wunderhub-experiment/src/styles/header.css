@@ -1,0 +1,134 @@
+/* Header sticky, menu mobile e barra de WhatsApp. Frente: topo.
+   Provisório da fundação: layout funcional; a frente topo refina e anima (seção 6). */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  height: var(--header-h);
+  background: var(--preto-acm);
+}
+.header__linha {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3);
+}
+.header__marca {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo-min);
+}
+.header__nav {
+  display: none;
+}
+.header__lista {
+  display: flex;
+  gap: var(--e-4);
+}
+.header__lista a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo-min);
+  color: var(--prata);
+  font-weight: 500;
+  font-size: var(--t-16);
+  text-decoration-color: transparent;
+}
+.header__lista a:hover,
+.header__lista a:focus-visible {
+  color: var(--prata-luz);
+  text-decoration-color: currentColor;
+}
+.header__acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--e-1);
+}
+.header__whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--alvo-min);
+  height: var(--alvo-min);
+  color: var(--prata-luz);
+}
+.header__menu {
+  padding-inline: var(--e-2);
+}
+@media (min-width: 768px) {
+  .header__nav {
+    display: block;
+  }
+  .header__acoes {
+    display: none;
+  }
+}
+
+/* ---------- menu mobile (dialog em tela cheia) ---------- */
+.menu {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0 var(--margem) calc(var(--e-4) + env(safe-area-inset-bottom));
+  border: 0;
+  overflow-y: auto;
+}
+.menu[open] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-3);
+}
+.menu::backdrop {
+  background: var(--preto-acm);
+}
+.menu__linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--header-h);
+}
+.menu__destinos a {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  font-family: var(--fonte-estrutura);
+  font-stretch: 150%;
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--prata-luz);
+  text-decoration-color: transparent;
+}
+.menu__destinos a:hover,
+.menu__destinos a:focus-visible {
+  text-decoration-color: currentColor;
+}
+.menu__email {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo-min);
+}
+
+/* ---------- barra de WhatsApp (mobile) ---------- */
+.barra-whatsapp {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: var(--z-barra-whatsapp);
+  padding: 0 var(--margem) env(safe-area-inset-bottom);
+  background: var(--preto-acm);
+}
+.barra-whatsapp .placa {
+  --h: 48px;
+}
+@media (min-width: 768px) {
+  .barra-whatsapp {
+    display: none !important;
+  }
+}

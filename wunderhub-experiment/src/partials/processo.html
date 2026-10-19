@@ -1,0 +1,66 @@
+<!-- Como trabalho, sobre a Chapa (seções 3.4 e 5.3). Frente: meio.
+     Sem JS: sem trilho nem palavra grande (controles hidden); a lista com as cinco etapas fica sempre visível. -->
+<section class="processo secao superficie-chapa" id="processo" aria-labelledby="titulo-processo">
+  <div class="conteudo">
+    <div class="processo__cabeca">
+      <h2 id="titulo-processo">Como trabalho</h2>
+      <p>O projeto ganha peso aos poucos. Escolha uma etapa para ver o que muda nela.</p>
+    </div>
+
+    <div class="processo__controles" data-processo-controles hidden>
+      <div class="processo__palavra" aria-hidden="true">SEU NEGÓCIO</div>
+      <label class="processo__rotulo" for="etapa">Etapa do projeto</label>
+      <input class="processo__trilho" type="range" id="etapa" min="1" max="5" step="1" value="1" aria-valuetext="Etapa 1 de 5: Conversa">
+    </div>
+
+    <ol class="etapas" role="list">
+      <li class="etapa" data-etapa="1">
+        <h3 class="etapa__nome"><span class="etapa__numero">1</span> Conversa</h3>
+        <span class="etapa__mini" aria-hidden="true">SEU NEGÓCIO</span>
+        <dl class="etapa__detalhes">
+          <div><dt>O que eu faço</dt><dd>Pergunto o que você vende, para quem e o que a pessoa precisa conseguir fazer no site.</dd></div>
+          <div><dt>O que você recebe</dt><dd>Um resumo escrito com o objetivo do site e o público.</dd></div>
+          <div><dt>O que preciso de você</dt><dd>Uma conversa, por chamada ou por mensagem, e exemplos de sites que você gosta ou não gosta.</dd></div>
+        </dl>
+      </li>
+      <li class="etapa" data-etapa="2">
+        <h3 class="etapa__nome"><span class="etapa__numero">2</span> Mapa</h3>
+        <span class="etapa__mini" aria-hidden="true">SEU NEGÓCIO</span>
+        <dl class="etapa__detalhes">
+          <div><dt>O que eu faço</dt><dd>Organizo o conteúdo: quais páginas, em que ordem e que pergunta cada uma responde.</dd></div>
+          <div><dt>O que você recebe</dt><dd>O mapa das páginas e a lista do que falta, como textos, fotos e preços.</dd></div>
+          <div><dt>O que preciso de você</dt><dd>Que você revise o mapa e me mande o material da lista.</dd></div>
+        </dl>
+      </li>
+      <li class="etapa" data-etapa="3">
+        <h3 class="etapa__nome"><span class="etapa__numero">3</span> Desenho</h3>
+        <span class="etapa__mini" aria-hidden="true">SEU NEGÓCIO</span>
+        <dl class="etapa__detalhes">
+          <div><dt>O que eu faço</dt><dd>Desenho as telas começando pelo celular, com a cara do seu negócio.</dd></div>
+          <div><dt>O que você recebe</dt><dd>Uma prévia navegável para aprovar ou pedir ajustes.</dd></div>
+          <div><dt>O que preciso de você</dt><dd>Seus comentários sobre a prévia, de uma vez só sempre que der.</dd></div>
+        </dl>
+      </li>
+      <li class="etapa" data-etapa="4">
+        <h3 class="etapa__nome"><span class="etapa__numero">4</span> Construção</h3>
+        <span class="etapa__mini" aria-hidden="true">SEU NEGÓCIO</span>
+        <dl class="etapa__detalhes">
+          <div><dt>O que eu faço</dt><dd>Escrevo o código, testo em telas de vários tamanhos e confiro velocidade e acessibilidade.</dd></div>
+          <div><dt>O que você recebe</dt><dd>O site completo num endereço de teste.</dd></div>
+          <div><dt>O que preciso de você</dt><dd>Uma última conferência de textos, preços e contatos.</dd></div>
+        </dl>
+      </li>
+      <li class="etapa" data-etapa="5">
+        <h3 class="etapa__nome"><span class="etapa__numero">5</span> No ar</h3>
+        <span class="etapa__mini" aria-hidden="true">SEU NEGÓCIO</span>
+        <dl class="etapa__detalhes">
+          <div><dt>O que eu faço</dt><dd>Publico o site e confiro com você se o WhatsApp e o e-mail estão funcionando.</dd></div>
+          <div><dt>O que você recebe</dt><dd>O site publicado no endereço combinado.</dd></div>
+          <div><dt>O que preciso de você</dt><dd>Acesso ao domínio, se você já tiver um.</dd></div>
+        </dl>
+      </li>
+    </ol>
+
+    <p class="processo__final">Você fala comigo em todas as etapas. O prazo de cada projeto a gente combina na primeira conversa.</p>
+  </div>
+</section>

@@ -1,0 +1,334 @@
+{
+  "gerado": "2026-10-19T02:13:14.487Z",
+  "gerador": "scripts/metricas-letreiro.mjs",
+  "ambiente": "Chromium 141.0.7390.37, Playwright 1.56.1, @fontsource-variable/anybody@5.3.0",
+  "angulo": {
+    "graus": 16,
+    "tan": 0.2867,
+    "vetorCorte": [
+      0.961,
+      0.276
+    ],
+    "perpendicular": [
+      -0.276,
+      0.961
+    ]
+  },
+  "fonte": {
+    "ascentEm": 0.795,
+    "descentEm": 0.24,
+    "versalEm": 0.675,
+    "versal140Em": 0.675
+  },
+  "linha": {
+    "alturaEm": 0.74,
+    "caixaMedidaEm": 0.74,
+    "baseNaturalEm": 0.647,
+    "versalTopoNaturalEm": -0.028,
+    "desvioEm": 0.0605,
+    "baseEm": 0.7075,
+    "versalTopoEm": 0.0325,
+    "centroVersalEm": 0.37,
+    "nota": "Com line-height .74em a versal da Anybody fica alta (topo acima da caixa). Toda linha de letras do letreiro recebe padding-top = desvioEm (atributo data-linha no CSS gerado); as coordenadas y do corte contam do topo da caixa de .74em com a versal centrada."
+  },
+  "desktop": {
+    "modo": "linha",
+    "wdth": 50,
+    "wght": 900,
+    "wghtMin": 140,
+    "wghtEstatico": 390,
+    "larguraEm": 3.5756,
+    "palavraComKerningEm": 3.5755,
+    "letras900Em": {
+      "W": 0.609,
+      "U": 0.3725,
+      "N": 0.4805,
+      "D": 0.3705,
+      "E": 0.251,
+      "R": 0.376,
+      "H": 0.3715,
+      "B": 0.372
+    },
+    "letras140Em": {
+      "W": 0.1885,
+      "U": 0.111,
+      "N": 0.1275,
+      "D": 0.0975,
+      "E": 0.0815,
+      "R": 0.1025,
+      "H": 0.1035,
+      "B": 0.101
+    },
+    "vaos": [
+      {
+        "indice": 0,
+        "letras": "WUN",
+        "wdth": 50,
+        "xEm": 0,
+        "celulasEm": [
+          0.609,
+          0.3725,
+          0.4805
+        ],
+        "larguraEm": 1.462,
+        "centroYEm": 0.37,
+        "y0Em": 0.1604,
+        "y1Em": 0.5796,
+        "quedaEm": 0.4192,
+        "cruzaVersalTopoPct": -30.5,
+        "cruzaVersalBasePct": 130.5,
+        "poligonos": {
+          "cima": "polygon(0% 0em, 100% 0em, 100% 0.5796em, 0% 0.1604em)",
+          "baixo": "polygon(100% 0.5796em, 100% 0.74em, 0% 0.74em, 0% 0.1604em)"
+        }
+      },
+      {
+        "indice": 1,
+        "letras": "DER",
+        "wdth": 50,
+        "xEm": 1.462,
+        "celulasEm": [
+          0.3705,
+          0.251,
+          0.376
+        ],
+        "larguraEm": 0.9975,
+        "centroYEm": 0.37,
+        "y0Em": 0.227,
+        "y1Em": 0.513,
+        "quedaEm": 0.286,
+        "cruzaVersalTopoPct": -67.99,
+        "cruzaVersalBasePct": 167.99,
+        "poligonos": {
+          "cima": "polygon(0% 0em, 100% 0em, 100% 0.513em, 0% 0.227em)",
+          "baixo": "polygon(100% 0.513em, 100% 0.74em, 0% 0.74em, 0% 0.227em)"
+        }
+      },
+      {
+        "indice": 2,
+        "letras": "HUB",
+        "wdth": 50,
+        "xEm": 2.4596,
+        "celulasEm": [
+          0.3715,
+          0.3725,
+          0.372
+        ],
+        "larguraEm": 1.116,
+        "centroYEm": 0.37,
+        "y0Em": 0.21,
+        "y1Em": 0.53,
+        "quedaEm": 0.32,
+        "cruzaVersalTopoPct": -55.46,
+        "cruzaVersalBasePct": 155.46,
+        "poligonos": {
+          "cima": "polygon(0% 0em, 100% 0em, 100% 0.53em, 0% 0.21em)",
+          "baixo": "polygon(100% 0.53em, 100% 0.74em, 0% 0.74em, 0% 0.21em)"
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "modo": "torre",
+    "wght": 900,
+    "wghtMin": 220,
+    "wghtEstatico": 440,
+    "larguraAlvoEm": 3,
+    "andares": [
+      {
+        "indice": 0,
+        "letras": "WUN",
+        "wdth": 110.4,
+        "wdthExato": 110.5,
+        "xEm": 0,
+        "somaCelulasAntesEm": 2.994,
+        "escala": 1.002,
+        "celulasEm": [
+          1.2144,
+          0.8347,
+          0.9509
+        ],
+        "folgaMinima220Em": 0.1457,
+        "larguraEm": 3,
+        "centroYEm": 0.37,
+        "y0Em": -0.0601,
+        "y1Em": 0.8001,
+        "quedaEm": 0.8602,
+        "cruzaVersalTopoPct": 10.77,
+        "cruzaVersalBasePct": 89.23,
+        "poligonos": {
+          "cima": "polygon(6.99% 0em, 100% 0em, 100% 0.74em, 93.01% 0.74em)",
+          "baixo": "polygon(0% 0em, 6.99% 0em, 93.01% 0.74em, 0% 0.74em)"
+        }
+      },
+      {
+        "indice": 1,
+        "letras": "DER",
+        "wdth": 144.4,
+        "wdthExato": 144.5,
+        "xEm": 0,
+        "somaCelulasAntesEm": 2.9985,
+        "escala": 1.0005,
+        "celulasEm": [
+          1.0445,
+          0.9215,
+          1.034
+        ],
+        "folgaMinima220Em": 0.0414,
+        "larguraEm": 3,
+        "centroYEm": 0.37,
+        "y0Em": -0.0601,
+        "y1Em": 0.8001,
+        "quedaEm": 0.8602,
+        "cruzaVersalTopoPct": 10.77,
+        "cruzaVersalBasePct": 89.23,
+        "poligonos": {
+          "cima": "polygon(6.99% 0em, 100% 0em, 100% 0.74em, 93.01% 0.74em)",
+          "baixo": "polygon(0% 0em, 6.99% 0em, 93.01% 0.74em, 0% 0.74em)"
+        }
+      },
+      {
+        "indice": 2,
+        "letras": "HUB",
+        "wdth": 133.9,
+        "wdthExato": 134,
+        "xEm": 0,
+        "somaCelulasAntesEm": 2.9965,
+        "escala": 1.0012,
+        "celulasEm": [
+          1.0062,
+          1.0137,
+          0.9801
+        ],
+        "folgaMinima220Em": 0.1102,
+        "larguraEm": 3,
+        "centroYEm": 0.37,
+        "y0Em": -0.0601,
+        "y1Em": 0.8001,
+        "quedaEm": 0.8602,
+        "cruzaVersalTopoPct": 10.77,
+        "cruzaVersalBasePct": 89.23,
+        "poligonos": {
+          "cima": "polygon(6.99% 0em, 100% 0em, 100% 0.74em, 93.01% 0.74em)",
+          "baixo": "polygon(0% 0em, 6.99% 0em, 93.01% 0.74em, 0% 0.74em)"
+        }
+      }
+    ]
+  },
+  "nomes": {
+    "codea": {
+      "texto": "Côdea",
+      "wdth": 150,
+      "wght": 850,
+      "larguraEm": 5.3625,
+      "lineHeight": 1,
+      "baseEm": 0.777,
+      "versalEm": 0.675,
+      "centroYEm": 0.4395,
+      "tintaSobeEm": 0.785,
+      "tintaDesceEm": 0.009,
+      "poligonos": {
+        "cima": "polygon(-1.34% -0.35em, 104% -0.35em, 104% 1.2698em)",
+        "baixo": "polygon(-4% -0.35em, -1.34% -0.35em, 104% 1.2698em, 104% 1.35em, -4% 1.35em)",
+        "aresta": "polygon(-4% calc(-0.3908em + -2px), 104% calc(1.2698em + -2px), 104% calc(1.2698em + 0px), -4% calc(-0.3908em + 0px))",
+        "retorno": "polygon(-4% calc(-0.3908em + 0px), 104% calc(1.2698em + 0px), 104% calc(1.2698em + 2px), -4% calc(-0.3908em + 2px))"
+      }
+    },
+    "junco": {
+      "texto": "Junco",
+      "wdth": 62,
+      "wght": 400,
+      "larguraEm": 1.513,
+      "lineHeight": 1,
+      "baseEm": 0.777,
+      "versalEm": 0.675,
+      "centroYEm": 0.4395,
+      "tintaSobeEm": 0.675,
+      "tintaDesceEm": 0.005,
+      "poligonos": {
+        "cima": "polygon(-4% -0.35em, 104% -0.35em, 104% 0.6738em, -4% 0.2052em)",
+        "baixo": "polygon(104% 0.6738em, 104% 1.35em, -4% 1.35em, -4% 0.2052em)",
+        "aresta": "polygon(-4% calc(0.2052em + -2px), 104% calc(0.6738em + -2px), 104% calc(0.6738em + 0px), -4% calc(0.2052em + 0px))",
+        "retorno": "polygon(-4% calc(0.2052em + 0px), 104% calc(0.6738em + 0px), 104% calc(0.6738em + 2px), -4% calc(0.2052em + 2px))"
+      }
+    },
+    "louca-torta": {
+      "texto": "Louça Torta",
+      "wdth": 125,
+      "wght": 250,
+      "larguraEm": 7.3208,
+      "lineHeight": 1,
+      "baseEm": 0.777,
+      "versalEm": 0.675,
+      "centroYEm": 0.4395,
+      "tintaSobeEm": 0.727,
+      "tintaDesceEm": 0.131,
+      "poligonos": {
+        "cima": "polygon(12.39% -0.35em, 104% -0.35em, 104% 1.35em, 93.37% 1.35em)",
+        "baixo": "polygon(-4% -0.35em, 12.39% -0.35em, 93.37% 1.35em, -4% 1.35em)",
+        "aresta": "polygon(-4% calc(-0.6941em + -2px), 104% calc(1.5731em + -2px), 104% calc(1.5731em + 0px), -4% calc(-0.6941em + 0px))",
+        "retorno": "polygon(-4% calc(-0.6941em + 0px), 104% calc(1.5731em + 0px), 104% calc(1.5731em + 2px), -4% calc(-0.6941em + 2px))"
+      }
+    }
+  },
+  "processo": {
+    "estados": [
+      {
+        "etapa": 1,
+        "wght": 100,
+        "wdth": 50,
+        "seuNegocioEm": 0.8965,
+        "seuEm": 0.2545,
+        "negocioEm": 0.586
+      },
+      {
+        "etapa": 2,
+        "wght": 300,
+        "wdth": 50,
+        "seuNegocioEm": 1.5085,
+        "seuEm": 0.43,
+        "negocioEm": 1.012
+      },
+      {
+        "etapa": 3,
+        "wght": 560,
+        "wdth": 62,
+        "seuNegocioEm": 3.332,
+        "seuEm": 0.963,
+        "negocioEm": 2.247
+      },
+      {
+        "etapa": 4,
+        "wght": 850,
+        "wdth": 62,
+        "seuNegocioEm": 4.2305,
+        "seuEm": 1.2205,
+        "negocioEm": 2.8735
+      },
+      {
+        "etapa": 5,
+        "wght": 900,
+        "wdth": 150,
+        "seuNegocioEm": 10.835,
+        "seuEm": 3.199,
+        "negocioEm": 7.211
+      }
+    ],
+    "caixa": {
+      "alturaEm": 0.74,
+      "baseNaturalEm": 0.647,
+      "desvioEm": 0.0605
+    }
+  },
+  "larguras": {
+    "wordmark": 10.311,
+    "wordmarkComEspaco": 10.401,
+    "h1PrimeiraParte": 8.5051,
+    "h2Porta": 12.0291,
+    "formatoLanding": 11.235,
+    "formatoSite": 2.7375,
+    "formatoInstitucional": 8.5933,
+    "formatoLoja": 3.1627,
+    "menuComoTrabalho": 12.735
+  }
+}

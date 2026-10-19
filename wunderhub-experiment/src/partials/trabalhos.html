@@ -1,0 +1,91 @@
+<!-- Trabalhos: a vitrine (seções 3.4, 5.2, 8 e 9.5). Frente: trabalhos.
+     Sem JS: todos os painéis abertos, botões "Ver decisões" ocultos (hidden), links de demonstração funcionando.
+     Provisório da fundação: estrutura e textos finais; capturas são placeholders até `npm run capturas`. -->
+<section class="trabalhos secao" id="trabalhos" aria-labelledby="titulo-trabalhos">
+  <div class="conteudo">
+    <div class="trabalhos__cabeca">
+      <div class="trabalhos__intro">
+        <h2 id="titulo-trabalhos">Três negócios fictícios, três demonstrações navegáveis</h2>
+        <p>Criei estas marcas para mostrar decisões diferentes de estrutura, texto e interação. Nenhuma delas é cliente real, e cada demonstração avisa isso na própria página.</p>
+      </div>
+      <figure class="filme" data-filme hidden>
+        <button class="filme__abrir" type="button">
+          <img src="/media/showreel-poster-640.webp" srcset="/media/showreel-poster-640.webp 640w, /media/showreel-poster-1280.webp 1280w" sizes="(min-width: 1024px) 30vw, 100vw" width="1280" height="720" alt="" loading="lazy" decoding="async">
+          <span class="filme__rotulo">Assistir ao filme</span>
+        </button>
+        <figcaption>Filme da fachada, 18 segundos, sem som. Mostra o letreiro abrindo, as três demonstrações e o contato.</figcaption>
+      </figure>
+    </div>
+
+    <ol class="conceitos" role="list">
+      <li class="conceito" id="conceito-codea" data-conceito="codea">
+        <h3 class="conceito__nome" data-nome="codea">Côdea</h3>
+        <p class="conceito__tipo">Padaria de bairro. Landing page de uma página.</p>
+        <div class="conceito__acoes">
+          <a class="botao conceito__abrir" href="conceitos/codea/">Abrir demonstração</a>
+          <button class="botao conceito__decisoes-botao" type="button" aria-expanded="true" aria-controls="painel-codea" aria-label="Ver decisões de Côdea" hidden>Ver decisões</button>
+        </div>
+        <div class="conceito__painel" id="painel-codea">
+          <div class="conceito__capturas">
+            <img class="conceito__desktop" src="/src/assets/capturas/codea-desktop-960.webp" srcset="/src/assets/capturas/codea-desktop-480.webp 480w, /src/assets/capturas/codea-desktop-960.webp 960w, /src/assets/capturas/codea-desktop-1440.webp 1440w" sizes="(min-width: 1024px) 58vw, 100vw" width="1440" height="900" alt="Página inicial de Côdea no computador" loading="lazy" decoding="async">
+            <img class="conceito__celular" src="/src/assets/capturas/codea-celular-390.webp" srcset="/src/assets/capturas/codea-celular-390.webp 390w, /src/assets/capturas/codea-celular-780.webp 780w" sizes="(min-width: 1024px) 13vw, 100vw" width="390" height="844" alt="Página inicial de Côdea no celular" loading="lazy" decoding="async">
+          </div>
+          <div class="conceito__texto">
+            <p class="conceito__objetivo">Fazer quem passa ver o que saiu do forno hoje e encomendar para retirar.</p>
+            <ol class="conceito__decisoes" role="list">
+              <li><span class="conceito__marcador" aria-hidden="true">A</span><span>Horário e aviso de aberto ou fechado no topo, porque a primeira dúvida de quem passa é se a padaria está aberta.</span></li>
+              <li><span class="conceito__marcador" aria-hidden="true">B</span><span>Cardápio do dia com filtros e preço visível, para escolher sem precisar perguntar.</span></li>
+              <li><span class="conceito__marcador" aria-hidden="true">C</span><span>A encomenda monta a mensagem pronta, então o pedido chega organizado para quem atende.</span></li>
+            </ol>
+          </div>
+        </div>
+      </li>
+
+      <li class="conceito" id="conceito-junco" data-conceito="junco">
+        <h3 class="conceito__nome" data-nome="junco">Junco</h3>
+        <p class="conceito__tipo">Clínica de fisioterapia. Site institucional com quatro páginas.</p>
+        <div class="conceito__acoes">
+          <a class="botao conceito__abrir" href="conceitos/junco/">Abrir demonstração</a>
+          <button class="botao conceito__decisoes-botao" type="button" aria-expanded="true" aria-controls="painel-junco" aria-label="Ver decisões de Junco" hidden>Ver decisões</button>
+        </div>
+        <div class="conceito__painel" id="painel-junco">
+          <div class="conceito__capturas">
+            <img class="conceito__desktop" src="/src/assets/capturas/junco-desktop-960.webp" srcset="/src/assets/capturas/junco-desktop-480.webp 480w, /src/assets/capturas/junco-desktop-960.webp 960w, /src/assets/capturas/junco-desktop-1440.webp 1440w" sizes="(min-width: 1024px) 58vw, 100vw" width="1440" height="900" alt="Página inicial da Junco Fisioterapia no computador" loading="lazy" decoding="async">
+            <img class="conceito__celular" src="/src/assets/capturas/junco-celular-390.webp" srcset="/src/assets/capturas/junco-celular-390.webp 390w, /src/assets/capturas/junco-celular-780.webp 780w" sizes="(min-width: 1024px) 13vw, 100vw" width="390" height="844" alt="Página inicial da Junco Fisioterapia no celular" loading="lazy" decoding="async">
+          </div>
+          <div class="conceito__texto">
+            <p class="conceito__objetivo">Explicar os tratamentos com calma e levar a pessoa a pedir a primeira avaliação.</p>
+            <ol class="conceito__decisoes" role="list">
+              <li><span class="conceito__marcador" aria-hidden="true">A</span><span>A primeira pergunta do site é o que a pessoa sente, como dor nas costas ou volta ao treino. O nome técnico do tratamento aparece depois dessa escolha.</span></li>
+              <li><span class="conceito__marcador" aria-hidden="true">B</span><span>Uma página só para explicar a primeira consulta, que é onde aparecem as dúvidas.</span></li>
+              <li><span class="conceito__marcador" aria-hidden="true">C</span><span>Pedido de horário em quatro passos curtos, com resumo antes de enviar.</span></li>
+            </ol>
+          </div>
+        </div>
+      </li>
+
+      <li class="conceito" id="conceito-louca-torta" data-conceito="louca-torta">
+        <h3 class="conceito__nome" data-nome="louca-torta">Louça Torta</h3>
+        <p class="conceito__tipo">Cerâmica feita à mão. Loja virtual.</p>
+        <div class="conceito__acoes">
+          <a class="botao conceito__abrir" href="conceitos/louca-torta/">Abrir demonstração</a>
+          <button class="botao conceito__decisoes-botao" type="button" aria-expanded="true" aria-controls="painel-louca-torta" aria-label="Ver decisões de Louça Torta" hidden>Ver decisões</button>
+        </div>
+        <div class="conceito__painel" id="painel-louca-torta">
+          <div class="conceito__capturas">
+            <img class="conceito__desktop" src="/src/assets/capturas/louca-torta-desktop-960.webp" srcset="/src/assets/capturas/louca-torta-desktop-480.webp 480w, /src/assets/capturas/louca-torta-desktop-960.webp 960w, /src/assets/capturas/louca-torta-desktop-1440.webp 1440w" sizes="(min-width: 1024px) 58vw, 100vw" width="1440" height="900" alt="Vitrine da Louça Torta no computador" loading="lazy" decoding="async">
+            <img class="conceito__celular" src="/src/assets/capturas/louca-torta-celular-390.webp" srcset="/src/assets/capturas/louca-torta-celular-390.webp 390w, /src/assets/capturas/louca-torta-celular-780.webp 780w" sizes="(min-width: 1024px) 13vw, 100vw" width="390" height="844" alt="Vitrine da Louça Torta no celular" loading="lazy" decoding="async">
+          </div>
+          <div class="conceito__texto">
+            <p class="conceito__objetivo">Mostrar cada peça de perto e deixar a compra simples.</p>
+            <ol class="conceito__decisoes" role="list">
+              <li><span class="conceito__marcador" aria-hidden="true">A</span><span>Filtros por tipo de peça, cor do esmalte e pronta entrega.</span></li>
+              <li><span class="conceito__marcador" aria-hidden="true">B</span><span>Na página do produto, trocar o esmalte troca a foto, para ver a cor antes de comprar.</span></li>
+              <li><span class="conceito__marcador" aria-hidden="true">C</span><span>Sacola lateral com subtotal e prazo, sem tirar a pessoa da página.</span></li>
+            </ol>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>

@@ -1,0 +1,362 @@
+/* Base: reset, tipografia, foco (2.9), scroll-padding, skip link, utilitários e componentes comuns
+   (.placa, .botao, superfícies, aço escovado). Componentes de seção ficam no CSS de cada frente. */
+
+/* ---------- reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  color-scheme: dark;
+  background: var(--preto-acm);
+  color: var(--prata);
+  font-family: var(--fonte-leitura);
+  font-size: 100%;
+  /* foco e âncoras param abaixo do header sticky (WCAG 2.4.11) */
+  scroll-padding-top: calc(var(--header-h) + 16px);
+}
+/* barra de WhatsApp visível no mobile (barra-whatsapp.js põe e tira a classe) */
+html.com-barra {
+  scroll-padding-bottom: calc(48px + env(safe-area-inset-bottom) + 16px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+body {
+  min-height: 100svh;
+  font-size: var(--t-corpo);
+  line-height: var(--lh-corpo);
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-wrap: break-word;
+}
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+img,
+video {
+  height: auto;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
+}
+[hidden] {
+  display: none !important;
+}
+dialog {
+  color: inherit;
+}
+
+/* ---------- tipografia ---------- */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--fonte-estrutura);
+  color: var(--prata-luz);
+  font-weight: 800;
+  font-stretch: 62%;
+  text-wrap: balance;
+}
+h1 {
+  font-size: var(--t-h1);
+  line-height: var(--lh-titulo);
+  letter-spacing: -.005em;
+}
+h2 {
+  font-size: var(--t-h2);
+  line-height: var(--lh-h2);
+}
+h3 {
+  font-size: var(--t-h3);
+  line-height: 1.05;
+}
+p,
+dd {
+  max-width: var(--medida);
+  text-wrap: pretty;
+}
+.lead {
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--medida-lead);
+}
+strong {
+  font-weight: 650;
+}
+
+/* Links: hover e foco têm o mesmo efeito (sublinhado 1px → 2px, Prata → Prata Luz). */
+a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .22em;
+  transition:
+    color var(--dur-toque) var(--ease-resposta),
+    text-decoration-thickness var(--dur-toque) var(--ease-resposta);
+}
+a:hover,
+a:focus-visible {
+  color: var(--prata-luz);
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- foco (2.9) ---------- */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid var(--foco-contorno);
+  outline-offset: 3px;
+  /* folga na cor da superfície, depois o anel vermelho por fora do contorno claro */
+  box-shadow: 0 0 0 3px var(--foco-folga), 0 0 0 7px var(--foco-anel);
+}
+/* Elementos que recebem foco por script (títulos com tabindex="-1") não ganham anel */
+[tabindex='-1']:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ---------- superfícies ---------- */
+.superficie-preto {
+  background: var(--preto-acm);
+  color: var(--prata);
+  --foco-contorno: var(--prata-luz);
+  --foco-anel: var(--vermelho-sinal);
+  --foco-folga: var(--preto-acm);
+}
+.superficie-grafite {
+  background: var(--grafite-parede);
+  color: var(--prata); /* Prata Sombra é proibida como texto aqui (3,87:1) */
+  --foco-contorno: var(--prata-luz);
+  --foco-anel: var(--vermelho-sinal);
+  --foco-folga: var(--grafite-parede);
+}
+/* Chapa do processo: todas as paradas ≥ #C3C8CE; preto ≥ 12,47:1 em qualquer ponto */
+.superficie-chapa {
+  background: var(--grao-chapa), var(--chapa-escovada);
+  background-size: 2400px 128px, 100% 100%;
+  background-blend-mode: soft-light, normal;
+  background-color: var(--chapa);
+  color: var(--preto-acm);
+  --foco-contorno: #000;
+  --foco-anel: var(--vermelho-acrilico);
+  --foco-folga: var(--chapa);
+}
+.superficie-chapa h1,
+.superficie-chapa h2,
+.superficie-chapa h3 {
+  color: var(--preto-acm);
+}
+
+/* Aço escovado em texto (2.2): decorativo, sempre dentro de aria-hidden. */
+.aco-escovado {
+  color: transparent;
+  background: var(--especular), var(--grao-letreiro), var(--prata-escovada);
+  background-size: 100% 100%, 2400px 128px, 100% 100%;
+  background-blend-mode: normal, soft-light, normal;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ---------- layout ---------- */
+.conteudo {
+  width: min(100% - 2 * var(--margem), var(--conteudo-max));
+  margin-inline: auto;
+}
+.grade {
+  display: grid;
+  grid-template-columns: repeat(var(--colunas), minmax(0, 1fr));
+  column-gap: var(--gutter);
+}
+.secao {
+  padding-block: var(--secao-y);
+}
+
+/* ---------- skip link ---------- */
+.pular {
+  position: absolute;
+  z-index: var(--z-pular);
+  left: var(--margem);
+  top: 8px;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo-min);
+  padding: 0 var(--e-3);
+  background: var(--prata-luz);
+  color: var(--preto-acm);
+  font-weight: 650;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 16px));
+}
+.pular:focus,
+.pular:focus-visible {
+  transform: none;
+  color: var(--preto-acm);
+}
+
+/* ---------- placa (2.6): link/botão vermelho com a borda direita a 16° ----------
+   A placa é um ::before decorativo atrás do texto; o foco fica no próprio elemento (sem clip). */
+.placa {
+  --h: var(--alvo-primario);
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-1);
+  min-height: var(--h);
+  padding: 0 calc(var(--e-3) + var(--h) * var(--corte-tan)) 0 var(--e-3);
+  color: var(--branco);
+  font-family: var(--fonte-leitura);
+  font-size: var(--t-16);
+  font-weight: 650;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: transform var(--dur-toque) var(--ease-resposta);
+}
+.placa::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--vermelho-acrilico);
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--h) * var(--corte-tan)) 100%, 0 100%);
+}
+.placa:hover,
+.placa:focus-visible {
+  color: var(--branco);
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: .25em;
+}
+/* pressionada: 2px na perpendicular do corte */
+.placa:active {
+  transform: translate(-.55px, 1.92px);
+}
+.placa--compacta {
+  --h: var(--alvo-min);
+}
+/* etiqueta (não interativa): "No ar", estados */
+.placa--etiqueta {
+  --h: 32px;
+  padding-left: 12px;
+  padding-right: calc(12px + var(--h) * var(--corte-tan));
+  font-size: var(--t-14);
+}
+/* largura total (botões primários no mobile) */
+.placa--total {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+/* ---------- botão secundário (Ver decisões, Copiar e-mail, Fechar, Menu) ---------- */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-1);
+  min-height: var(--alvo-min);
+  min-width: var(--alvo-min);
+  padding: 0 var(--e-3);
+  border: 1px solid var(--prata-sombra);
+  color: var(--prata-luz);
+  font-family: var(--fonte-leitura);
+  font-size: var(--t-16);
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  transition:
+    border-color var(--dur-toque) var(--ease-resposta),
+    color var(--dur-toque) var(--ease-resposta);
+}
+.superficie-grafite .botao {
+  border-color: var(--prata); /* Prata Sombra sobre grafite fica abaixo de 3:1 para componente */
+}
+.botao:hover,
+.botao:focus-visible {
+  border-color: var(--prata-luz);
+  color: var(--prata-luz);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .25em;
+}
+.botao:active {
+  transform: translate(-.55px, 1.92px);
+}
+
+/* ---------- utilitários ---------- */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+/* Só aparece com JS (o conteúdo essencial nunca depende disto) */
+html:not(.js) .so-js {
+  display: none !important;
+}
+/* Só aparece sem JS */
+html.js .sem-js {
+  display: none !important;
+}
+.wordmark {
+  font-family: var(--fonte-estrutura);
+  font-stretch: 150%;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+  color: var(--prata-luz);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ---------- movimento reduzido: transições a 0ms (espelha MotionGlobalConfig.skipAnimations) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,140 @@
+/* Trabalhos: a vitrine (seções 4, 5.2 e 8). Frente: trabalhos.
+   Provisório da fundação: estado sem JS (todos os painéis abertos), nomes nos eixos de cada conceito,
+   quadro de captura com chanfro de 16°, marcadores A/B/C. Sem nome partido nem animação ainda. */
+
+.trabalhos {
+  container-type: inline-size;
+}
+.trabalhos__cabeca {
+  display: grid;
+  gap: var(--e-4);
+  margin-bottom: var(--e-8);
+}
+.trabalhos__intro {
+  display: grid;
+  gap: var(--e-3);
+}
+.trabalhos__intro h2 {
+  max-width: 24ch;
+}
+
+.conceitos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-12);
+}
+.conceito {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e-2);
+  padding-top: var(--e-4);
+  border-top: 1px solid var(--grafite-fio);
+}
+.conceito__nome {
+  font-stretch: calc(var(--nome-wdth) * 1%);
+  font-weight: var(--nome-wght);
+  /* largura útil = largura da seção menos as margens */
+  font-size: min(7.5rem, (100cqi - 2 * var(--margem)) / var(--largura-em));
+  line-height: 1;
+  white-space: nowrap;
+}
+.conceito__tipo {
+  color: var(--prata);
+  font-size: var(--t-lead);
+}
+.conceito__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-1) var(--e-2);
+}
+.conceito__painel {
+  display: grid;
+  gap: var(--e-4);
+  margin-top: var(--e-3);
+}
+
+/* Quadro de captura: canto superior direito chanfrado por uma reta de 16° (estático). */
+.conceito__capturas {
+  position: relative;
+}
+.conceito__desktop,
+.conceito__celular {
+  --c: clamp(32px, 12%, 96px);
+  width: 100%;
+  background: var(--grafite-parede);
+  clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% calc(var(--c) * .2867), 100% 100%, 0 100%);
+}
+.conceito__desktop {
+  display: none;
+}
+.conceito__celular {
+  max-width: 390px;
+}
+
+.conceito__objetivo {
+  color: var(--prata-luz);
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--medida-lead);
+}
+.conceito__decisoes {
+  display: grid;
+  gap: var(--e-2);
+  margin-top: var(--e-3);
+}
+.conceito__decisoes li {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: var(--e-2);
+  align-items: start;
+}
+.conceito__marcador {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: var(--vermelho-acrilico);
+  color: var(--branco);
+  font-weight: 650;
+  font-size: var(--t-16);
+  line-height: 1;
+}
+
+@media (min-width: 1024px) {
+  .trabalhos__cabeca {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: end;
+  }
+  .trabalhos__intro {
+    grid-column: 1 / span 8;
+  }
+  .filme {
+    grid-column: 9 / span 4;
+  }
+  .conceito__nome {
+    font-size: var(--t-nome);
+  }
+  .conceito__painel {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+  .conceito__capturas {
+    grid-column: 1 / span 8;
+  }
+  .conceito__texto {
+    grid-column: 9 / span 4;
+  }
+  .conceito__desktop {
+    display: block;
+  }
+  /* celular sobreposto no canto inferior direito, 22% da largura do quadro */
+  .conceito__celular {
+    position: absolute;
+    right: -4%;
+    bottom: -8%;
+    width: 22%;
+    --c: 16px;
+    outline: 1px solid var(--preto-acm);
+  }
+}

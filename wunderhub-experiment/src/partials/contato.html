@@ -1,0 +1,25 @@
+<!-- Contato: a Porta e o configurador (seções 3.4 e 5.4). Frente: contato.
+     Sem JS: porta aberta, links de WhatsApp e e-mail funcionando; "Copiar e-mail" e o configurador ficam hidden
+     até os módulos carregarem. Provisório da fundação: sem as folhas do letreiro. -->
+<section class="contato secao" id="contato" aria-labelledby="titulo-contato">
+  <div class="porta">
+    <div class="porta__miolo conteudo">
+      <h2 id="titulo-contato">Vamos conversar sobre o seu site</h2>
+      <p>Me conte o que você vende e o que precisa no site. Respondo pelo WhatsApp ou por e-mail.</p>
+      <div class="porta__whatsapp">
+        <a class="placa" href="{{whatsappUrl}}" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+        <span class="porta__numero">{{whatsappExibicao}}</span>
+      </div>
+      <div class="porta__email">
+        <a class="porta__email-link" href="{{mailtoUrl}}" data-email>{{email}}</a>
+        <button class="botao" type="button" data-copiar-email hidden>Copiar e-mail</button>
+        <span class="sr-only" role="status" data-copiar-status></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="configurador conteudo superficie-grafite" data-configurador hidden>
+    <h3>Monte um rascunho do pedido</h3>
+    <p>Marque o que você imagina. Eu recebo a mensagem pronta e a gente ajusta na conversa.</p>
+  </div>
+</section>

@@ -1,0 +1,42 @@
+/* Louça Torta, cerâmica feita à mão (seção 7.3). Frente: louca-torta.
+   STUB da fundação: fontes, paleta e base. Galeria de objetos sobre fundo frio quase branco. */
+@font-face {
+  font-family: 'Young Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./fonts/young-serif-latin-400-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(./fonts/instrument-sans-latin-wght-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+:root {
+  --esmalte: #F3F4EF;
+  --tinta: #15171C; /* Tinta/Esmalte 16,22 */
+  --cobalto: #1F3E9C; /* Cobalto/Esmalte 8,53; Giz/Cobalto 9,43 */
+  --celadon: #9DBFAE;
+  --giz: #FFFFFF;
+  --argila: #5B5F66; /* Argila/Esmalte 5,80 */
+  --raio: 2px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--esmalte);
+  color: var(--tinta);
+  font-family: 'Instrument Sans', system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+main { padding: 48px 16px; max-width: 80rem; margin-inline: auto; }
+h1 { font-family: 'Young Serif', Georgia, serif; font-weight: 400; font-size: clamp(2.25rem, 1.5rem + 3vw, 4.25rem); line-height: 1.05; margin: 0 0 16px; }
+a { color: var(--cobalto); }
+:focus-visible { outline: 3px solid var(--cobalto); outline-offset: 3px; }
+.rodape-demo { background: var(--giz); padding: 24px 16px 0; color: var(--argila); }
+.rodape-demo > p { margin: 0 0 16px; }

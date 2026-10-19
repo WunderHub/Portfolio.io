@@ -1,0 +1,55 @@
+/* Abertura: H1, lead e ações (seção 4 e 5.1). Frente: topo.
+   Texto comercial no primeiro paint, nunca animado. No desktop, a min-height deixa a base do
+   letreiro 32px acima da dobra (seção 5.1; aqui sem a caixa sticky do palco, que é da frente topo). */
+
+.abertura {
+  padding-block: var(--e-3) var(--e-6);
+}
+.abertura__grade {
+  display: grid;
+  gap: var(--e-3);
+  align-content: start;
+}
+.abertura__acoes {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--e-1);
+  margin-top: var(--e-3);
+}
+.abertura__whatsapp {
+  justify-content: center;
+}
+.abertura__ver {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: var(--alvo-min);
+  color: var(--prata-luz);
+}
+
+@media (min-width: 600px) {
+  .abertura__acoes {
+    align-items: flex-start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .abertura {
+    padding-block: var(--e-8) 0;
+    min-height: calc(100svh - var(--header-h) - var(--L) - 32px);
+  }
+  .abertura__grade {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+  .abertura__titulo {
+    grid-column: 1 / span 7;
+  }
+  .abertura__texto {
+    grid-column: 9 / span 4;
+  }
+  .abertura__acoes {
+    margin-top: var(--e-4);
+  }
+}

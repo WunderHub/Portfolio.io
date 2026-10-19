@@ -1,0 +1,164 @@
+/* Tokens da WunderHub (seção 2 da direção). Fonte única de cor, tipo, espaço, camadas e movimento.
+   Os mesmos valores de movimento estão em src/js/motion/tokens.js (em segundos). */
+
+/* --brilho: posição da faixa especular (0..1). Escrito só pelo renderizador do palco em .fachada. */
+@property --brilho {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0.3;
+}
+
+:root {
+  /* 2.1 Cores */
+  --preto-acm: #000000; /* fundo principal, preto verdadeiro */
+  --grafite-parede: #25282C; /* superfícies: Serviços, Quem cuida, menu, painéis, configurador */
+  --grafite-fio: #3B3F45; /* só divisões decorativas (1,98:1 sobre preto) */
+  --prata-sombra: #7D838B; /* texto auxiliar SÓ sobre preto (5,49:1); proibido como texto sobre grafite */
+  --prata: #B9BEC5; /* texto corrido sobre preto e grafite */
+  --prata-luz: #EEF0F2; /* títulos, aresta polida, contorno de foco */
+  --chapa: #C3C8CE; /* base da Chapa do processo (texto preto) */
+  --vermelho-acrilico: #C8102E; /* placas com texto branco; marca ativa sobre a Chapa */
+  --vermelho-sinal: #E5243B; /* anel de foco e sinal de estado sobre preto */
+  --branco: #FFFFFF; /* texto sobre placa vermelha */
+
+  /* 2.2 Prata como material */
+  --prata-escovada: linear-gradient(104deg,
+    #7A8088 0%, #C9CDD2 14%, #E9ECEF 24%, #AEB3BA 38%,
+    #CDD1D6 55%, #959BA3 72%, #D5D9DD 88%, #A3A9B0 100%);
+  --chapa-escovada: linear-gradient(104deg,
+    #C3C8CE 0%, #D9DDE1 18%, #EEF0F2 27%, #C9CED4 44%,
+    #D6DADE 62%, #C3C8CE 80%, #E1E4E7 100%);
+  /* Escovado em CSS puro: abaixo de 768px, com dados reduzidos ou saveData (html.economia) */
+  --escovado-css: repeating-linear-gradient(0deg, rgb(255 255 255 / .05) 0 1px, transparent 1px 2px);
+  --grao-letreiro: var(--escovado-css);
+  --grao-chapa: var(--escovado-css);
+
+  /* 2.3 Tipografia: pilhas em fontes.css (--fonte-estrutura, --fonte-letreiro, --fonte-leitura) */
+
+  /* 2.4 Escala (Bringhurst 12, 14, 16, 18, 21, 24, 36, 48, 72), fluida onde indicado */
+  --t-12: .75rem;
+  --t-14: .875rem;
+  --t-16: 1rem;
+  --t-18: 1.125rem;
+  --t-21: 1.3125rem;
+  --t-24: 1.5rem;
+  --t-corpo: clamp(1.0625rem, 1.03rem + .12vw, 1.125rem); /* 17 → 18 */
+  --t-lead: clamp(1.0625rem, .93rem + .6vw, 1.3125rem); /* 17 → 21 */
+  --t-h3: clamp(1.5rem, 1.14rem + 1.5vw, 2.25rem); /* 24 → 36 */
+  --t-h2: clamp(2.25rem, 1.8rem + 1.9vw, 3rem); /* 36 → 48 */
+  --t-h1: clamp(2.75rem, 1.4rem + 4.2vw, 4.5rem); /* 44 → 72 */
+  --t-nome: clamp(4rem, 1.5rem + 9vw, 9rem); /* 64 → 144 (desktop) */
+  --lh-corpo: 1.55;
+  --lh-lead: 1.45;
+  --lh-titulo: .95;
+  --lh-h2: 1;
+  --medida: 64ch; /* texto corrido */
+  --medida-lead: 46ch;
+
+  /* 2.5 Espaço (base 8px) */
+  --e-1: 8px;
+  --e-2: 16px;
+  --e-3: 24px;
+  --e-4: 32px;
+  --e-6: 48px;
+  --e-8: 64px;
+  --e-12: 96px;
+  --e-16: 128px;
+  --e-24: 192px;
+
+  /* Grade: 4 colunas, gutter e margem 16px abaixo de 600px (valores maiores nas media queries abaixo) */
+  --colunas: 4;
+  --gutter: 16px;
+  --margem: 16px;
+  --conteudo-max: 1536px;
+  --secao-y: 72px; /* corte entre seções: 72px mobile, 128px desktop */
+  --alvo-min: 48px; /* alvo de toque mínimo */
+  --alvo-primario: 56px; /* botões primários */
+
+  /* Header */
+  --header-h: 56px;
+
+  /* 2.6 Ângulo e formas */
+  --corte: 16deg;
+  --corte-tan: .2867; /* tan 16°; também gerado em styles/generated/letreiro.css */
+  --raio: 0;
+
+  /* 2.7 Camadas */
+  --z-fundo: 0;
+  --z-plano-tras: 10;
+  --z-letreiro: 20;
+  --z-conteudo: 30;
+  --z-header: 40;
+  --z-barra-whatsapp: 45;
+  --z-dialog: 50;
+  --z-pular: 60; /* skip link acima do header */
+
+  /* 2.8 Movimento */
+  --ease-corte: cubic-bezier(0.2, 0, 0, 1); /* apresentação 480–720ms */
+  --ease-resposta: cubic-bezier(0.3, 0, 0, 1); /* feedback 120–200ms */
+  --ease-saida: cubic-bezier(0.3, 0, 0.8, 0.15); /* saída 200–240ms, sempre mais curta que a entrada */
+  --dur-toque: 120ms;
+  --dur-resposta: 160ms;
+  --dur-saida: 200ms;
+  --dur-saida-longa: 240ms;
+  --dur-placa: 240ms;
+  --dur-painel: 480ms;
+  --dur-revelacao: 520ms;
+  --dur-porta: 720ms;
+  --stagger-vao: 90ms;
+  --stagger-captura: 60ms;
+
+  /* 2.9 Foco (sobre preto; superfícies trocam em base.css) */
+  --foco-contorno: var(--prata-luz);
+  --foco-anel: var(--vermelho-sinal);
+  --foco-folga: var(--preto-acm); /* cor entre o elemento e o contorno claro */
+}
+
+/* Faixa especular (2.2). Declarada onde --brilho é escrito, porque --brilho não herda:
+   o gradiente resolve no elemento e desce já resolvido para as letras. */
+:root,
+.fachada,
+[data-especular] {
+  --especular: linear-gradient(104deg,
+    transparent calc(var(--brilho) * 100% - 9%),
+    rgb(255 255 255 / .55) calc(var(--brilho) * 100%),
+    transparent calc(var(--brilho) * 100% + 9%));
+}
+
+@media (min-width: 600px) {
+  :root {
+    --colunas: 6;
+    --gutter: 24px;
+    --margem: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-h: 64px;
+    /* textura de grão a partir de 768px (seção 2.2) */
+    --grao-letreiro: url(../assets/textura/grao-2400.webp);
+    --grao-chapa: url(../assets/textura/grao-chapa-2400.webp);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --colunas: 12;
+    --gutter: 32px;
+    --margem: 32px;
+    --secao-y: 128px;
+  }
+}
+
+/* Sem textura com dados reduzidos (media query) ou saveData (classe posta pelo script inline). */
+@media (prefers-reduced-data: reduce) {
+  :root {
+    --grao-letreiro: var(--escovado-css);
+    --grao-chapa: var(--escovado-css);
+  }
+}
+:root.economia {
+  --grao-letreiro: var(--escovado-css);
+  --grao-chapa: var(--escovado-css);
+}
