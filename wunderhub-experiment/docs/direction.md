@@ -26,6 +26,8 @@ Fontes desta especificação: briefing do dono, `docs/research/resource-audit.md
 | Justificação dos andares no mobile medida em JS | `wdth` e larguras de célula pré-medidos no build e entregues como CSS |
 | Clip-path animado em área grande | Todos os clip-paths de área grande são estáticos; revelações por persianas que se movem com `transform` |
 | Na Porta, mover as folhas pela perpendicular desalinha o letreiro em deslocamentos grandes | Folhas da Porta se movem na vertical pura (exceção documentada em 2.6) e o configurador fica fora da porta |
+| Geometria vertical do palco indefinida; com `contain: paint`, as metades abertas seriam cortadas (visto no quadro p=0,62 do protótipo) | Seção 5.1 fixa folgas acima e abaixo do letreiro, a fachada em largura total, a centralização na caixa sticky e a altura mínima da abertura |
+| Foco podia ficar sob o header sticky, a barra de WhatsApp ou as folhas da Porta | `scroll-padding` no topo e na base, Porta aberta sem animação quando o gatilho é foco (seção 2.9) |
 
 ---
 
@@ -130,7 +132,7 @@ Aceite: amostrar por Playwright a luminância da Chapa renderizada em 360, 768 e
 **Texturas (comandos verificados, ffmpeg 6.1.1):**
 
 ```sh
-# scripts/grao.sh — grão do letreiro: 2400×256, luma 69–146, 11,4 KB
+# scripts/grao.sh: grão do letreiro: 2400×256, luma 69–146, 11,4 KB
 ffmpeg -v error -y -f lavfi -i "color=c=0x808080:s=2560x256,format=gray,noise=alls=100:allf=u:all_seed=17,avgblur=sizeX=80:sizeY=1,eq=contrast=5,crop=2400:256:80:0" -frames:v 1 -c:v libwebp -quality 40 src/assets/textura/grao-2400.webp
 # grão da Chapa (baixo contraste): luma 103–132, 3,9 KB
 ffmpeg -v error -y -f lavfi -i "color=c=0x808080:s=2560x256,format=gray,noise=alls=100:allf=u:all_seed=17,avgblur=sizeX=80:sizeY=1,eq=contrast=2,crop=2400:256:80:0" -frames:v 1 -c:v libwebp -quality 40 src/assets/textura/grao-chapa-2400.webp
@@ -221,7 +223,7 @@ Escala clássica (Bringhurst) 12, 14, 16, 18, 21, 24, 36, 48, 72, com valores fl
 --lh-corpo: 1.55;  --lh-lead: 1.45;  --lh-titulo: .95;  --lh-h2: 1;
 ```
 
-Letreiro: `--largura-letreiro: min(100vw - 2 * var(--margem), 1536px)` para cálculos fora do contêiner; dentro do contêiner (`container-type: inline-size`), `font-size: calc(100cqi / 3.5756)`. A altura da linha do letreiro é `0.74em` (versal de 0,68em mais folga).
+Letreiro: `.topo` (o wrapper de `.abertura` e `.palco`) tem `container-type: inline-size`, e tudo dentro dele mede pela largura de `.topo` (sem a barra de rolagem). `--largura-letreiro: min(100cqi - 2 * var(--margem), 1536px)`; desktop `--fs-letreiro: calc(var(--largura-letreiro) / 3.5756)`; mobile (torre) `--fs-letreiro: calc(var(--largura-letreiro) / 3)`. A altura da linha do letreiro é `0.74em` (versal de 0,68em mais folga). A geometria vertical completa está na seção 5.1.
 
 Nomes dos conceitos no mobile: cada nome ocupa a linha inteira com `font-size: min(7.5rem, 100cqi / var(--largura-em))`, onde `--largura-em` vem das métricas (Côdea 5,362em; Louça Torta 7,321em; Junco medido pelo script em 62/400).
 
@@ -278,6 +280,13 @@ Menu e diálogos usam `<dialog>` com `showModal()` (top layer), então o `--z-di
 ### 2.9 Foco
 
 Sobre preto e grafite: `outline: 2px solid var(--prata-luz); outline-offset: 3px; box-shadow: 0 0 0 7px var(--vermelho-sinal)` (o anel vermelho fica fora do contorno claro). Sobre a Chapa: `outline: 2px solid #000; box-shadow: 0 0 0 7px var(--vermelho-acrilico)`. Sempre `:focus-visible`; nada só em hover: todo hover tem o mesmo efeito em `:focus-visible`.
+
+**Foco nunca encoberto (WCAG 2.4.11):**
+
+- `html { scroll-padding-top: calc(var(--header-h) + 16px); }`, com `--header-h: 64px` a partir de 768px e `56px` abaixo. Âncoras e foco por Tab param abaixo do header sticky.
+- Enquanto a barra de WhatsApp do mobile estiver visível, `barra-whatsapp.js` põe `html.com-barra`, e o CSS soma `scroll-padding-bottom: calc(48px + env(safe-area-inset-bottom) + 16px)`. A classe sai quando a barra some.
+- Porta: se o gatilho for `focusin` (seção 5.4), a porta abre sem animação, direto no estado final, para o elemento focado nunca ficar sob as folhas.
+- Placas da fachada e controles do painel ficam `inert` enquanto não estão visíveis (seções 5.1 e 5.2).
 
 ### 2.10 Wordmark e símbolo
 
@@ -346,6 +355,15 @@ Regras de escrita aplicadas: primeira pessoa, voz ativa, frases curtas, sem trav
 
 **Header.** Wordmark (link para `#topo`, nome acessível "WunderHub, início"). Navegação (≥768px): Trabalhos · Serviços · Como trabalho · Contato (os links são separados por espaço, sem pontos no texto). Abaixo de 768px: botão-ícone de WhatsApp (`aria-label="Chamar no WhatsApp"`, ícone genérico de balão de conversa desenhado em SVG, sem logo de terceiros) e botão "Menu".
 
+**Menu mobile** (<768px, `src/js/menu.js`):
+
+- Sem JS: "Menu" é um link `<a href="#mapa">Menu</a>` que leva à lista "Nesta página" do rodapé (`<nav id="mapa" aria-label="Nesta página">`, com os mesmos quatro destinos). Nada fica inacessível.
+- Com JS: o link vira `<button aria-haspopup="dialog" aria-controls="menu">Menu</button>`, que abre `<dialog id="menu" aria-label="Menu">` com `showModal()` (foco preso, fundo inert e Escape nativos). Ocupa a tela inteira sobre Grafite Parede.
+- Conteúdo, de cima para baixo: linha do header repetida (wordmark e botão **Fechar**, que recebe o foco ao abrir); os quatro destinos compostos como andares em Anybody 150/800 a 32px, um por linha, alvos de 64px de altura, alinhados à esquerda: **Trabalhos**, **Serviços**, **Como trabalho**, **Contato**; abaixo, a placa **Chamar no WhatsApp** (56px, largura total) e o e-mail em texto (link `mailto`).
+- Fechar: botão Fechar, Escape (evento `cancel`, com a animação de saída) ou escolher um destino. Ao escolher um destino, o menu fecha e a rolagem vai para a âncora (sem `smooth` com reduced motion); nos outros casos o foco volta ao botão "Menu".
+- Animação: tabela da seção 6 (entra em 280ms, sai em 200ms). Reduced motion: abre e fecha sem deslocamento.
+- Se a janela passar de 767px com o menu aberto (`matchMedia('(min-width: 768px)')`, evento `change`), o menu fecha sem animação.
+
 **Abertura.**
 
 - H1: **Sites para o seu negócio ser encontrado e chamado.**
@@ -374,7 +392,7 @@ Linha 2, `#conceito-junco`:
 - Linha de tipo: "Clínica de fisioterapia. Site institucional com quatro páginas."
 - Objetivo: "Explicar os tratamentos com calma e levar a pessoa a pedir a primeira avaliação."
 - Decisões:
-  - A: "Tratamentos organizados pelo que a pessoa sente, e não por nomes técnicos."
+  - A: "A primeira pergunta do site é o que a pessoa sente, como dor nas costas ou volta ao treino. O nome técnico do tratamento aparece depois dessa escolha."
   - B: "Uma página só para explicar a primeira consulta, que é onde aparecem as dúvidas."
   - C: "Pedido de horário em quatro passos curtos, com resumo antes de enviar."
 
@@ -473,7 +491,7 @@ Loja virtual:
 
 **Barra de WhatsApp no mobile** (<768px): "Chamar no WhatsApp".
 
-**Rodapé.** Wordmark e símbolo exploratório; "WunderHub, sites para pequenos negócios e profissionais. Feito por Kauê Ribeiro."; links WhatsApp e e-mail; "Côdea, Junco e Louça Torta são marcas fictícias criadas como demonstração."; "© {{ano}} WunderHub"; link "Voltar ao topo".
+**Rodapé.** Wordmark e símbolo exploratório; "WunderHub, sites para pequenos negócios e profissionais. Feito por Kauê Ribeiro."; `<nav id="mapa" aria-label="Nesta página">` com Trabalhos, Serviços, Como trabalho e Contato; links WhatsApp e e-mail; "Côdea, Junco e Louça Torta são marcas fictícias criadas como demonstração."; "© {{ano}} WunderHub"; link "Voltar ao topo".
 
 ---
 
@@ -528,7 +546,7 @@ y=900├────────────────────────
      ├────────────────────────────────────────────────────────────────────────────────────────┤
      │ #servicos, Grafite Parede                                                                │
      │ Três formatos de site (H2)   Cada formato resolve um tipo de pedido...                  │
-     │ LANDING PAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  (viga: 150/800, 120px, linha inteira)  │
+     │ Landing page ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  (viga: 150/800, 120px, linha inteira)  │
      │ Uma página com um objetivo só...                                                         │
      │ Para quem é          O que inclui           O que você precisa me mandar   Ver o exemplo │
      │ ─────────────                                                                            │
@@ -579,7 +597,7 @@ y=900├────────────────────────
 
 ```
 ┌──────────────────────────────────────┐
-│ WUNDERHUB◸            [💬] [Menu]    │ header 56; 💬 = ícone WhatsApp 48px
+│ WUNDERHUB◸            [WA] [Menu]    │ header 56; [WA] = botão-ícone "Chamar no WhatsApp", 48px
 ├──────────────────────────────────────┤
 │ Sites para o seu                     │ H1 Anybody 62/800, 44/42
 │ negócio ser                          │
@@ -626,7 +644,7 @@ y=900├────────────────────────
 ├──────────────────────────────────────┤
 │ #servicos, Grafite                   │
 │ Três formatos de site                │
-│ LANDING PAGE ━━━━━ (32px, viga fina) │
+│ Landing page ━━━━━ (32px, viga fina) │
 │ Uma página com um objetivo só...     │
 │ Para quem é / O que inclui /         │
 │ O que você precisa me mandar         │ empilhados
@@ -724,7 +742,28 @@ Divisão de motores (uma propriedade, um dono):
 </div>
 ```
 
-Cada letra mora numa célula de largura fixa (a largura da letra em wght 900, gerada pelo script de métricas), então perder peso não muda o layout: o intercolúnio cresce dentro da célula. Os painéis pretos das metades cobrem o plano de trás em repouso; a janela é o espaço entre as metades quando elas se afastam. Mapeamento: WUN → Côdea, DER → Junco, HUB → Louça Torta.
+Cada letra mora numa célula de largura fixa (a largura da letra em wght 900, gerada pelo script de métricas), com o glifo **centralizado** na célula, então perder peso não muda o layout: o intercolúnio cresce dos dois lados dentro da célula. Os painéis pretos das metades cobrem o plano de trás em repouso; a janela é o espaço entre as metades quando elas se afastam. Mapeamento: WUN → Côdea, DER → Junco, HUB → Louça Torta.
+
+**Geometria do palco** (valores entre parênteses para 1440×900 e 390×844):
+
+| Variável | Desktop (≥1024px) | Mobile (<1024px, torre) |
+| --- | --- | --- |
+| `--header-h` | 64px | 56px (64px de 768 a 1023) |
+| `--caixa-h` | `calc(100svh - var(--header-h))` (836px) | igual (788px) |
+| `--L`, altura do letreiro | `calc(.74 * var(--fs-letreiro))` (284,8px) | `calc(3 * .74 * var(--fs-letreiro))` (264,9px) |
+| `--U`, folga de cima | `6svh` (54px) | `2svh` (16,9px) |
+| `--D`, folga de baixo | `calc(6px + 22svh + 8px)` (212px) | `calc(6px + 7svh + 18svh + 8px)` (225px: abertura do andar 3 mais a cascata de 2 × 9svh) |
+| `--pista` | `120svh` | `90svh` |
+
+- `.topo { overflow-x: clip; }` para nenhum deslocamento gerar rolagem horizontal.
+- `.js .palco { height: calc(var(--caixa-h) + var(--pista)); }`. Sem `.js`, com reduced motion ou com `max-height: 499px`, `.palco` tem altura automática.
+- `.palco__caixa { position: sticky; top: var(--header-h); height: var(--caixa-h); display: grid; align-content: center; }`. A `.fachada` ocupa a **largura inteira** de `.topo` (as letras ficam recuadas por `--margem` dentro dela) e tem `padding-block: var(--U) var(--D)`. Assim `contain: layout paint style` não corta nada: as metades de baixo andam até 56px para a esquerda e 196px para baixo no desktop (18px e 63px por andar no mobile), as de cima até 15px para a direita e 52px para cima, e tudo cabe na caixa de pintura.
+- Posição do letreiro dentro da caixa: `--o = (var(--caixa-h) - (var(--U) + var(--L) + var(--D))) / 2 + var(--U)` (196,6px desktop; 157px mobile).
+- **Abertura no desktop:** `.abertura { min-height: calc(100svh - 32px - var(--L) - var(--o) - var(--header-h)); }` (322,6px). Com isso, no scroll 0 a base do letreiro fica 32px acima da dobra; ao rolar, o bloco do H1 sai pelo topo em fluxo normal e o palco gruda quando o topo dele chega a `--header-h`, que é p=0. Se o texto não couber nessa altura (telas baixas), o bloco cresce e o letreiro desce: o texto comercial nunca é comprimido.
+- **Abertura no mobile:** sem `min-height`; a torre começa `--o` abaixo do fim do bloco de texto (em 390×844, por volta de 76% da altura, cortada pela dobra).
+- **Placas da fachada:** dentro de cada janela, encostadas ao lábio de baixo do corte, a 24px do início do vão. `render.js` calcula a posição uma vez por `resize` (Motion `resize`) a partir de `letreiro.json` e da abertura completa (a=1), já que elas só aparecem com p ≥ 0,85.
+- **Modo estático** (sem JS, reduced motion, altura < 500px, teto estourado): `.palco__caixa { position: static; height: auto; }`; a fachada mantém `padding-block: var(--U) var(--D)` e mostra a abertura completa.
+- **Aceite de borda:** com a abertura completa (p=0,35), nenhum pixel de letra sai da viewport em 360, 390, 768 e 1440 (o glifo centralizado na célula e o traço inclinado do W dão a folga; conferir nos quadros da seção 12).
 
 - **Gatilho:** rolagem nativa. `scroll((p) => {…}, { target: palco, offset: ['start ' + headerH + 'px', 'end end'] })`. A distância de p=0 a p=1 é exatamente a pista: 120svh com largura ≥ 1024px; 90svh abaixo disso.
 - **Estado inicial (p=0):** nome contínuo, wght 900, fenda 6px preta, véu 0,75, plano de trás em escala 1,06, placas ocultas e `inert`.
@@ -793,7 +832,7 @@ Cada letra mora numa célula de largura fixa (a largura da letra em wght 900, ge
 
 - **Estrutura:** `.porta__cima` (metades de cima do letreiro WUNDERHUB, Anybody Letreiro 50/900, `aria-hidden`), `.porta__miolo` (H2, texto, WhatsApp, e-mail, copiar), `.porta__baixo` (metades de baixo). Cada folha é um painel preto que se estende para longe da abertura (a de cima para cima, a de baixo para baixo); a seção tem `overflow: clip`. O letreiro da Porta usa o mesmo corpo do hero no desktop e uma linha de `100cqi / 3.5756` no mobile (cerca de 100px).
 - **Estado inicial (com `.js` e sem reduced motion):** as folhas transladadas na vertical até se encontrarem no meio do miolo, formando o nome inteiro com a fenda de 6px; o miolo fica coberto pelos painéis pretos.
-- **Gatilho:** `inView(porta__miolo, abrir, { amount: 0.5 })` ou `focusin` dentro do miolo (Tab chegando ao botão de WhatsApp abre a porta antes de o foco ficar escondido).
+- **Gatilho:** `inView(porta__miolo, abrir, { amount: 0.5 })` ou `focusin` dentro do miolo. No caso do `focusin` (Tab chegando ao botão de WhatsApp antes de a rolagem revelar a porta), a abertura é instantânea, sem animação, para o foco nunca ficar sob as folhas. As duas vias chamam o `stop()` da outra.
 - **Abertura:** fenda 6px → 14px em 120ms (`--ease-resposta`), depois as folhas voltam à posição de layout em 720ms (`--ease-corte`): a de cima sobe e a de baixo desce, puramente na vertical. Total 840ms. Só transforms.
 - **Reverso:** não fecha. É uma revelação única por visita (rolar para cima não fecha).
 - **Reduced motion, sem JS, teto estourado:** porta aberta desde o início.
@@ -840,11 +879,11 @@ Nenhuma seção entra com fade ou slide. Nada depende só de hover.
 
 ## 7. Conceitos demonstrativos
 
-Três marcas fictícias novas, cada uma com estrutura, tipografia, paleta e interação próprias. Checagem de colisão feita para este documento (busca web em 18/10/2026): "Côdea" como padaria, "Junco Fisioterapia" e "Louça Torta" não retornaram negócios com esses nomes. "Miolo Alto" foi descartado porque existem padarias "Miolo" em São Paulo. Refaça a busca antes de publicar.
+Três marcas fictícias novas, cada uma com estrutura, tipografia, paleta e interação próprias. Checagem de colisão feita para este documento (WebSearch em 18/10/2026 e refeita em 19/10/2026 com as buscas `"Côdea" padaria`, `"Junco Fisioterapia"` e `"Louça Torta" cerâmica`): nenhuma retornou negócio com esse nome; para Junco apareceram só pessoas com o sobrenome Junco e uma clínica na cidade de Juncos (Porto Rico). Limite: o buscador disponível é configurado para os EUA, então a cobertura de comércio local brasileiro é parcial. "Miolo Alto" foi descartado porque existem padarias "Miolo" em São Paulo. Antes de publicar, refazer a busca no Google Maps, no Instagram e no registro de marcas do INPI.
 
 **Comum a todas as demos:**
 
-- Faixa no topo, antes de tudo, em preto com texto Prata Luz (18,38:1): "Conceito da WunderHub. [Marca] é uma marca fictícia." e o link "Voltar ao portfólio" (`../../#conceito-<slug>`, relativo, funciona em subdiretório). Repetida no rodapé. Componente compartilhado em `src/conceitos/comum/selo.{css,js}`.
+- Faixa no topo, antes de tudo, em preto com texto Prata Luz (18,38:1): "Conceito da WunderHub. [Marca] é uma marca fictícia." e o link "Voltar ao portfólio" (`../../#conceito-<slug>`, relativo, funciona em subdiretório; páginas internas do Junco e da Louça Torta usam `../../../`). O link tem `target="_top"`, para que dentro do iframe do "Testar aqui" ele leve a janela inteira de volta, e não abra o portfólio dentro da prévia. Repetida no rodapé. Componente compartilhado em `src/conceitos/comum/selo.{css,js}`.
 - Nenhuma demo envia dados, abre o WhatsApp de um número fictício ou processa pagamento. Toda ação que seria de backend mostra o resultado na tela e diz que é demonstração.
 - Elementos ligados às decisões A/B/C levam `data-decisao="A|B|C"`; o script de capturas grava a posição deles para os marcadores da vitrine.
 - Fontes autohospedadas (OFL), imagens WebP com `width`/`height`, `srcset`, `loading="lazy"` abaixo da dobra e `fetchpriority="high"` só na imagem principal do topo.
@@ -1008,7 +1047,20 @@ Total: 27 imagens (cerca de 2.700 créditos em Seedream 5 Pro 2k, conferir com `
 
 1920×1080, 30 fps, 18,0 s (540 quadros), sem áudio. Projeto Hyperframes em `showreel/` (scaffold `HYPERFRAMES_SKIP_SKILLS=1 npx -y hyperframes@0.8.171 init showreel --non-interactive --resolution landscape`). GSAP 3.14.2 vendorizado (`showreel/assets/vendor/gsap.min.js` e `CustomEase.min.js` do mesmo pacote npm), fontes locais (os mesmos woff2 da Anybody e da Archivo), texturas locais, capturas locais. Sem WebGL. Uma `gsap.timeline({ paused: true })` por composição, registrada em `window.__timelines[id]` no fim; só `fromTo`; `.clip { position: absolute; inset: 0 }`; sem animação de saída exceto na última cena. `CustomEase.create('corte', '0.2,0,0,1')` e `CustomEase.create('saida', '0.3,0,0.8,0.15')`.
 
-Transição primária entre cenas: **corte de 16°**. A cena que entra é revelada por `clip-path: polygon(0 0, 1920px 0, 1920px calc(Y + 551px), 0 Y)` com Y de −551px a 1080px, em 0,5 s, ease `corte`, sobreposta 0,5 s à cena anterior; uma faixa de 3px em Prata Luz acompanha a borda (polígono de 4 pontos no mesmo Y).
+Transição primária entre cenas: **corte de 16°**. A cena que entra fica por cima da anterior e é revelada de cima para baixo por um polígono de 4 pontos cuja borda de baixo desce 551px da esquerda para a direita (tan 16° × 1920). Sem `calc()` no polígono, para o GSAP interpolar número a número:
+
+```js
+tl.fromTo('#c2', { clipPath: 'polygon(0px 0px, 1920px 0px, 1920px 0px, 0px -551px)' },
+                 { clipPath: 'polygon(0px 0px, 1920px 0px, 1920px 1631px, 0px 1080px)', duration: 0.5, ease: 'corte' }, 3.2);
+// faixa de 3px em Prata Luz presa à borda: clip irmão na raiz (não pode ser filho de #c2,
+// senão o clip-path do pai o corta), tela cheia, fundo #EEF0F2, recortado numa tira logo abaixo da borda
+tl.fromTo('#a2', { clipPath: 'polygon(0px -551px, 1920px 0px, 1920px 3px, 0px -548px)' },
+                 { clipPath: 'polygon(0px 1080px, 1920px 1631px, 1920px 1634px, 0px 1083px)', duration: 0.5, ease: 'corte' }, 3.2);
+```
+
+As arestas `#a2` a `#a6` são clips da raiz com `data-start` igual ao da cena que entra, `data-duration="0.55"` e `z-index: 10`; no fim da transição a tira já está fora do quadro.
+
+Opacidade e `clip-path` em elementos `.clip` são permitidos (testado na auditoria); `display`, `visibility` e `autoAlpha` não.
 
 ### 9.2 Storyboard
 
@@ -1020,6 +1072,19 @@ Transição primária entre cenas: **corte de 16°**. A cena que entra é revela
 | 4. Louça Torta | 9,60–12,80 (corte de 16°) | Nome "Louça Torta" (125/250); placa "Cerâmica feita à mão. Loja virtual."; captura da página de produto com esmalte cobalto | 10,90: crossfade de 0,3 s para a captura com celadon (a troca de esmalte). 11,50: captura da sacola aberta entra pela direita (x 420px → 0, 0,5 s, `corte`) |
 | 5. O projeto ganha peso | 12,80–15,60 (corte de 16°) | Chapa de prata escovada (mesmo CSS do site). "SEU NEGÓCIO" a 160px, preto; fila de rótulos Conversa, Mapa, Desenho, Construção, No ar com marcador vermelho | 12,95 Conversa (100/50, contorno). 13,40 Mapa (300/50) e guias vermelhas desenhando em 0,4 s. 13,90 Desenho (560/62) e grade. 14,40 Construção (850/62), sólida. 14,90 No ar (900/150), corte e placa "No ar" em 0,24 s. Cada troca de eixos dura 0,4 s (`corte`); o marcador desliza junto |
 | 6. A porta | 15,60–18,00 (corte de 16°) | Preto. Letreiro WUNDERHUB em 900 com fenda de 6px; atrás, "Vamos conversar sobre o seu site" (Anybody 62/800, 72px, Prata Luz), "WhatsApp +55 (11) 95930-0903", "kaueribeiro12@gmail.com" (Archivo 500, 36px, Prata) e "WunderHub, Kauê Ribeiro" | 15,90: fenda 6 → 14px (0,12 s). 16,02–16,74: folhas abrem na vertical (−190px e +190px, `corte`). 16,30–16,60: textos sobem 8px e aparecem. Segura até 18,00 (cartão final, sem fade) |
+
+**Clips na composição raiz** (`data-composition-id="main"`, `data-duration="18"`). Cada cena dura até o fim da transição da seguinte, porque a janela do clip é semiaberta `[start, start + duration)` e a cena de baixo precisa continuar visível enquanto a de cima é revelada. Todas as animações internas terminam pelo menos 0,05 s antes do fim do clip.
+
+| Clip | `data-start` | `data-duration` | Fim | Ordem (z-index) |
+| --- | --- | --- | --- | --- |
+| `#c1` O corte | 0 | 3.7 | 3,70 | 1 |
+| `#c2` Côdea | 3.2 | 3.7 | 6,90 | 2 |
+| `#c3` Junco | 6.4 | 3.7 | 10,10 | 3 |
+| `#c4` Louça Torta | 9.6 | 3.7 | 13,30 | 4 |
+| `#c5` O projeto ganha peso | 12.8 | 3.3 | 16,10 | 5 |
+| `#c6` A porta | 15.6 | 2.4 | 18,00 | 6 |
+
+As cenas podem ser inline ou sub-composições (`data-composition-src`); se forem sub-composições, os ids do host, do `<template>` e da chave em `window.__timelines` são iguais, e a transição de corte é animada pela timeline principal no elemento host.
 
 ### 9.3 Assets do showreel
 
@@ -1066,7 +1131,9 @@ Metas de peso: 1080p MP4 ≤ 4 MB, 720p ≤ 2 MB, poster 1280 ≤ 70 KB. Revisar
 **Dependências** (versões exatas):
 
 - `dependencies`: `motion@14.3.0`.
-- `devDependencies`: `vite@8.3.4`, `playwright@1.56.1` (usa os navegadores de `/opt/pw-browsers`, `PLAYWRIGHT_BROWSERS_PATH`), `@fontsource-variable/anybody@5.3.0`, `@fontsource-variable/archivo@5.3.0`, `@fontsource-variable/bricolage-grotesque@5.3.0`, `@fontsource-variable/newsreader@5.3.0`, `@fontsource-variable/public-sans@5.3.0`, `@fontsource/young-serif@5.3.0`, `@fontsource-variable/instrument-sans@5.3.0`, `axe-core` (versão exata fixada na instalação, só para QA).
+- `devDependencies`: `vite@8.3.4`, `playwright@1.56.1` (usa os navegadores de `/opt/pw-browsers`, `PLAYWRIGHT_BROWSERS_PATH`), `@fontsource-variable/anybody@5.3.0`, `@fontsource-variable/archivo@5.3.0`, `@fontsource-variable/bricolage-grotesque@5.3.0`, `@fontsource-variable/newsreader@5.3.0`, `@fontsource-variable/public-sans@5.3.0`, `@fontsource/young-serif@5.3.0`, `@fontsource-variable/instrument-sans@5.3.0`, `axe-core@4.14.0` (MPL-2.0, só para QA, nunca vai para o `dist/`).
+- Showreel (pacote à parte, em `showreel/`): `gsap@3.14.2`, a versão já testada no render local da auditoria (a mais recente no npm em 19/10/2026 é 3.15.0; só atualizar depois de um render de teste). Licença: "Standard no-charge license" da GSAP (não é MIT); registrar em `docs/experiment.md`. `CustomEase` vem no mesmo pacote.
+- Licenças a registrar no README e em `docs/experiment.md`: Motion (MIT), Vite (MIT), fontes (SIL OFL 1.1, com o arquivo `OFL.txt` de cada pacote copiado para junto dos woff2), GSAP (licença padrão da GSAP), imagens do Magnific (geradas na conta do dono, com os IDs das criações).
 
 **`vite.config.js`:**
 
@@ -1199,7 +1266,7 @@ Nenhuma imagem fotográfica no portfólio em si. Motivos: o letreiro é tipograf
 4. **Sem JS** (JavaScript desligado): conteúdo completo, palco estático em p=0,62 com placas, painéis abertos, porta aberta, links de WhatsApp e e-mail corretos.
 5. **Reduced motion:** mesmas informações e ações; nenhuma animação de deslocamento; palco sem pista.
 6. **Altura < 500px e zoom de 200% em 1440×900:** palco sem pista; nada cortado; sem rolagem horizontal.
-7. **Teclado:** skip link; ordem de Tab; foco visível em todas as superfícies; Escape fecha painel, menu e diálogos e devolve o foco; range com setas, Home e End.
+7. **Teclado:** skip link; ordem de Tab; foco visível em todas as superfícies e nunca coberto pelo header, pela barra de WhatsApp ou pelas folhas da Porta; Escape fecha painel, menu e diálogos e devolve o foco; range com setas, Home e End; menu mobile sem JS leva a `#mapa`.
 8. **Leitor de tela:** árvore de acessibilidade sem duplicatas do letreiro e dos nomes partidos; `aria-valuetext` do range; anúncios de "E-mail copiado" e do resumo do configurador. axe-core sem violações sérias.
 9. **Rolagem:** lenta, rápida, retorno pelas cenas, âncoras (`#trabalhos`, `#conceito-*`, `#contato`), recarregar no meio do palco, voltar pelo histórico (bfcache sem repetir a carga), resize de 1440 para 390.
 10. **Rede:** nenhum 404, nenhum erro de console, vídeo só depois do clique, iframe só ao abrir "Testar aqui".
