@@ -1,14 +1,20 @@
-/* Abertura: H1, lead e ações (seção 4 e 5.1). Frente: topo.
-   Texto comercial no primeiro paint, nunca animado. No desktop, a min-height deixa a base do
-   letreiro 32px acima da dobra (seção 5.1; aqui sem a caixa sticky do palco, que é da frente topo). */
+/* Abertura: H1, lead e ações (seções 3.4, 4 e 5.1). Frente: topo.
+   Texto comercial no primeiro paint, nunca animado. No desktop, a altura mínima deixa a base do
+   letreiro 32px acima da dobra (5.1): 100svh − 32px − L − o − header. Se o texto não couber, o bloco
+   cresce e o letreiro desce: o texto nunca é comprimido. */
 
 .abertura {
-  padding-block: var(--e-3) var(--e-6);
+  padding-block: var(--e-3) 0;
 }
 .abertura__grade {
   display: grid;
-  gap: var(--e-3);
   align-content: start;
+}
+.abertura__texto {
+  margin-top: var(--e-2);
+}
+.abertura__lead {
+  color: var(--prata);
 }
 .abertura__acoes {
   display: flex;
@@ -26,28 +32,46 @@
   align-self: flex-start;
   min-height: var(--alvo-min);
   color: var(--prata-luz);
+  font-weight: 500;
 }
 
 @media (min-width: 600px) {
+  .abertura {
+    padding-top: var(--e-4);
+  }
+  .abertura__texto {
+    margin-top: var(--e-3);
+  }
   .abertura__acoes {
-    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: var(--e-4);
+  }
+  .abertura__whatsapp {
+    justify-content: flex-start;
+  }
+  .abertura__ver {
+    align-self: center;
   }
 }
 
 @media (min-width: 1024px) {
   .abertura {
-    padding-block: var(--e-8) 0;
-    min-height: calc(100svh - var(--header-h) - var(--L) - 32px);
+    padding-top: var(--e-6);
+    min-height: calc(100svh - 32px - var(--L) - var(--o) - var(--header-h));
   }
   .abertura__grade {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--gutter);
+    align-items: start;
   }
   .abertura__titulo {
     grid-column: 1 / span 7;
   }
   .abertura__texto {
     grid-column: 9 / span 4;
+    margin-top: 0;
   }
   .abertura__acoes {
     margin-top: var(--e-4);

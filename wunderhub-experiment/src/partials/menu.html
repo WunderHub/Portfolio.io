@@ -1,17 +1,22 @@
-<!-- Menu mobile (<768px), aberto por menu.js com showModal(). Frente: topo. -->
-<dialog id="menu" class="menu superficie-grafite" aria-label="Menu">
-  <div class="menu__linha">
-    <a class="wordmark menu__marca" href="#topo" aria-label="WunderHub, início" data-menu-destino>WunderHub</a>
-    <button class="botao menu__fechar" type="button" data-menu-fechar autofocus>Fechar</button>
+<!-- Menu mobile (<768px), aberto por menu.js com showModal() (foco preso, fundo inert e Escape nativos).
+     Frente: topo. Sem JS o dialog nunca abre e "Menu" leva ao #mapa do rodapé. -->
+<dialog id="menu" class="menu superficie-grafite" aria-label="Menu" data-menu>
+  <div class="menu__corpo" data-menu-corpo>
+    <div class="menu__linha">
+      <a class="wordmark menu__marca" href="#topo" aria-label="WunderHub, início" data-menu-destino>WunderHub</a>
+      <button class="botao menu__fechar" type="button" data-menu-fechar autofocus>Fechar</button>
+    </div>
+    <nav class="menu__nav" aria-label="Destinos">
+      <ul class="menu__destinos" role="list">
+        <li><a href="#trabalhos" data-menu-destino>Trabalhos</a></li>
+        <li><a href="#servicos" data-menu-destino>Serviços</a></li>
+        <li><a href="#processo" data-menu-destino>Como trabalho</a></li>
+        <li><a href="#contato" data-menu-destino>Contato</a></li>
+      </ul>
+    </nav>
+    <div class="menu__contato">
+      <a class="placa placa--total menu__whatsapp" href="{{whatsappUrl}}" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+      <a class="menu__email" href="{{mailtoUrl}}">{{email}}</a>
+    </div>
   </div>
-  <nav class="menu__nav" aria-label="Destinos do menu">
-    <ul class="menu__destinos" role="list">
-      <li><a href="#trabalhos" data-menu-destino>Trabalhos</a></li>
-      <li><a href="#servicos" data-menu-destino>Serviços</a></li>
-      <li><a href="#processo" data-menu-destino>Como trabalho</a></li>
-      <li><a href="#contato" data-menu-destino>Contato</a></li>
-    </ul>
-  </nav>
-  <a class="placa placa--total menu__whatsapp" href="{{whatsappUrl}}" target="_blank" rel="noopener">Chamar no WhatsApp</a>
-  <a class="menu__email" href="{{mailtoUrl}}">{{email}}</a>
 </dialog>

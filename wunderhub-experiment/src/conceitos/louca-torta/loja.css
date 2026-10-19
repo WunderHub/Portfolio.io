@@ -275,7 +275,16 @@ html:not(.js) .so-js { display: none !important; }
   letter-spacing: -.01em;
   white-space: nowrap;
 }
-.marca:hover .marca__nome { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+.marca:hover .marca__nome { color: var(--cobalto); }
+.marca__nome { transition: color var(--dur-curta) ease; }
+
+/* "Torta" um pouco torta, de propósito: no H1, na marca e no rodapé. */
+.torta {
+  display: inline-block;
+  transform: rotate(-4deg);
+  transform-origin: 45% 70%;
+}
+.marca__nome .torta { transform: rotate(-6deg) translateY(-.03em); transform-origin: 20% 80%; }
 
 .navegacao__lista { display: flex; list-style: none; }
 .navegacao a {
@@ -437,12 +446,42 @@ html:not(.js) .so-js { display: none !important; }
   object-position: 62% 50%;
 }
 
+/* Na mesa: as três peças da foto, com esmalte e preço (atalho para a página de cada uma) */
+.na-mesa {
+  display: grid;
+  gap: 4px;
+  margin-top: 20px;
+}
+.na-mesa__rotulo { color: var(--argila); font-size: var(--t-legenda); font-weight: 600; letter-spacing: .01em; }
+.na-mesa__lista { list-style: none; border-bottom: 1px solid var(--fio); }
+.na-mesa__lista li { border-top: 1px solid var(--fio); }
+.na-mesa__peca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--alvo-principal);
+  color: var(--tinta);
+  text-decoration: none;
+}
+.na-mesa__nome { flex: 1 1 auto; min-width: 0; font-family: var(--serifa); font-size: 1.0625rem; line-height: 1.2; }
+.na-mesa__preco { color: var(--argila); font-size: var(--t-ui); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.na-mesa__peca:hover .na-mesa__nome { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: .18em; }
+.na-mesa__peca:hover .na-mesa__preco { color: var(--tinta); }
+.na-mesa__peca:focus-visible { outline-offset: 2px; }
+
 @media (min-width: 768px) {
   .topo { padding-top: 56px; }
   .topo__titulo { max-width: none; }
   .topo__linha { display: block; }
   .topo__texto { margin-top: 28px; grid-template-columns: minmax(0, 46ch) auto; align-items: end; justify-content: space-between; column-gap: 32px; }
   .topo__foto img { aspect-ratio: 16 / 9; }
+  /* tablet: legenda em faixa de três colunas embaixo da foto */
+  .na-mesa { grid-template-columns: auto minmax(0, 1fr); align-items: start; column-gap: 32px; margin-top: 16px; }
+  .na-mesa__rotulo { padding-top: 14px; }
+  .na-mesa__lista { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--gutter); border-bottom: 0; }
+  .na-mesa__lista li { border-top: 0; }
+  .na-mesa__peca { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; row-gap: 2px; padding: 12px 0; border-top: 1px solid var(--fio); }
+  .na-mesa__preco { grid-column: 2; }
 }
 
 @media (min-width: 1024px) {
@@ -452,7 +491,7 @@ html:not(.js) .so-js { display: none !important; }
       [tela-ini] minmax(calc(var(--margem) - var(--gutter)), 1fr)
       [c-ini] repeat(12, minmax(0, calc((var(--largura) - 11 * var(--gutter)) / 12)))
       [c-fim] minmax(calc(var(--margem) - var(--gutter)), 1fr) [tela-fim];
-    padding-top: 64px;
+    padding-top: 44px;
   }
   .topo__titulo { grid-column: 2 / 14; grid-row: 1; }
   .topo__texto {
@@ -467,12 +506,22 @@ html:not(.js) .so-js { display: none !important; }
   }
   .topo__lead { max-width: 30ch; }
   .topo__foto {
+    position: relative;
     grid-column: 6 / tela-fim;
-    grid-row: 2;
+    grid-row: 2 / 4;
+    align-self: stretch;
+    aspect-ratio: 16 / 9;
     margin-top: 0;
     border-radius: var(--raio) 0 0 var(--raio);
   }
-  .topo__titulo + .topo__texto, .topo__titulo ~ .topo__foto { margin-top: 48px; }
+  .topo__foto img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; }
+  .topo__titulo + .topo__texto, .topo__titulo ~ .topo__foto { margin-top: 40px; }
+  /* desktop: a lista desce até o pé da foto, no canto que sobrava embaixo do botão */
+  .na-mesa { grid-column: 2 / 6; grid-row: 3; align-self: end; display: grid; grid-template-columns: 1fr; gap: 6px; margin-top: 40px; }
+  .na-mesa__rotulo { padding-top: 0; }
+  .na-mesa__lista { display: block; border-bottom: 1px solid var(--fio); }
+  .na-mesa__lista li { border-top: 1px solid var(--fio); }
+  .na-mesa__peca { display: flex; padding: 0; border-top: 0; }
 }
 
 /* ---------- Peças: cabeçalho, filtros e grade ---------- */
@@ -554,8 +603,22 @@ html:not(.js) .so-js { display: none !important; }
 }
 .ordenar__select:hover { border-color: var(--tinta); }
 
-@media (max-width: 389.98px) {
-  .ordenar__rotulo { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+/* Celular: Filtrar e Ordenar dividem a linha; "Ordenar por" vira legenda dentro da caixa do select. */
+@media (max-width: 767.98px) {
+  .pecas__barra { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
+  .botao-filtrar { justify-content: center; min-height: 56px; padding: 0 12px; }
+  .ordenar { position: relative; display: block; }
+  .ordenar__rotulo {
+    position: absolute;
+    z-index: 1;
+    top: 8px;
+    left: 15.5px;
+    font-size: .75rem;
+    line-height: 1.2;
+    pointer-events: none;
+  }
+  .ordenar__select { min-height: 56px; padding: 21px 36px 5px 14px; line-height: 1.3; }
+  .ordenar__caixa::after { right: 15px; }
 }
 
 .pecas__corpo { display: block; }
@@ -781,10 +844,16 @@ html:not(.js) .pecas__cabeca { margin-bottom: 32px; }
   .peca--destaque .peca__info { padding-top: 20px; }
 }
 
+/* Com a lateral de filtros (só com JS), a grade de 1024 a 1199 fica em duas colunas */
 @media (min-width: 1024px) and (max-width: 1199.98px) {
-  .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .peca--destaque { grid-column: 1 / -1; grid-row: auto; }
-  .peca--destaque .peca__foto { flex: none; aspect-ratio: 4 / 3; min-height: 0; }
+  .js .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .js .peca--destaque { grid-column: 1 / -1; grid-row: auto; }
+  .js .peca--destaque .peca__foto { flex: none; aspect-ratio: 4 / 3; min-height: 0; }
+}
+/* Sem JS (ou com JS falho) não há filtros: a grade ocupa a largura toda */
+html:not(.js) .pecas__corpo { display: block; }
+@media (min-width: 1200px) {
+  html:not(.js) .grade { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 .pecas__vazio {
@@ -1132,6 +1201,19 @@ html:not(.js) .pecas__cabeca { margin-bottom: 32px; }
   }
   .trilha { padding: 20px 0 24px; }
 }
+/* Tablet: foto e compra lado a lado (a foto acompanha a rolagem), com a quantidade acima do botão */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .detalhe { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); column-gap: 32px; align-items: start; }
+  .detalhe__galeria { position: sticky; top: calc(var(--cabecalho-h) + 16px); }
+  .detalhe__nome { font-size: 2.375rem; }
+  .detalhe__preco { margin-top: 10px; font-size: 1.25rem; }
+  .detalhe__descricao { font-size: 1.0625rem; }
+  .compra { margin-top: 24px; padding-top: 24px; }
+  .esmalte__opcoes { gap: 8px 14px; }
+  .compra__linha { grid-template-columns: 1fr; gap: 16px; }
+  .quantidade { justify-self: start; }
+  .abas { margin-top: 32px; }
+}
 @media (min-width: 1024px) {
   .detalhe { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: start; }
   .detalhe__galeria { grid-column: 1 / 8; position: sticky; top: calc(var(--cabecalho-h) + 24px); }
@@ -1299,11 +1381,12 @@ html:not(.js) .pecas__cabeca { margin-bottom: 32px; }
 }
 .item--novo { animation: lampejo 1.8s ease-out both; }
 
-/* Abertura da loja (só com JS e movimento permitido): o anel se desenha e a foto assenta (movimento.js).
+/* Abertura da loja (só com JS e movimento permitido): o anel se desenha, a foto assenta e "torta" entorta (movimento.js).
    Sem JS, com JS falho (o teto de 3s tira o .js) ou com movimento reduzido, tudo já aparece no estado final. */
 @media (prefers-reduced-motion: no-preference) {
   .js body[data-pagina="loja"] [data-cabecalho] .anel { stroke-dasharray: 1; stroke-dashoffset: 1; }
   .js body[data-pagina="loja"] [data-foto-topo] img { opacity: 0; }
+  .js body[data-pagina="loja"] [data-torta] { transform: none; }
 }
 
 /* Telas muito estreitas (320px): o anel sai do cabeçalho para a marca, o Menu e a Sacola caberem numa linha */

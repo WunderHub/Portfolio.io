@@ -1,5 +1,5 @@
-/* Header sticky, menu mobile e barra de WhatsApp. Frente: topo.
-   Provisório da fundação: layout funcional; a frente topo refina e anima (seção 6). */
+/* Header sticky, menu mobile e barra de WhatsApp (seções 3.4, 5.4 e 6). Frente: topo.
+   Quieto: preto, sem sombra, sem animação de rolagem. Hover e foco têm o mesmo efeito. */
 
 .header {
   position: sticky;
@@ -32,9 +32,10 @@
   align-items: center;
   min-height: var(--alvo-min);
   color: var(--prata);
-  font-weight: 500;
   font-size: var(--t-16);
+  font-weight: 500;
   text-decoration-color: transparent;
+  text-underline-offset: .3em;
 }
 .header__lista a:hover,
 .header__lista a:focus-visible {
@@ -45,6 +46,7 @@
   display: flex;
   align-items: center;
   gap: var(--e-1);
+  margin-right: -4px; /* o botão Menu alinha a borda com a margem; o ícone tem respiro próprio */
 }
 .header__whatsapp {
   display: inline-flex;
@@ -53,9 +55,18 @@
   width: var(--alvo-min);
   height: var(--alvo-min);
   color: var(--prata-luz);
+  transition: color var(--dur-toque) var(--ease-resposta);
+}
+.header__whatsapp:hover,
+.header__whatsapp:focus-visible {
+  color: var(--branco);
+}
+.header__whatsapp:active {
+  transform: translate(-.55px, 1.92px);
 }
 .header__menu {
   padding-inline: var(--e-2);
+  margin-right: 4px;
 }
 @media (min-width: 768px) {
   .header__nav {
@@ -66,7 +77,9 @@
   }
 }
 
-/* ---------- menu mobile (dialog em tela cheia) ---------- */
+/* ---------- menu mobile (dialog em tela cheia) ----------
+   Entra em 280ms (y −24px → 0, opacidade) e sai em 200ms (menu.js, Motion). O fundo da página fica
+   coberto pelo próprio dialog; o ::backdrop é transparente para a entrada não piscar preto. */
 .menu {
   position: fixed;
   inset: 0;
@@ -75,23 +88,36 @@
   height: 100%;
   max-height: none;
   margin: 0;
-  padding: 0 var(--margem) calc(var(--e-4) + env(safe-area-inset-bottom));
+  padding: 0;
   border: 0;
   overflow-y: auto;
-}
-.menu[open] {
-  display: flex;
-  flex-direction: column;
-  gap: var(--e-3);
+  overscroll-behavior: contain;
 }
 .menu::backdrop {
-  background: var(--preto-acm);
+  background: transparent;
+}
+.menu__corpo {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 0 var(--margem) calc(var(--e-4) + env(safe-area-inset-bottom));
 }
 .menu__linha {
   display: flex;
   align-items: center;
   justify-content: space-between;
   min-height: var(--header-h);
+}
+.menu__marca {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo-min);
+}
+.menu__nav {
+  margin-top: var(--e-3);
+}
+.menu__destinos li + li {
+  border-top: 1px solid var(--grafite-fio);
 }
 .menu__destinos a {
   display: flex;
@@ -100,32 +126,51 @@
   font-family: var(--fonte-estrutura);
   font-stretch: 150%;
   font-weight: 800;
-  font-size: 32px;
+  /* 32px, um destino por linha: "Como trabalho" mede 12,735em em 150/800 (letreiro.json,
+     larguras.menuComoTrabalho); em telas estreitas o corpo encolhe para caber na linha */
+  font-size: min(32px, (100vw - 2 * var(--margem)) / 12.8);
   line-height: 1;
+  white-space: nowrap;
   color: var(--prata-luz);
   text-decoration-color: transparent;
+  text-decoration-thickness: 2px;
+  text-underline-offset: .18em;
 }
 .menu__destinos a:hover,
 .menu__destinos a:focus-visible {
   text-decoration-color: currentColor;
 }
+.menu__contato {
+  display: grid;
+  gap: var(--e-2);
+  margin-top: auto;
+  padding-top: var(--e-6);
+}
 .menu__email {
-  align-self: flex-start;
+  justify-self: start;
   display: inline-flex;
   align-items: center;
   min-height: var(--alvo-min);
+  color: var(--prata-luz);
+}
+/* página parada atrás do menu aberto */
+html:has(.menu[open]) {
+  overflow: hidden;
 }
 
-/* ---------- barra de WhatsApp (mobile) ---------- */
+/* ---------- barra de WhatsApp (mobile) ----------
+   barra-whatsapp.js tira o hidden, anima y 100% → 0 (240ms) e de volta (200ms) e põe html.com-barra.
+   Respeita a área segura de baixo. */
 .barra-whatsapp {
   position: fixed;
   inset: auto 0 0;
   z-index: var(--z-barra-whatsapp);
+  /* 48px + área segura (5.4); o scroll-padding-bottom de html.com-barra soma 16px de folga */
   padding: 0 var(--margem) env(safe-area-inset-bottom);
   background: var(--preto-acm);
 }
-.barra-whatsapp .placa {
-  --h: 48px;
+.barra-whatsapp__placa {
+  font-size: var(--t-16);
 }
 @media (min-width: 768px) {
   .barra-whatsapp {

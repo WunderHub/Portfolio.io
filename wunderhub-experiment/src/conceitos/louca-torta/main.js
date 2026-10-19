@@ -31,6 +31,7 @@ function iniciar() {
       abrirLoja({
         aneis: [...corpo.querySelectorAll('[data-cabecalho] .anel')],
         foto: corpo.querySelector('[data-foto-topo]'),
+        torta: corpo.querySelector('[data-torta]'),
       }),
     );
   } else if (pagina === 'produto') {

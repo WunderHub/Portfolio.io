@@ -1,76 +1,395 @@
-/* Trabalhos: a vitrine (seções 4, 5.2 e 8). Frente: trabalhos.
-   Provisório da fundação: estado sem JS (todos os painéis abertos), nomes nos eixos de cada conceito,
-   quadro de captura com chanfro de 16°, marcadores A/B/C. Sem nome partido nem animação ainda. */
+/* Trabalhos: a vitrine (seções 4, 5.2, 8 e 9.5). Frente: trabalhos.
+   Este CSS descreve o estado ABERTO de todas as linhas: é o que aparece sem JS, com o teto de 3s
+   estourado e antes de vitrine.js carregar. Com o módulo ativo (.vitrine-ativa), quem escreve os
+   estados de cada linha é vitrine.js (estilos inline num único escritor por quadro):
+   grid-template-rows do painel, transform das metades do nome, das persianas e das imagens,
+   opacidade/transform dos marcadores e opacidade dos textos. Nada aqui transiciona essas propriedades. */
 
 .trabalhos {
   container-type: inline-size;
+  background: var(--preto-acm);
+  color: var(--prata);
 }
-.trabalhos__cabeca {
-  display: grid;
-  gap: var(--e-4);
-  margin-bottom: var(--e-8);
+
+/* ---------- grade da seção: título, filme, linhas ---------- */
+.trabalhos__grade {
+  display: flex;
+  flex-direction: column;
 }
 .trabalhos__intro {
   display: grid;
   gap: var(--e-3);
+  margin-bottom: var(--e-8);
 }
 .trabalhos__intro h2 {
-  max-width: 24ch;
+  max-width: 30ch; /* equilibra em duas linhas no desktop */
+}
+.trabalhos__intro p {
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--medida-lead);
+}
+/* no celular o filme vem depois das três linhas (seção 9.5); a ordem do DOM segue o desktop */
+.filme {
+  order: 2;
+  margin-top: var(--e-12);
+}
+.conceitos {
+  order: 1;
 }
 
-.conceitos {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--e-12);
+@media (min-width: 1024px) {
+  .trabalhos__grade {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: end;
+  }
+  /* posições explícitas: a colocação automática da grade obedeceria ao order do celular */
+  .trabalhos__intro {
+    grid-column: 1 / span 8;
+    grid-row: 1;
+    margin-bottom: 0;
+  }
+  .filme {
+    grid-column: 9 / span 4;
+    grid-row: 1;
+    margin-top: 0;
+  }
+  .conceitos {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: var(--e-12);
+  }
 }
+
+/* ---------- linhas ---------- */
 .conceito {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--e-2);
-  padding-top: var(--e-4);
   border-top: 1px solid var(--grafite-fio);
+  padding-block: var(--e-4) var(--e-8);
 }
+.conceito:last-child {
+  padding-bottom: 0;
+}
+.conceito__cabeca {
+  display: grid;
+  gap: var(--e-2);
+}
+
+/* Nome partido (5.2): texto real visualmente oculto + duas cópias aria-hidden recortadas por uma reta
+   de 16° que passa pelo centro da versal (polígonos gerados em styles/generated/letreiro.css).
+   Caixa inline-block do tamanho do texto, line-height 1, sem quebra: as % e os em dos polígonos
+   valem para essa caixa. */
 .conceito__nome {
+  display: flex; /* a altura do h3 é a da caixa do nome */
+  margin-block: var(--e-1);
+}
+
+.nome {
+  --brilho: .3;
+  position: relative;
+  display: block;
+  /* no celular cada nome ocupa a linha inteira (2.4), limitado a 120px; --largura-em vem das métricas */
+  font-size: min(7.5rem, (100cqi - 2 * var(--margem)) / var(--largura-em));
+  font-family: var(--fonte-estrutura);
   font-stretch: calc(var(--nome-wdth) * 1%);
   font-weight: var(--nome-wght);
-  /* largura útil = largura da seção menos as margens */
-  font-size: min(7.5rem, (100cqi - 2 * var(--margem)) / var(--largura-em));
   line-height: 1;
   white-space: nowrap;
+  letter-spacing: 0;
+  /* a caixa de line-height 1 sobra ~0,17em abaixo da base; puxa a linha de tipo para perto */
+  margin-bottom: -.08em;
 }
+.nome[data-nome='junco'] { --brilho: .62; }
+.nome[data-nome='louca-torta'] { --brilho: .7; }
+
+.nome__metade {
+  position: relative;
+  display: block;
+}
+.nome__metade--cima {
+  clip-path: var(--clip-nome-cima);
+  /* fenda aberta: 8px para cima na perpendicular do corte (-0,276; 0,961) */
+  transform: translate(2.208px, -7.688px);
+}
+.nome__metade--baixo {
+  position: absolute;
+  inset: 0;
+  clip-path: var(--clip-nome-baixo);
+  transform: translate(-2.208px, 7.688px);
+}
+/* aço escovado (2.2), decorativo */
+.nome__letras {
+  display: block;
+  color: transparent;
+  background: var(--especular), var(--grao-letreiro), var(--prata-escovada);
+  background-size: 100% 100%, 2400px 128px, 100% 100%;
+  background-blend-mode: normal, soft-light, normal;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+/* aresta polida (lábio de cima) e retorno (lábio de baixo): tiras de 2px recortadas às letras */
+.nome__aresta,
+.nome__retorno {
+  position: absolute;
+  inset: 0;
+}
+.nome__aresta {
+  color: var(--prata-luz);
+  clip-path: var(--clip-nome-aresta);
+}
+.nome__retorno {
+  color: var(--prata-sombra);
+  clip-path: var(--clip-nome-retorno);
+}
+
 .conceito__tipo {
   color: var(--prata);
   font-size: var(--t-lead);
+  line-height: var(--lh-lead);
 }
 .conceito__acoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--e-1) var(--e-2);
-}
-.conceito__painel {
   display: grid;
-  gap: var(--e-4);
-  margin-top: var(--e-3);
+  gap: var(--e-2);
+  margin-top: var(--e-1);
+}
+/* celular: placa de 56px e botão de 48px em largura total */
+.conceito__abrir {
+  width: 100%;
+  justify-content: center;
+}
+.conceito__alternar {
+  width: 100%;
 }
 
-/* Quadro de captura: canto superior direito chanfrado por uma reta de 16° (estático). */
+@media (min-width: 600px) {
+  .conceito__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .conceito__abrir,
+  .conceito__alternar {
+    width: auto;
+  }
+  /* fora do celular a placa acompanha a altura do botão ao lado (48px) */
+  .conceito__abrir {
+    --h: var(--alvo-min);
+  }
+}
+
+@media (min-width: 1024px) {
+  .conceito {
+    padding-block: var(--e-6) var(--e-8);
+  }
+  .conceito__cabeca {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--gutter);
+    row-gap: var(--e-2);
+    align-items: center;
+  }
+  .conceito__nome {
+    grid-column: 1 / -1;
+    margin-block: 0;
+  }
+  .nome {
+    font-size: var(--t-nome);
+  }
+  .conceito__acoes {
+    margin-top: 0;
+    justify-content: flex-end;
+  }
+}
+
+/* ---------- painel ---------- */
+.conceito__painel {
+  display: grid;
+  grid-template-rows: 1fr; /* vitrine.js escreve 0fr…1fr inline */
+}
+.conceito__miolo {
+  min-height: 0;
+  overflow: clip; /* não é contêiner de rolagem: o foco nunca rola o painel por dentro */
+}
+.conceito__interior {
+  display: grid;
+  gap: var(--e-4);
+  padding-block: var(--e-4) var(--e-2);
+}
+
+@media (min-width: 1024px) {
+  .conceito__interior {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    padding-top: var(--e-6);
+  }
+  .conceito__capturas {
+    grid-column: 1 / span 8;
+  }
+  .conceito__texto {
+    grid-column: 9 / span 4;
+  }
+}
+
+/* ---------- quadros de captura (2.6): canto superior direito chanfrado a 16°, estático ---------- */
 .conceito__capturas {
   position: relative;
 }
-.conceito__desktop,
-.conceito__celular {
-  --c: clamp(32px, 12%, 96px);
-  width: 100%;
+.quadro {
+  position: relative;
+  container-type: inline-size;
+}
+.quadro__janela {
+  --c: clamp(32px, 12cqw, 96px);
+  position: relative;
+  overflow: clip;
   background: var(--grafite-parede);
   clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% calc(var(--c) * .2867), 100% 100%, 0 100%);
 }
-.conceito__desktop {
-  display: none;
+.quadro--desktop .quadro__janela {
+  aspect-ratio: 1440 / 900;
 }
-.conceito__celular {
-  max-width: 390px;
+.quadro--celular .quadro__janela {
+  aspect-ratio: 390 / 844;
+}
+.quadro__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
+}
+/* Persiana (M2): Grafite Parede sobre a imagem, com a borda de ataque ao longo do corte (16°).
+   Em repouso cobre a janela inteira (a borda passa pelo canto superior direito); aberta, sai pela
+   perpendicular até a borda passar do canto inferior esquerdo. Medidas em cqw do .quadro. */
+.quadro__persiana {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: -28.67cqw;
+  width: 150%;
+  height: calc(100% + 28.67cqw);
+  background: var(--grafite-parede);
+  clip-path: polygon(0 0, 100% 43cqw, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+/* aresta polida na borda da persiana */
+.quadro__persiana::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--prata-luz);
+  clip-path: polygon(0 0, 100% 43cqw, 100% calc(43cqw + 2px), 0 2px);
+}
+.quadro--desktop {
+  /* deslocamento total da persiana (fator 1,02 de folga): ver vitrine.js */
+  --persiana-x: -24.67cqw;
+  --persiana-y: 85.9cqw;
+}
+.quadro--celular {
+  --persiana-x: -66.32cqw;
+  --persiana-y: 230.9cqw;
+}
+.vitrine-ativa .quadro__persiana {
+  display: block;
+  transform: translate(var(--persiana-x), var(--persiana-y));
 }
 
+/* falha de imagem (5.2): Grafite Parede com o aviso; o link de demonstração continua */
+.quadro__falha {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  padding: var(--e-3);
+  background: var(--grafite-parede);
+  color: var(--prata);
+  font-size: var(--t-16);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+.quadro--falhou .quadro__img {
+  visibility: hidden;
+}
+.quadro--falhou .quadro__marcadores {
+  display: none !important;
+}
+
+/* Marcadores A/B/C presos às capturas (posições de decisoes.json, escritas por vitrine.js).
+   Sem JS ficam ocultos: a lista ao lado já liga cada letra à decisão. */
+.quadro__marcadores {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.quadro__marcador {
+  position: absolute;
+  left: clamp(6px, calc(var(--x, 0%) + 6px), 100% - 38px);
+  top: clamp(6px, calc(var(--y, 0%) + 6px), 100% - 38px);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: var(--vermelho-acrilico);
+  color: var(--branco);
+  font-family: var(--fonte-leitura);
+  font-size: var(--t-16);
+  font-weight: 650;
+  line-height: 1;
+}
+.marcadores-prontos .quadro--celular .quadro__marcadores {
+  display: block;
+}
+
+/* celular (< 768px): só a captura de celular, com os marcadores dela */
+.quadro--desktop {
+  display: none;
+}
+.quadro--celular {
+  width: min(100%, 300px);
+}
+
+/* a partir de 768px: captura desktop e o celular sobreposto no canto inferior direito, cobrindo 22%
+   da largura do quadro, separado por um filete preto de 4px (o painel de ACM) */
+@media (min-width: 768px) {
+  .conceito__capturas {
+    padding-bottom: var(--e-6);
+  }
+  .quadro--desktop {
+    display: block;
+    width: 92%;
+  }
+  .quadro--celular {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    width: calc(92% * .22);
+    padding: 4px;
+    background: var(--preto-acm);
+    clip-path: polygon(0 0, calc(100% - 36px) 0, 100% calc(36px * .2867), 100% 100%, 0 100%);
+  }
+  .quadro--celular .quadro__janela {
+    --c: 32px;
+  }
+  .marcadores-prontos .quadro--desktop .quadro__marcadores {
+    display: block;
+  }
+  .marcadores-prontos .quadro--celular .quadro__marcadores {
+    display: none;
+  }
+  .quadro--celular .quadro__falha {
+    padding: var(--e-1);
+    font-size: var(--t-12);
+  }
+}
+
+/* ---------- texto do painel ---------- */
+.conceito__texto {
+  display: grid;
+  align-content: start;
+  gap: var(--e-3);
+}
 .conceito__objetivo {
   color: var(--prata-luz);
   font-size: var(--t-lead);
@@ -80,61 +399,318 @@
 .conceito__decisoes {
   display: grid;
   gap: var(--e-2);
-  margin-top: var(--e-3);
+  max-width: var(--medida);
 }
 .conceito__decisoes li {
   display: grid;
-  grid-template-columns: 32px 1fr;
-  gap: var(--e-2);
+  grid-template-columns: 32px minmax(0, 1fr);
+  column-gap: var(--e-2);
   align-items: start;
 }
-.conceito__marcador {
-  display: inline-grid;
+.conceito__decisoes li > span:last-child {
+  padding-top: .2em;
+}
+.conceito__letra {
+  display: grid;
   place-items: center;
   width: 32px;
   height: 32px;
   background: var(--vermelho-acrilico);
   color: var(--branco);
-  font-weight: 650;
   font-size: var(--t-16);
+  font-weight: 650;
   line-height: 1;
+}
+.conceito__testar {
+  justify-self: start;
+  margin-top: var(--e-1);
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .conceito__texto {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+  .conceito__objetivo {
+    grid-column: 1 / span 3;
+  }
+  .conceito__decisoes {
+    grid-column: 4 / span 3;
+  }
 }
 
 @media (min-width: 1024px) {
-  .trabalhos__cabeca {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--gutter);
-    align-items: end;
-  }
-  .trabalhos__intro {
-    grid-column: 1 / span 8;
-  }
-  .filme {
-    grid-column: 9 / span 4;
-  }
-  .conceito__nome {
-    font-size: var(--t-nome);
-  }
-  .conceito__painel {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--gutter);
-  }
-  .conceito__capturas {
-    grid-column: 1 / span 8;
-  }
   .conceito__texto {
-    grid-column: 9 / span 4;
+    gap: var(--e-4);
   }
-  .conceito__desktop {
-    display: block;
+}
+
+/* ---------- filme (9.5): fachada de vídeo; nenhum byte de vídeo antes do clique ---------- */
+/* .filme__quadro não tem recorte, então o anel de foco do botão ou do vídeo aparece inteiro (desenhado no
+   quadro via :has). Um filete de 1px em Grafite Fio desenha o chanfro de 16° por trás da tela, que é
+   recortada por dentro. Em tela cheia o vídeo vai para a camada superior e sai do recorte. */
+.filme__quadro {
+  --c: clamp(32px, 12cqw, 96px);
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 16 / 9;
+}
+.filme__quadro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grafite-fio);
+  clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% calc(var(--c) * .2867), 100% 100%, 0 100%);
+}
+.filme__abrir,
+.filme__video {
+  position: absolute;
+  inset: 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  clip-path: polygon(0 0, calc(100% - var(--c) + 1px) 0, 100% calc((var(--c) - 1px) * .2867), 100% 100%, 0 100%);
+}
+.filme__abrir {
+  display: block;
+  background: var(--grafite-parede);
+  color: var(--branco);
+  text-align: left;
+}
+.filme__abrir:focus-visible,
+.filme__video:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+.filme__quadro:has(:focus-visible) {
+  outline: 2px solid var(--foco-contorno);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--foco-folga), 0 0 0 7px var(--foco-anel);
+}
+.filme__poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.filme__video {
+  display: block;
+  object-fit: contain;
+  background: var(--preto-acm);
+}
+/* rótulo como placa vermelha (ação), encostado no canto inferior esquerdo */
+.filme__rotulo {
+  --h: var(--alvo-min);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--h);
+  padding: 0 calc(var(--e-2) + var(--h) * var(--corte-tan)) 0 var(--e-2);
+  font-size: var(--t-16);
+  font-weight: 650;
+  line-height: 1.2;
+}
+.filme__rotulo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--vermelho-acrilico);
+  clip-path: polygon(0 0, calc(100% - var(--h) * var(--corte-tan)) 0, 100% 100%, 0 100%);
+}
+.filme__icone {
+  flex: none;
+  width: 10px;
+  height: 12px;
+}
+.filme__abrir:hover .filme__rotulo,
+.filme__abrir:focus-visible .filme__rotulo {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: .25em;
+}
+.filme__abrir:active .filme__rotulo {
+  transform: translate(-.55px, 1.92px);
+}
+.filme__aviso {
+  margin-top: var(--e-2);
+  color: var(--prata-luz);
+  font-size: var(--t-16);
+  font-weight: 500;
+}
+.filme__aviso:empty {
+  margin: 0;
+}
+.filme figcaption {
+  margin-top: var(--e-2);
+  color: var(--prata-sombra);
+  font-size: var(--t-14);
+  line-height: 1.5;
+  max-width: 46ch;
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  .filme {
+    max-width: 640px;
   }
-  /* celular sobreposto no canto inferior direito, 22% da largura do quadro */
-  .conceito__celular {
-    position: absolute;
-    right: -4%;
-    bottom: -8%;
-    width: 22%;
-    --c: 16px;
-    outline: 1px solid var(--preto-acm);
-  }
+}
+
+/* ---------- Testar aqui (seção 8): <dialog> modal com a demo num iframe ---------- */
+.teste {
+  --teste-margem: var(--e-3);
+  width: calc(100vw - 2 * var(--teste-margem));
+  height: calc(100vh - 2 * var(--teste-margem));
+  height: calc(100dvh - 2 * var(--teste-margem));
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: var(--grafite-parede);
+  color: var(--prata);
+  --foco-contorno: var(--prata-luz);
+  --foco-anel: var(--vermelho-sinal);
+  --foco-folga: var(--grafite-parede);
+}
+.teste::backdrop {
+  background: rgb(0 0 0 / .82);
+}
+.teste__caixa {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
+}
+.teste__cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e-2) var(--e-4);
+  padding: var(--e-2) var(--e-3);
+  border-bottom: 1px solid var(--grafite-fio);
+}
+.teste__titulo {
+  font-size: var(--t-24);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.teste__larguras {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+.teste__legenda {
+  float: left;
+  margin-right: var(--e-2);
+  padding: 0;
+  line-height: var(--alvo-min);
+  color: var(--prata);
+  font-size: var(--t-16);
+  font-weight: 650;
+}
+.teste__opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-1);
+}
+.teste__opcao {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--alvo-min);
+  padding: 0 var(--e-2);
+  border: 1px solid var(--prata);
+  color: var(--prata);
+  font-size: var(--t-16);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color var(--dur-toque) var(--ease-resposta),
+    border-color var(--dur-toque) var(--ease-resposta),
+    background-color var(--dur-toque) var(--ease-resposta);
+}
+.teste__opcao input {
+  appearance: none;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  border: 1.5px solid currentColor;
+  background: transparent;
+  cursor: pointer;
+}
+.teste__opcao input:checked {
+  background: currentColor;
+  box-shadow: inset 0 0 0 2px var(--grafite-fio);
+}
+.teste__opcao input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+.teste__opcao input:checked:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--grafite-fio);
+}
+.teste__opcao:hover,
+.teste__opcao:has(input:focus-visible) {
+  color: var(--prata-luz);
+  border-color: var(--prata-luz);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .25em;
+}
+.teste__opcao:has(input:focus-visible) {
+  outline: 2px solid var(--foco-contorno);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--foco-folga), 0 0 0 7px var(--foco-anel);
+}
+.teste__opcao:has(input:checked) {
+  color: var(--prata-luz);
+  border-color: var(--prata-luz);
+  background: var(--grafite-fio);
+}
+.teste__escala {
+  color: var(--prata);
+  font-size: var(--t-16);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.teste__acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  margin-left: auto;
+}
+.teste__inteira {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo-min);
+  color: var(--prata);
+  font-weight: 500;
+}
+.teste__fechar {
+  border-color: var(--prata);
+}
+.teste__palco {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+  padding: var(--e-3) var(--e-3) 0;
+  background: var(--preto-acm);
+}
+.teste__moldura {
+  flex: none;
+  overflow: hidden;
+  background: var(--branco);
+}
+.teste__iframe {
+  display: block;
+  border: 0;
+  transform-origin: 0 0;
+  background: var(--branco);
 }

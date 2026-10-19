@@ -9,8 +9,8 @@
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#F3F4EF">
   <link rel="icon" href="/src/conceitos/louca-torta/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="/src/conceitos/louca-torta/fonts/young-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/src/conceitos/louca-torta/fonts/instrument-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Sem preload das fontes: na segunda página da mesma aba o Chrome serve a fonte do cache sem consumir o
+       preload e avisa no console. O CSS está no head, com font-display: swap e fallbacks de métrica ajustada. -->
   <script>
     // html.js liga os estados que dependem de JavaScript. Se o módulo não rodar em 3s, a página volta ao modo sem JS.
     (function () {
@@ -25,18 +25,29 @@
 </head>
 <body data-pagina="loja">
   <a class="pular" href="#pecas">Pular para as peças</a>
-  <!--#include src/conceitos/comum/selo.html marca="Louça Torta" voltar="../../#conceito-louca-torta" variante="topo" -->
+  <aside aria-label="Aviso de conceito">
+    <!--#include src/conceitos/comum/selo.html marca="Louça Torta" voltar="../../#conceito-louca-torta" variante="topo" -->
+  </aside>
   <!--#include src/conceitos/louca-torta/partials/cabecalho.html inicio="./" raiz="" -->
 
   <main id="principal">
     <section class="topo" aria-labelledby="topo-titulo">
-      <h1 class="topo__titulo" id="topo-titulo"><span class="topo__linha">Louça feita à mão,</span> <span class="topo__linha">um pouco torta de propósito.</span></h1>
+      <h1 class="topo__titulo" id="topo-titulo"><span class="topo__linha">Louça feita à mão,</span> <span class="topo__linha">um pouco <span class="torta" data-torta>torta</span> de propósito.</span></h1>
       <div class="topo__texto">
         <p class="topo__lead">Canecas, tigelas e pratos de cerâmica de alta temperatura, esmaltados em pequenas fornadas. Nenhuma peça sai igual à outra.</p>
         <a class="botao botao--primario" href="#pecas">Ver as peças</a>
       </div>
       <div class="topo__foto" data-foto-topo>
         <img src="/src/conceitos/louca-torta/img/lt-hero-1600.webp" srcset="/src/conceitos/louca-torta/img/lt-hero-400.webp 400w, /src/conceitos/louca-torta/img/lt-hero-800.webp 800w, /src/conceitos/louca-torta/img/lt-hero-1600.webp 1600w" sizes="(min-width: 1024px) 66vw, 100vw" width="1600" height="900" alt="Mesa posta com louça feita à mão: pratos em azul cobalto, tigelas verde celadon e uma caneca branca um pouco torta, sobre toalha de linho cinza-claro." fetchpriority="high" decoding="async">
+      </div>
+      <!-- As três peças da foto, com o esmalte que aparece nela. -->
+      <div class="na-mesa">
+        <p class="na-mesa__rotulo" id="na-mesa">Na mesa</p>
+        <ul class="na-mesa__lista" aria-labelledby="na-mesa">
+          <li><a class="na-mesa__peca" href="produto/?p=prato-raso&amp;esmalte=cobalto"><span class="bolinha" data-esmalte="cobalto" aria-hidden="true"></span><span class="na-mesa__nome">Prato Raso 26 cm<span class="sr-only">, cobalto</span></span><span class="na-mesa__preco">R$&nbsp;98,00</span></a></li>
+          <li><a class="na-mesa__peca" href="produto/?p=tigela-funda&amp;esmalte=celadon"><span class="bolinha" data-esmalte="celadon" aria-hidden="true"></span><span class="na-mesa__nome">Tigela Funda<span class="sr-only">, celadon</span></span><span class="na-mesa__preco">R$&nbsp;120,00</span></a></li>
+          <li><a class="na-mesa__peca" href="produto/?p=caneca-torta&amp;esmalte=branco-giz"><span class="bolinha" data-esmalte="branco-giz" aria-hidden="true"></span><span class="na-mesa__nome">Caneca Torta<span class="sr-only">, branco giz</span></span><span class="na-mesa__preco">R$&nbsp;89,00</span></a></li>
+        </ul>
       </div>
     </section>
 

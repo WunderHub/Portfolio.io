@@ -1,7 +1,8 @@
-// Movimento da Louça Torta. Um só momento na carga (o anel da marca se desenha e a foto do topo assenta);
+// Movimento da Louça Torta. Um só momento na carga (o anel da marca se desenha, a foto do topo assenta e a
+// palavra "torta" do título entorta);
 // o resto só responde à pessoa: grade que se reorganiza ao filtrar, troca de esmalte, contagem da sacola.
 // Com prefers-reduced-motion tudo vira estado final (MotionGlobalConfig.skipAnimations, em tempo real).
-import { animate, MotionGlobalConfig } from 'motion';
+import { animate, spring, MotionGlobalConfig } from 'motion';
 
 const consulta = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null;
 
@@ -23,8 +24,14 @@ export const EASE_SAIDA = [0.2, 0.7, 0.2, 1];
  * Abertura da loja: o anel da marca se desenha (como a borda no torno) e a foto do topo assenta.
  * O CSS esconde os dois só quando há JS e movimento permitido; aqui eles sempre terminam visíveis.
  */
-export function abrirLoja({ aneis = [], foto }) {
+export function abrirLoja({ aneis = [], foto, torta }) {
   const animacoes = [];
+  if (torta) {
+    // a palavra chega reta e entorta com um balanço curto, como peça que assenta no torno
+    const a = animate(torta, { rotate: [0, -4] }, { type: spring, visualDuration: 0.55, bounce: 0.5, delay: 0.95 });
+    a.finished.then(() => { torta.style.transform = 'rotate(-4deg)'; }, () => {});
+    animacoes.push(a);
+  }
   aneis.forEach((anel, i) => {
     const a = animate(anel, { strokeDashoffset: [1, 0] }, { duration: i ? 0.9 : 1.15, delay: 0.1 + i * 0.32, ease: [0.45, 0, 0.2, 1] });
     a.finished.then(() => { anel.style.strokeDashoffset = '0'; }, () => {});

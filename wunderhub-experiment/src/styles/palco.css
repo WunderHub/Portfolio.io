@@ -1,76 +1,465 @@
-/* Palco e letreiro (seção 5.1). Frente: topo.
-   Provisório da fundação: letreiro estático em repouso (nome contínuo, fenda de 6px, aresta polida),
-   usando as variáveis de src/styles/generated/letreiro.css. Sem plano de trás, sem pista, sem sticky. */
+/* Palco e letreiro: Momento 1 (seções 5.0 e 5.1). Frente: topo.
 
+   Camadas de cada vão (um por vão no desktop; um por andar na torre do mobile):
+     .vao__fundo     plano de trás: captura, véu e duas persianas pretas. Caixa estática do tamanho da
+                     janela totalmente aberta, recortada pela faixa entre o corte subido e o corte descido
+                     (clip-path estático de 4 pontos). As persianas andam com transform junto com as
+                     metades: a janela é o espaço entre elas.
+     .vao__metade    metades de letras (aço escovado), cortadas pela reta de 16° (clip-path estático).
+                     Sem painel preto próprio: nenhuma metade pinta preto sobre letra de outro vão.
+   Os fundos ficam todos abaixo das letras (z-index no mesmo contexto: .vao não cria contexto).
+
+   Estados:
+     padrão (sem .js, reduced motion, altura < 500px, teto estourado): estático equivalente a p=0,62,
+       janelas abertas, wght 390/440, véu 0,25, placas visíveis. Tudo em CSS, sem depender do script.
+     .js com movimento: estado inicial de p=0 (fenda 0, aresta apagada); render.js escreve o resto.
+
+   Geometria (5.1): U e D são as folgas acima e abaixo do letreiro; a fachada ocupa a largura inteira de
+   .topo e recua as letras pela margem. Todas as medidas de letra vêm de styles/generated/letreiro.css. */
+
+/* ---------- variáveis do palco ---------- */
 .topo {
   container-type: inline-size;
   overflow-x: clip;
-  /* tudo dentro de .topo mede pela largura de .topo (sem a barra de rolagem) */
   --largura-letreiro: min(100cqi - 2 * var(--margem), 1536px);
+  --recuo-letreiro: max(var(--margem), (100cqi - 1536px) / 2);
+  --caixa-h: calc(100svh - var(--header-h));
+  --labio: 4px; /* borda preta da persiana além do corte: fenda preta em repouso, caixilho na janela */
+
+  /* torre (abaixo de 1024px) */
   --fs-letreiro: calc(var(--largura-letreiro) / var(--letreiro-em-torre));
   --L: calc(3 * .74 * var(--fs-letreiro));
+  --abre-cima: 2svh; /* metade de cima, na perpendicular */
+  --abre-baixo: calc(6px + 7svh); /* metade de baixo, fenda incluída */
+  --cascata: 9svh; /* andar k desce k × 9svh */
+  --U: var(--abre-cima);
+  --D: calc(6px + 7svh + 18svh + 8px);
+  --pista: 90svh;
+  --placa-largura: 3em; /* a placa de aço: o gradiente atravessa o letreiro inteiro */
+  --placa-altura: calc(3 * var(--letreiro-linha));
+
+  /* deriva horizontal das metades (componente x da perpendicular) */
+  --dt: calc(.276 * var(--abre-cima));
+  --db: calc(.276 * var(--abre-baixo));
+  /* Centragem lateral da abertura: a metade de baixo anda mais que a de cima, então o letreiro inteiro
+     desliza na horizontal metade da diferença (fenda de 6px fora da conta: em p=0 nada se move). As
+     metades continuam se afastando na perpendicular uma da outra, e nenhuma letra sai da tela. */
+  --centra: calc(.138 * (var(--abre-baixo) - 6px - var(--abre-cima)));
+  --deriva-cima: calc(var(--dt) + var(--centra)); /* x da metade de cima, aberta */
+  --deriva-baixo: calc(var(--db) - var(--centra)); /* recuo x da metade de baixo, aberta */
+  /* posição da caixa do letreiro na caixa sticky (5.1); no modo estático o letreiro começa em U */
+  --o: var(--U);
 }
 @media (min-width: 1024px) {
   .topo {
     --fs-letreiro: calc(var(--largura-letreiro) / var(--letreiro-em-linha));
     --L: calc(.74 * var(--fs-letreiro));
+    --abre-cima: 6svh;
+    --abre-baixo: calc(6px + 22svh);
+    --cascata: 0px;
+    --D: calc(6px + 22svh + 8px);
+    --pista: 120svh;
+    --placa-largura: calc(var(--letreiro-em-linha) * 1em);
+    --placa-altura: var(--letreiro-linha);
   }
 }
 
+/* ---------- palco: estático por padrão ---------- */
 .palco {
-  padding-bottom: var(--e-6);
+  position: relative;
 }
+.palco__caixa {
+  position: relative;
+}
+.palco__cena {
+  position: relative;
+}
+
+/* ---------- fachada ---------- */
 .fachada {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
-  padding-inline: max(var(--margem), (100cqi - 1536px) / 2);
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--U) var(--recuo-letreiro) var(--D);
+  contain: layout paint style;
+  container-type: inline-size;
   font-family: var(--fonte-letreiro);
-  font-weight: 900;
   font-size: var(--fs-letreiro);
+  font-weight: var(--peso);
   line-height: var(--letreiro-linha);
-  /* a frente topo põe contain: layout paint style com padding-block U e D (seção 5.1) */
+  font-kerning: none;
+  font-synthesis: none;
+  user-select: none;
+  -webkit-user-select: none;
+  /* estado estático (p = 0,62): peso do caixilho, luz quase toda acesa */
+  --peso: 440;
+  --brilho: .584;
 }
+@media (min-width: 1024px) {
+  .fachada {
+    flex-direction: row;
+    --peso: 390;
+  }
+}
+
 .vao {
   position: relative;
+  flex: none;
   width: var(--vao-l);
   height: var(--letreiro-linha);
+  --k: 0;
+  /* janela: faixa de x (no vão) que só este vão ocupa; nenhuma letra vizinha entra nela */
+  --jan-x0: 0px;
+  --jan-x1: var(--vao-l);
+  --jan-w: calc(var(--jan-x1) - var(--jan-x0));
+  /* corte em repouso na borda esquerda da janela; topo e base da janela totalmente aberta */
+  --jan-corte: calc(var(--corte-y0) + .2867 * var(--jan-x0));
+  --jan-topo: calc(var(--jan-corte) - 1.0403 * var(--abre-cima));
+  --jan-base: calc(var(--corte-y0) + .2867 * var(--jan-x1) + 1.0403 * var(--abre-baixo));
+  /* na torre a janela não sobe além do topo da versal do andar (não passa atrás do andar de cima) */
+  --fundo-topo: max(var(--jan-topo), -.0325em);
+  /* coordenadas dentro do fundo */
+  --c0: calc(var(--jan-corte) - var(--fundo-topo));
+  --t0: calc(var(--jan-topo) - var(--fundo-topo));
+  --b0: calc(var(--jan-corte) + 1.0403 * var(--abre-baixo) - var(--fundo-topo));
+  /* folga das persianas: na horizontal cobre a deriva, na vertical só um respiro */
+  --eh: calc(var(--db) + var(--centra) + 16px);
+  --ev: 16px;
+  /* fundo do aço contínuo entre vãos e andares */
+  --aco-x: calc(-1 * var(--vao-x));
+  --aco-y: calc(-1 * var(--k) * var(--letreiro-linha));
 }
+@media (max-width: 1023.98px) {
+  .letreiro--auto [data-vao='1'] {
+    --k: 1;
+  }
+  .letreiro--auto [data-vao='2'] {
+    --k: 2;
+  }
+}
+@media (min-width: 1024px) {
+  /* Entre vãos, a janela termina antes da deriva das letras vizinhas: caixilho preto entre janelas.
+     Nas pontas do letreiro a janela alinha com a margem do conteúdo. */
+  .letreiro--auto [data-vao='0'] {
+    --jan-x1: calc(var(--vao-l) - var(--deriva-baixo));
+  }
+  .letreiro--auto [data-vao='1'] {
+    --jan-x0: var(--deriva-cima);
+    --jan-x1: calc(var(--vao-l) - var(--deriva-baixo));
+  }
+  .letreiro--auto [data-vao='2'] {
+    --jan-x0: var(--deriva-cima);
+  }
+}
+
+/* ---------- plano de trás ---------- */
+.vao__fundo {
+  position: absolute;
+  z-index: 1;
+  left: var(--jan-x0);
+  top: var(--fundo-topo);
+  width: var(--jan-w);
+  height: calc(var(--jan-base) - var(--fundo-topo));
+  overflow: hidden;
+  background: var(--preto-acm);
+  clip-path: polygon(
+    0 var(--t0),
+    100% calc(var(--t0) + .2867 * var(--jan-w)),
+    100% calc(var(--b0) + .2867 * var(--jan-w)),
+    0 var(--b0)
+  );
+  /* torre: o andar desce em cascata (estado estático: a = 1) */
+  transform: translateY(calc(var(--k) * var(--cascata)));
+}
+/* Captura e véu numa faixa 3px menor que a do fundo (e 1px longe das laterais): a borda suavizada do
+   recorte do fundo só cruza as persianas pretas, nunca a captura (sem fio claro entre camadas
+   compostas). Na abertura total, o lábio de 4px das persianas cobre essa folga. */
+.vao__vista {
+  position: absolute;
+  inset: 0 1px;
+  overflow: hidden;
+  clip-path: polygon(
+    0 calc(var(--t0) + 3px),
+    100% calc(var(--t0) + 3px + .2867 * (var(--jan-w) - 2px)),
+    100% calc(var(--b0) - 3px + .2867 * (var(--jan-w) - 2px)),
+    0 calc(var(--b0) - 3px)
+  );
+}
+.vao__falha {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--grafite-parede);
+  color: var(--prata);
+  font-family: var(--fonte-leitura);
+  font-size: var(--t-24);
+  font-weight: 650;
+  font-stretch: normal;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.vao__captura {
+  position: absolute;
+  top: 0;
+  left: -12px;
+  width: calc(100% + 24px);
+  max-width: none;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 28%;
+}
+.vao__fundo--falhou .vao__captura {
+  visibility: hidden;
+}
+.vao__veu {
+  position: absolute;
+  inset: 0;
+  background: var(--preto-acm);
+  opacity: .25;
+}
+.vao__persiana {
+  position: absolute;
+  inset: calc(-1 * var(--ev)) calc(-1 * var(--eh));
+  background: var(--preto-acm);
+}
+.vao__persiana--cima {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(var(--ev) + var(--c0) + .2867 * (var(--jan-w) + var(--eh)) + var(--labio)),
+    0 calc(var(--ev) + var(--c0) - .2867 * var(--eh) + var(--labio))
+  );
+  transform: translate(var(--deriva-cima), calc(-.961 * var(--abre-cima)));
+}
+.vao__persiana--baixo {
+  clip-path: polygon(
+    0 calc(var(--ev) + var(--c0) - .2867 * var(--eh) - var(--labio)),
+    100% calc(var(--ev) + var(--c0) + .2867 * (var(--jan-w) + var(--eh)) - var(--labio)),
+    100% 100%,
+    0 100%
+  );
+  transform: translate(calc(-1 * var(--deriva-baixo)), calc(.961 * var(--abre-baixo)));
+}
+
+/* ---------- metades de letras ---------- */
 .vao__metade {
   position: absolute;
-  inset: calc(-1 * var(--sangria-cima)) calc(-1 * var(--sangria-dir)) calc(-1 * var(--sangria-baixo)) calc(-1 * var(--sangria-esq));
-  padding: var(--sangria-cima) var(--sangria-dir) var(--sangria-baixo) var(--sangria-esq);
+  z-index: 2;
+  inset: 0;
 }
 .vao__metade--cima {
-  clip-path: var(--clip-cima);
+  clip-path: polygon(
+    -.5em -.5em,
+    calc(100% + .5em) -.5em,
+    calc(100% + .5em) calc(var(--corte-y1) + .14335em),
+    -.5em calc(var(--corte-y0) - .14335em)
+  );
+  transform: translate(var(--deriva-cima), calc(-.961 * var(--abre-cima) + var(--k) * var(--cascata)));
 }
 .vao__metade--baixo {
-  clip-path: var(--clip-baixo);
-  /* fenda de 6px na perpendicular do corte */
-  transform: translate(calc(-.276 * 6px), calc(.961 * 6px));
+  clip-path: polygon(
+    -.5em calc(var(--corte-y0) - .14335em),
+    calc(100% + .5em) calc(var(--corte-y1) + .14335em),
+    calc(100% + .5em) calc(100% + .5em),
+    -.5em calc(100% + .5em)
+  );
+  transform: translate(calc(-1 * var(--deriva-baixo)), calc(.961 * var(--abre-baixo) + var(--k) * var(--cascata)));
 }
-.vao .aresta,
-.vao .retorno {
+
+/* Aço escovado (2.2): gradiente, grão horizontal e faixa especular dimensionados pela placa inteira
+   e deslocados por vão, para o letreiro ler como uma chapa só. */
+.fachada .letras {
+  color: transparent;
+  background-image: var(--especular), var(--grao-letreiro), var(--prata-escovada);
+  background-size: var(--placa-largura) var(--placa-altura), 2400px 128px, var(--placa-largura) var(--placa-altura);
+  background-position: var(--aco-x) var(--aco-y);
+  background-repeat: no-repeat, repeat, no-repeat;
+  background-blend-mode: normal, soft-light, normal;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Aresta polida: 2px de Prata Luz no lábio de cima do corte, só sobre as letras.
+   --v (0..1) é a varredura da carga (5.0): a aresta acende atrás de um brilho que corre da esquerda
+   para a direita. Fora da carga --v = 1 (aresta inteira). */
+.fachada .aresta,
+.fachada .retorno {
   position: absolute;
-  left: var(--sangria-esq);
-  top: var(--sangria-cima);
-  width: var(--vao-l);
+  inset: 0;
   color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
 }
-.vao .aresta {
-  background: var(--prata-luz);
-  clip-path: var(--clip-aresta);
+.fachada .aresta {
+  --v: 1;
+  background-image:
+    linear-gradient(90deg, transparent calc(var(--v) * 118% - 17%), #fff calc(var(--v) * 118% - 9%), transparent calc(var(--v) * 118% - 7%)),
+    linear-gradient(90deg, var(--prata-luz) calc(var(--v) * 118% - 9%), transparent 0);
+  clip-path: polygon(
+    -.5em calc(var(--corte-y0) - .14335em - 2px),
+    calc(100% + .5em) calc(var(--corte-y1) + .14335em - 2px),
+    calc(100% + .5em) calc(var(--corte-y1) + .14335em),
+    -.5em calc(var(--corte-y0) - .14335em)
+  );
 }
-.vao .retorno {
-  background: var(--prata-sombra);
-  clip-path: var(--clip-retorno);
+/* Retorno: 2px de Prata Sombra no lábio de baixo. */
+.fachada .retorno {
+  background-color: var(--prata-sombra);
+  clip-path: polygon(
+    -.5em calc(var(--corte-y0) - .14335em),
+    calc(100% + .5em) calc(var(--corte-y1) + .14335em),
+    calc(100% + .5em) calc(var(--corte-y1) + .14335em + 2px),
+    -.5em calc(var(--corte-y0) - .14335em + 2px)
+  );
 }
 
-/* Placas da fachada: provisoriamente abaixo do letreiro (o palco completo as põe nas janelas). */
+/* will-change só enquanto o palco está perto da tela (palco.js, inView com margem de 50%) */
+.palco--em-vista .vao__metade,
+.palco--em-vista .vao__persiana,
+.palco--em-vista .vao__captura {
+  will-change: transform;
+}
+.palco--em-vista .vao__veu {
+  will-change: opacity;
+}
+
+/* ---------- placas da fachada ----------
+   Posição em CSS, da mesma geometria gerada (vale com e sem JS): dentro de cada janela, encostadas ao
+   lábio de baixo do corte, a 24px do início da janela. Na torre, penduradas logo abaixo da janela.
+   A entrada e a saída (clip-path ao longo do corte) são do palco.js com Motion. */
 .placas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--e-1) var(--e-2);
-  padding: var(--e-4) max(var(--margem), (100cqi - 1536px) / 2) 0;
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  font-size: var(--fs-letreiro);
+  line-height: normal;
+}
+.placas__lista {
+  margin: 0;
+  padding: 0;
+}
+.placas__item {
+  position: absolute;
+  display: flex; /* sem caixa de linha: o corpo do li é o do letreiro (para os em gerados) */
+  --k: 0;
+  --jan-x0: 0px;
+  --placa-x: calc(var(--jan-x0) + 24px);
+  --labio-baixo: calc(var(--corte-y0) + .2867 * var(--placa-x) + 1.0403 * var(--abre-baixo) - var(--labio));
+  left: calc(var(--recuo-letreiro) + var(--vao-x) + var(--placa-x));
+  /* canto de baixo encostado no lábio de baixo, dentro da janela (na torre, somando o andar e a cascata) */
+  top: calc(var(--U) + var(--k) * (var(--letreiro-linha) + var(--cascata)) + var(--labio-baixo) - var(--alvo-min));
+}
+.placa--fachada {
+  pointer-events: auto;
+  font-size: var(--t-16);
+  font-stretch: normal;
+  white-space: nowrap;
+}
+
+/* ---------- estado vivo: .js, com movimento e altura ≥ 500px ---------- */
+@media (prefers-reduced-motion: no-preference) and (min-height: 500px) {
+  .js .topo {
+    --o: calc((var(--caixa-h) - (var(--U) + var(--L) + var(--D))) / 2 + var(--U));
+  }
+  .js .palco {
+    height: calc(var(--caixa-h) + var(--pista));
+  }
+  .js .palco__caixa {
+    position: sticky;
+    top: var(--header-h);
+    height: var(--caixa-h);
+    display: grid;
+    align-content: center;
+  }
+  /* p = 0 antes do render.js: nome contínuo, metades encostadas (a carga abre a fenda), aresta apagada */
+  .js .fachada {
+    --peso: 900;
+    --brilho: .15;
+  }
+  .js .vao__fundo {
+    visibility: hidden; /* janela fechada: nada a pintar (render.js mostra quando a > 0) */
+  }
+  .js .vao__metade,
+  .js .vao__persiana {
+    transform: none;
+  }
+  .js .fachada .aresta {
+    --v: 0;
+  }
+  .js .vao__veu {
+    opacity: .75;
+  }
+  /* placas: ocultas até o palco.js assumir (depois o estado vem de data-estado e do clip-path) */
+  .js .placas:not([data-estado='visivel']) .placas__item {
+    visibility: hidden;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-height: 500px) and (min-width: 1024px) {
+  .js .vao__captura {
+    transform: translateX(12px) scale(1.06);
+  }
+}
+
+/* Torre: a cascata dos andares no estado vivo também é do render.js */
+@media (prefers-reduced-motion: no-preference) and (min-height: 500px) and (max-width: 1023.98px) {
+  .js .vao__fundo {
+    transform: none;
+  }
+}
+
+/* Fonte lenta (5.1): o letreiro cai no fallback estreito, sem animar o peso (render.js não escreve
+   --peso). Sem uma face estreita local, o fallback largo não cabe nas células de wdth 50 da linha do
+   desktop: cada glifo é comprimido no centro da própria célula (a largura da célula não muda). Na
+   torre as células são largas e o glifo cabe sem ajuste. */
+@media (min-width: 1024px) {
+  /* Transform em descendente some com o background-clip: text do pai, então cada célula leva o
+     próprio aço (fundo com tamanho e posição compensados pela escala: o gradiente segue contínuo). */
+  .fonte-lenta .fachada [data-linha] {
+    background: none;
+  }
+  .fonte-lenta .fachada .cel {
+    --escala: .6;
+    --folga: .25em; /* a caixa sobra para os lados: o glifo largo ainda não escalado cabe nela */
+    padding-inline: var(--folga);
+    margin-inline: calc(-1 * var(--folga));
+    transform: scaleX(var(--escala));
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  /* --cel-x: borda esquerda da caixa (com a folga) no vão; --cel-c: metade da caixa (origem da escala) */
+  .fonte-lenta .fachada .cel[data-i='0'] {
+    width: calc(var(--cel-0) + 2 * var(--folga));
+    --cel-x: calc(0em - var(--folga));
+    --cel-c: calc(var(--cel-0) / 2 + var(--folga));
+  }
+  .fonte-lenta .fachada .cel[data-i='1'] {
+    width: calc(var(--cel-1) + 2 * var(--folga));
+    --cel-x: calc(var(--cel-0) - var(--folga));
+    --cel-c: calc(var(--cel-1) / 2 + var(--folga));
+  }
+  .fonte-lenta .fachada .cel[data-i='2'] {
+    width: calc(var(--cel-2) + 2 * var(--folga));
+    --cel-x: calc(var(--cel-0) + var(--cel-1) - var(--folga));
+    --cel-c: calc(var(--cel-2) / 2 + var(--folga));
+  }
+  .fonte-lenta .fachada .letras .cel {
+    background-image: var(--especular), var(--grao-letreiro), var(--prata-escovada);
+    background-repeat: no-repeat, repeat, no-repeat;
+    background-blend-mode: normal, soft-light, normal;
+    background-size:
+      calc(var(--placa-largura) / var(--escala)) var(--placa-altura),
+      calc(2400px / var(--escala)) 128px,
+      calc(var(--placa-largura) / var(--escala)) var(--placa-altura);
+    background-position: calc((-1 * (var(--vao-x) + var(--cel-x)) - (1 - var(--escala)) * var(--cel-c)) / var(--escala)) var(--aco-y);
+  }
+  .fonte-lenta .fachada .aresta .cel {
+    background-color: var(--prata-luz);
+  }
+  .fonte-lenta .fachada .retorno .cel {
+    background-color: var(--prata-sombra);
+  }
 }
