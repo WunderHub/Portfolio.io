@@ -7,32 +7,144 @@
   <meta name="description" content="Conceito fictício da WunderHub: como é a primeira consulta na Junco Fisioterapia.">
   <!-- Marca fictícia: fora dos buscadores para não parecer um negócio real. -->
   <meta name="robots" content="noindex">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#EEF3F0">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="/src/conceitos/junco/favicon.svg" type="image/svg+xml">
+  <script>
+  (function () {
+    var d = document.documentElement; d.classList.add('js');
+    window.__junco = { teto: setTimeout(function () { d.classList.remove('js'); d.classList.add('js-falhou'); }, 3000) };
+  })();
+  </script>
+  <link rel="preload" href="/src/conceitos/junco/fonts/newsreader-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <script type="module" src="/src/conceitos/junco/main.js"></script>
 </head>
-<body>
+<body data-pagina="primeira-consulta">
+  <a class="pular" href="#principal">Pular para o conteúdo</a>
+  <aside class="selo-faixa" aria-label="Aviso de conceito">
   <!--#include src/conceitos/comum/selo.html marca="Junco Fisioterapia" voltar="../../../#conceito-junco" variante="topo" -->
+  </aside>
+  <!--#include src/conceitos/junco/partials/cabecalho.html r="../" ci="" ct="" cp="aria-current=page" ca="" -->
 
-  <header class="junco-topo">
-    <a class="junco-marca" href="../">Junco Fisioterapia</a>
-    <nav aria-label="Principal">
-      <ul role="list">
-        <li><a href="../">Início</a></li>
-        <li><a href="../tratamentos/">Tratamentos</a></li>
-        <li><a href="../primeira-consulta/">Primeira consulta</a></li>
-        <li><a class="junco-acao" href="../agendar/">Pedir avaliação</a></li>
-      </ul>
-    </nav>
-  </header>
-  <!-- STUB da fundação: a frente junco implementa a página completa (seção 7). -->
-  <main id="principal">
-    <h1>Como é a primeira consulta</h1>
-    <p>A primeira consulta dura 60 minutos. Ela serve para entender o que você sente e montar um plano com você.</p>
+  <main id="principal" tabindex="-1">
+    <section class="conteudo intro intro--consulta" aria-labelledby="titulo-consulta">
+      <h1 class="intro__titulo" id="titulo-consulta">Como é a primeira consulta</h1>
+      <p class="lead intro__lead">A primeira consulta dura 60 minutos. Ela serve para entender o que você sente e montar um plano com você.</p>
+    </section>
+
+    <section class="etapas-faixa" aria-labelledby="titulo-etapas" data-decisao="B">
+      <div class="conteudo">
+        <h2 class="sr-only" id="titulo-etapas">Os quatro passos da primeira consulta</h2>
+        <ol class="etapas" role="list">
+          <li class="etapa">
+            <span class="etapa__num" aria-hidden="true">1</span>
+            <div class="etapa__texto">
+              <h3>Conversa</h3>
+              <p>Você conta o que sente, desde quando e o que piora ou melhora. Se tiver exames, a gente olha junto.</p>
+            </div>
+          </li>
+          <li class="etapa">
+            <span class="etapa__num" aria-hidden="true">2</span>
+            <div class="etapa__texto">
+              <h3>Avaliação física</h3>
+              <p>Testes de movimento, força e postura, sem pressa e explicando cada um.</p>
+            </div>
+          </li>
+          <li class="etapa">
+            <span class="etapa__num" aria-hidden="true">3</span>
+            <div class="etapa__texto">
+              <h3>Plano de tratamento</h3>
+              <p>Você sai sabendo quantas sessões vamos fazer no começo e o que esperar de cada fase.</p>
+            </div>
+          </li>
+          <li class="etapa">
+            <span class="etapa__num" aria-hidden="true">4</span>
+            <div class="etapa__texto">
+              <h3>Primeiros exercícios</h3>
+              <p>Você já aprende exercícios simples para fazer em casa.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="conteudo consulta__grade">
+      <section class="levar" aria-labelledby="titulo-levar">
+        <h2 id="titulo-levar">O que levar</h2>
+        <ul class="checklist" role="list">
+          <li>Exames recentes, se tiver.</li>
+          <li>Pedido médico, se tiver. Não é obrigatório para começar.</li>
+          <li>Roupa confortável, que deixe braços e pernas livres.</li>
+        </ul>
+      </section>
+
+      <section class="perguntas" aria-labelledby="titulo-perguntas">
+        <h2 id="titulo-perguntas">Perguntas frequentes</h2>
+        <div class="faq" data-acordeao>
+          <div class="faq__item">
+            <h3 class="faq__pergunta">
+              <button type="button" id="pergunta-pedido" aria-expanded="false" aria-controls="resposta-pedido" data-acordeao-botao>
+                <span>Preciso de pedido médico?</span>
+                <span class="mais" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__resposta" id="resposta-pedido" role="region" aria-labelledby="pergunta-pedido" data-acordeao-painel>
+              <p>Não para a avaliação. Se você vai pedir reembolso ao plano de saúde, o seu plano pode exigir.</p>
+            </div>
+          </div>
+          <div class="faq__item">
+            <h3 class="faq__pergunta">
+              <button type="button" id="pergunta-convenio" aria-expanded="false" aria-controls="resposta-convenio" data-acordeao-botao>
+                <span>Vocês atendem por convênio?</span>
+                <span class="mais" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__resposta" id="resposta-convenio" role="region" aria-labelledby="pergunta-convenio" data-acordeao-painel>
+              <p>O atendimento é particular, com recibo para você pedir reembolso ao seu plano.</p>
+            </div>
+          </div>
+          <div class="faq__item">
+            <h3 class="faq__pergunta">
+              <button type="button" id="pergunta-duracao" aria-expanded="false" aria-controls="resposta-duracao" data-acordeao-botao>
+                <span>Quanto tempo dura o tratamento?</span>
+                <span class="mais" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__resposta" id="resposta-duracao" role="region" aria-labelledby="pergunta-duracao" data-acordeao-painel>
+              <p>Depende do caso. Na avaliação você recebe uma previsão, e a gente revê a cada oito sessões.</p>
+            </div>
+          </div>
+          <div class="faq__item">
+            <h3 class="faq__pergunta">
+              <button type="button" id="pergunta-remarcar" aria-expanded="false" aria-controls="resposta-remarcar" data-acordeao-botao>
+                <span>Posso remarcar?</span>
+                <span class="mais" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__resposta" id="resposta-remarcar" role="region" aria-labelledby="pergunta-remarcar" data-acordeao-painel>
+              <p>Pode, com até 24 horas de antecedência.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="conteudo fecho" aria-label="Pedir uma avaliação">
+      <div class="fecho__foto">
+        <img class="foto" src="/src/conceitos/junco/img/junco-pilates-800.webp" srcset="/src/conceitos/junco/img/junco-pilates-400.webp 400w, /src/conceitos/junco/img/junco-pilates-800.webp 800w, /src/conceitos/junco/img/junco-pilates-1600.webp 1600w" sizes="(min-width: 1440px) 840px, (min-width: 1024px) 62vw, calc(100vw - 32px)" width="1600" height="1067" loading="lazy" decoding="async" alt="Aparelho de pilates em um estúdio de piso de madeira e paredes brancas, com luz da manhã e uma planta no canto.">
+      </div>
+      <div class="fecho__texto">
+        <p class="fecho__frase">A primeira consulta dura 60 minutos.</p>
+        <dl class="horarios horarios--compacto">
+          <div><dt>Endereço</dt><dd>Rua dos Juncos, 88, sala 12</dd></div>
+          <div><dt>Segunda a sexta</dt><dd>das 7h às 20h</dd></div>
+          <div><dt>Sábado</dt><dd>das 8h às 12h</dd></div>
+        </dl>
+        <a class="botao botao--primario botao--grande" href="../agendar/">Pedir uma avaliação</a>
+      </div>
+    </section>
   </main>
 
-  <footer class="rodape-demo">
-    <p>Junco Fisioterapia. Marca fictícia criada pela WunderHub como demonstração. Os textos deste site não são orientação de saúde.</p>
-    <!--#include src/conceitos/comum/selo.html marca="Junco Fisioterapia" voltar="../../../#conceito-junco" variante="rodape" -->
-  </footer>
+  <!--#include src/conceitos/junco/partials/rodape.html r="../" voltar="../../../#conceito-junco" -->
 </body>
 </html>

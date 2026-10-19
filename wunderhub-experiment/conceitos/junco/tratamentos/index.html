@@ -7,32 +7,160 @@
   <meta name="description" content="Conceito fictício da WunderHub: tratamentos da Junco Fisioterapia.">
   <!-- Marca fictícia: fora dos buscadores para não parecer um negócio real. -->
   <meta name="robots" content="noindex">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#EEF3F0">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="/src/conceitos/junco/favicon.svg" type="image/svg+xml">
+  <script>
+  (function () {
+    var d = document.documentElement; d.classList.add('js');
+    window.__junco = { teto: setTimeout(function () { d.classList.remove('js'); d.classList.add('js-falhou'); }, 3000) };
+  })();
+  </script>
+  <link rel="preload" href="/src/conceitos/junco/fonts/newsreader-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <script type="module" src="/src/conceitos/junco/main.js"></script>
 </head>
-<body>
+<body data-pagina="tratamentos">
+  <a class="pular" href="#principal">Pular para o conteúdo</a>
+  <aside class="selo-faixa" aria-label="Aviso de conceito">
   <!--#include src/conceitos/comum/selo.html marca="Junco Fisioterapia" voltar="../../../#conceito-junco" variante="topo" -->
+  </aside>
+  <!--#include src/conceitos/junco/partials/cabecalho.html r="../" ci="" ct="aria-current=page" cp="" ca="" -->
 
-  <header class="junco-topo">
-    <a class="junco-marca" href="../">Junco Fisioterapia</a>
-    <nav aria-label="Principal">
-      <ul role="list">
-        <li><a href="../">Início</a></li>
-        <li><a href="../tratamentos/">Tratamentos</a></li>
-        <li><a href="../primeira-consulta/">Primeira consulta</a></li>
-        <li><a class="junco-acao" href="../agendar/">Pedir avaliação</a></li>
+  <main id="principal" tabindex="-1">
+    <div class="conteudo trat" data-tratamentos>
+      <div class="trat__lado">
+        <h1 class="trat__titulo" id="titulo-tratamentos">Tratamentos</h1>
+        <p class="lead trat__lead">Escolha o que você está sentindo para ver os tratamentos indicados. O plano de cada pessoa é definido na avaliação.</p>
+        <div class="trat__barra">
+          <div class="filtros so-js" role="group" aria-label="Filtrar pelo que você está sentindo" data-filtros>
+            <button class="filtro" type="button" aria-pressed="true" data-para="todos">Todos</button>
+            <button class="filtro" type="button" aria-pressed="false" data-para="dor">Dor</button>
+            <button class="filtro" type="button" aria-pressed="false" data-para="cirurgia">Depois de cirurgia</button>
+            <button class="filtro" type="button" aria-pressed="false" data-para="esporte">Esporte</button>
+            <button class="filtro" type="button" aria-pressed="false" data-para="gestacao">Gestação e pós-parto</button>
+          </div>
+          <p class="contagem" role="status" data-contagem>5 tratamentos</p>
+        </div>
+      </div>
+
+      <section class="trat__lista" aria-label="Lista de tratamentos">
+      <ul class="lista-tratamentos" role="list" data-acordeao data-lista>
+        <li class="tratamento" id="ortopedica" data-para="dor">
+          <div class="tratamento__cabeca">
+            <span class="tratamento__num" aria-hidden="true">01</span>
+            <h2 class="tratamento__titulo">
+              <button type="button" class="tratamento__botao" id="botao-ortopedica" aria-expanded="false" aria-controls="painel-ortopedica" data-acordeao-botao>
+                <span>Fisioterapia ortopédica</span>
+                <span class="mais" aria-hidden="true"></span>
+              </button>
+            </h2>
+            <p class="tratamento__tags"><span class="sr-only">Indicado para: </span><span class="tag">Dor</span></p>
+          </div>
+          <div class="tratamento__painel" id="painel-ortopedica" role="region" aria-labelledby="botao-ortopedica" data-acordeao-painel>
+            <div class="tratamento__interno">
+              <dl class="detalhes">
+                <div><dt>Para quem é</dt><dd>Para dores nas costas, no pescoço, nos ombros e nos joelhos.</dd></div>
+                <div><dt>Como é a sessão</dt><dd>Avaliação do movimento, terapia manual e exercícios guiados.</dd></div>
+                <div><dt>Quanto tempo</dt><dd>Sessões de 50 minutos. O número de sessões é combinado na avaliação.</dd></div>
+              </dl>
+              <a class="botao botao--primario" href="../agendar/?tratamento=ortopedica">Pedir avaliação para este tratamento</a>
+            </div>
+          </div>
+        </li>
+        <li class="tratamento" id="pos-cirurgia" data-para="cirurgia">
+          <div class="tratamento__cabeca">
+            <span class="tratamento__num" aria-hidden="true">02</span>
+            <h2 class="tratamento__titulo">
+              <button type="button" class="tratamento__botao" id="botao-pos-cirurgia" aria-expanded="false" aria-controls="painel-pos-cirurgia" data-acordeao-botao>
+                <span>Reabilitação depois de cirurgia</span>
+                <span class="mais" aria-hidden="true"></span>
+              </button>
+            </h2>
+            <p class="tratamento__tags"><span class="sr-only">Indicado para: </span><span class="tag">Depois de cirurgia</span></p>
+          </div>
+          <div class="tratamento__painel" id="painel-pos-cirurgia" role="region" aria-labelledby="botao-pos-cirurgia" data-acordeao-painel>
+            <div class="tratamento__interno">
+              <dl class="detalhes">
+                <div><dt>Para quem é</dt><dd>Para quem operou joelho, ombro, quadril ou coluna e precisa recuperar força e movimento.</dd></div>
+                <div><dt>Como é a sessão</dt><dd>Seguimos as orientações do seu médico e avançamos por etapas.</dd></div>
+                <div><dt>Quanto tempo</dt><dd>Sessões de 50 minutos, com reavaliação a cada oito.</dd></div>
+              </dl>
+              <a class="botao botao--primario" href="../agendar/?tratamento=pos-cirurgia">Pedir avaliação para este tratamento</a>
+            </div>
+          </div>
+        </li>
+        <li class="tratamento" id="pilates-clinico" data-para="dor gestacao">
+          <div class="tratamento__cabeca">
+            <span class="tratamento__num" aria-hidden="true">03</span>
+            <h2 class="tratamento__titulo">
+              <button type="button" class="tratamento__botao" id="botao-pilates-clinico" aria-expanded="false" aria-controls="painel-pilates-clinico" data-acordeao-botao>
+                <span>Pilates clínico</span>
+                <span class="mais" aria-hidden="true"></span>
+              </button>
+            </h2>
+            <p class="tratamento__tags"><span class="sr-only">Indicado para: </span><span class="tag">Dor</span> <span class="tag">Gestação e pós-parto</span></p>
+          </div>
+          <div class="tratamento__painel" id="painel-pilates-clinico" role="region" aria-labelledby="botao-pilates-clinico" data-acordeao-painel>
+            <div class="tratamento__interno">
+              <dl class="detalhes">
+                <div><dt>Para quem é</dt><dd>Para fortalecer o corpo e prevenir a volta da dor.</dd></div>
+                <div><dt>Como é a sessão</dt><dd>Sessões individuais com aparelhos e exercícios no solo.</dd></div>
+                <div><dt>Quanto tempo</dt><dd>Sessões de 50 minutos, uma ou duas vezes por semana.</dd></div>
+              </dl>
+              <a class="botao botao--primario" href="../agendar/?tratamento=pilates-clinico">Pedir avaliação para este tratamento</a>
+            </div>
+          </div>
+        </li>
+        <li class="tratamento" id="esportiva" data-para="esporte cirurgia">
+          <div class="tratamento__cabeca">
+            <span class="tratamento__num" aria-hidden="true">04</span>
+            <h2 class="tratamento__titulo">
+              <button type="button" class="tratamento__botao" id="botao-esportiva" aria-expanded="false" aria-controls="painel-esportiva" data-acordeao-botao>
+                <span>Fisioterapia esportiva</span>
+                <span class="mais" aria-hidden="true"></span>
+              </button>
+            </h2>
+            <p class="tratamento__tags"><span class="sr-only">Indicado para: </span><span class="tag">Esporte</span> <span class="tag">Depois de cirurgia</span></p>
+          </div>
+          <div class="tratamento__painel" id="painel-esportiva" role="region" aria-labelledby="botao-esportiva" data-acordeao-painel>
+            <div class="tratamento__interno">
+              <dl class="detalhes">
+                <div><dt>Para quem é</dt><dd>Para lesões de treino e para voltar ao esporte com segurança.</dd></div>
+                <div><dt>Como é a sessão</dt><dd>Testes de força e de movimento, treino progressivo e orientação de carga.</dd></div>
+                <div><dt>Quanto tempo</dt><dd>Sessões de 50 minutos. O plano acompanha o seu calendário de treinos.</dd></div>
+              </dl>
+              <a class="botao botao--primario" href="../agendar/?tratamento=esportiva">Pedir avaliação para este tratamento</a>
+            </div>
+          </div>
+        </li>
+        <li class="tratamento" id="gestacao-pos-parto" data-para="gestacao dor">
+          <div class="tratamento__cabeca">
+            <span class="tratamento__num" aria-hidden="true">05</span>
+            <h2 class="tratamento__titulo">
+              <button type="button" class="tratamento__botao" id="botao-gestacao-pos-parto" aria-expanded="false" aria-controls="painel-gestacao-pos-parto" data-acordeao-botao>
+                <span>Fisioterapia na gestação e no pós-parto</span>
+                <span class="mais" aria-hidden="true"></span>
+              </button>
+            </h2>
+            <p class="tratamento__tags"><span class="sr-only">Indicado para: </span><span class="tag">Gestação e pós-parto</span> <span class="tag">Dor</span></p>
+          </div>
+          <div class="tratamento__painel" id="painel-gestacao-pos-parto" role="region" aria-labelledby="botao-gestacao-pos-parto" data-acordeao-painel>
+            <div class="tratamento__interno">
+              <dl class="detalhes">
+                <div><dt>Para quem é</dt><dd>Para dores comuns da gestação e para a recuperação depois do parto.</dd></div>
+                <div><dt>Como é a sessão</dt><dd>Exercícios adaptados a cada fase e orientação para o dia a dia.</dd></div>
+                <div><dt>Quanto tempo</dt><dd>Sessões de 50 minutos, com liberação do seu obstetra.</dd></div>
+              </dl>
+              <a class="botao botao--primario" href="../agendar/?tratamento=gestacao-pos-parto">Pedir avaliação para este tratamento</a>
+            </div>
+          </div>
+        </li>
       </ul>
-    </nav>
-  </header>
-  <!-- STUB da fundação: a frente junco implementa a página completa (seção 7). -->
-  <main id="principal">
-    <h1>Tratamentos</h1>
-    <p>Escolha o que você está sentindo para ver os tratamentos indicados. O plano de cada pessoa é definido na avaliação.</p>
+      <p class="vazio" hidden data-vazio>Nenhum tratamento com esse filtro. Escolha Todos para ver a lista completa.</p>
+      </section>
+    </div>
   </main>
 
-  <footer class="rodape-demo">
-    <p>Junco Fisioterapia. Marca fictícia criada pela WunderHub como demonstração. Os textos deste site não são orientação de saúde.</p>
-    <!--#include src/conceitos/comum/selo.html marca="Junco Fisioterapia" voltar="../../../#conceito-junco" variante="rodape" -->
-  </footer>
+  <!--#include src/conceitos/junco/partials/rodape.html r="../" voltar="../../../#conceito-junco" -->
 </body>
 </html>

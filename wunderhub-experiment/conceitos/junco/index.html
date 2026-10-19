@@ -7,32 +7,125 @@
   <meta name="description" content="Conceito fictício da WunderHub: site institucional de uma clínica de fisioterapia.">
   <!-- Marca fictícia: fora dos buscadores para não parecer um negócio real. -->
   <meta name="robots" content="noindex">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#EEF3F0">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="/src/conceitos/junco/favicon.svg" type="image/svg+xml">
+  <!-- Marca .js antes do CSS; se o main.js não chegar em 3s, volta ao modo sem JS (tudo visível). -->
+  <script>
+  (function () {
+    var d = document.documentElement; d.classList.add('js');
+    window.__junco = { teto: setTimeout(function () { d.classList.remove('js'); d.classList.add('js-falhou'); }, 3000) };
+  })();
+  </script>
+  <link rel="preload" href="/src/conceitos/junco/fonts/newsreader-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <script type="module" src="/src/conceitos/junco/main.js"></script>
 </head>
-<body>
+<body data-pagina="inicio">
+  <a class="pular" href="#principal">Pular para o conteúdo</a>
+  <aside class="selo-faixa" aria-label="Aviso de conceito">
   <!--#include src/conceitos/comum/selo.html marca="Junco Fisioterapia" voltar="../../#conceito-junco" variante="topo" -->
+  </aside>
+  <!--#include src/conceitos/junco/partials/cabecalho.html r="./" ci="aria-current=page" ct="" cp="" ca="" -->
 
-  <header class="junco-topo">
-    <a class="junco-marca" href="./">Junco Fisioterapia</a>
-    <nav aria-label="Principal">
-      <ul role="list">
-        <li><a href="./">Início</a></li>
-        <li><a href="tratamentos/">Tratamentos</a></li>
-        <li><a href="primeira-consulta/">Primeira consulta</a></li>
-        <li><a class="junco-acao" href="agendar/">Pedir avaliação</a></li>
-      </ul>
-    </nav>
-  </header>
-  <!-- STUB da fundação: a frente junco implementa a página completa (seção 7). -->
-  <main id="principal">
-    <h1>Fisioterapia com tempo para explicar cada passo.</h1>
-    <p>Atendimento individual, em sessões de 50 minutos, para dor, recuperação depois de cirurgia e volta ao esporte.</p>
+  <main id="principal" tabindex="-1">
+    <section class="abertura" aria-labelledby="titulo-inicio">
+      <div class="conteudo abertura__grade">
+        <h1 class="abertura__titulo" id="titulo-inicio">Fisioterapia com tempo para explicar cada passo.</h1>
+        <div class="abertura__texto">
+          <div class="abertura__chamada">
+            <p class="lead">Atendimento individual, em sessões de 50 minutos, para dor, recuperação depois de cirurgia e volta ao esporte.</p>
+            <div class="acoes">
+              <a class="botao botao--primario botao--grande" href="agendar/">Pedir uma avaliação</a>
+              <a class="botao botao--secundario botao--grande" href="tratamentos/">Ver tratamentos</a>
+            </div>
+          </div>
+          <div class="abertura__info">
+            <p class="info-linha">
+              <svg class="icone" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+              <span>Rua dos Juncos, 88, sala 12</span>
+            </p>
+            <p class="info-linha">
+              <svg class="icone" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Segunda a sexta, das 7h às 20h. Sábado, das 8h às 12h.</span>
+            </p>
+          </div>
+        </div>
+        <div class="abertura__foto">
+          <img class="foto" src="/src/conceitos/junco/img/junco-sala-800.webp" srcset="/src/conceitos/junco/img/junco-sala-400.webp 400w, /src/conceitos/junco/img/junco-sala-800.webp 800w, /src/conceitos/junco/img/junco-sala-1600.webp 1600w" sizes="(min-width: 1440px) 840px, (min-width: 1024px) 62vw, calc(100vw - 32px)" width="1600" height="1067" fetchpriority="high" alt="Sala de atendimento clara, com maca coberta por um lençol branco, janela com cortina leve e uma planta no canto.">
+        </div>
+      </div>
+    </section>
+
+    <section class="secao motivos" aria-labelledby="titulo-motivos" data-decisao="A">
+      <div class="conteudo motivos__grade">
+        <h2 class="motivos__titulo" id="titulo-motivos">O que te trouxe até aqui?</h2>
+        <ul class="motivos__lista" role="list">
+          <li>
+            <a class="motivo" href="tratamentos/?para=dor">
+              <span class="motivo__num" aria-hidden="true">01</span>
+              <span class="motivo__texto">Dor nas costas, no pescoço ou nos ombros</span>
+              <span class="motivo__seta" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 12h13M13 6.5 18.5 12 13 17.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+          </li>
+          <li>
+            <a class="motivo" href="tratamentos/?para=cirurgia">
+              <span class="motivo__num" aria-hidden="true">02</span>
+              <span class="motivo__texto">Recuperação depois de uma cirurgia</span>
+              <span class="motivo__seta" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 12h13M13 6.5 18.5 12 13 17.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+          </li>
+          <li>
+            <a class="motivo" href="tratamentos/?para=esporte">
+              <span class="motivo__num" aria-hidden="true">03</span>
+              <span class="motivo__texto">Voltar a treinar ou a correr</span>
+              <span class="motivo__seta" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 12h13M13 6.5 18.5 12 13 17.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+          </li>
+          <li>
+            <a class="motivo" href="tratamentos/?para=gestacao">
+              <span class="motivo__num" aria-hidden="true">04</span>
+              <span class="motivo__texto">Gestação e pós-parto</span>
+              <span class="motivo__seta" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 12h13M13 6.5 18.5 12 13 17.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="secao atendimento" aria-labelledby="titulo-atendimento">
+      <div class="conteudo atendimento__grade">
+        <div class="atendimento__texto">
+          <h2 id="titulo-atendimento">Como é o atendimento</h2>
+          <ul class="pontos" role="list">
+            <li>Uma pessoa por vez. A sala é sua durante a sessão inteira.</li>
+            <li>Exercícios para casa explicados na sessão e enviados por escrito.</li>
+            <li>Reavaliação a cada oito sessões, para ajustar o plano.</li>
+          </ul>
+        </div>
+        <div class="atendimento__foto">
+          <img class="foto foto--retrato" src="/src/conceitos/junco/img/junco-elasticos-800.webp" srcset="/src/conceitos/junco/img/junco-elasticos-400.webp 400w, /src/conceitos/junco/img/junco-elasticos-800.webp 800w, /src/conceitos/junco/img/junco-elasticos-1600.webp 1600w" sizes="(min-width: 1440px) 520px, (min-width: 1024px) 38vw, (min-width: 768px) 42vw, calc(100vw - 32px)" width="1600" height="2133" loading="lazy" decoding="async" alt="Faixas elásticas verde e cinza, uma bola pequena e uma toalha branca dobrada sobre o piso de madeira.">
+        </div>
+      </div>
+    </section>
+
+    <section class="secao onde" aria-labelledby="titulo-onde">
+      <div class="conteudo">
+        <div class="onde__painel">
+          <div class="onde__texto">
+            <h2 id="titulo-onde">Onde estamos</h2>
+            <address class="onde__endereco">Rua dos Juncos, 88, sala&nbsp;12</address>
+            <dl class="horarios">
+              <div><dt>Segunda a sexta</dt><dd>das 7h às 20h</dd></div>
+              <div><dt>Sábado</dt><dd>das 8h às 12h</dd></div>
+            </dl>
+            <a class="botao botao--primario botao--grande" href="agendar/">Pedir uma avaliação</a>
+          </div>
+          <svg class="onde__juncos" viewBox="0 0 200 260" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M40 260C40 190 34 120 22 44"/><path d="M58 260C58 180 60 110 66 18"/><path d="M76 260C77 200 84 140 100 70"/><path d="M92 260C92 190 96 120 112 30"/><path d="M110 260C110 200 118 150 140 96"/><path d="M124 260C124 190 126 110 122 8"/><path d="M140 260C141 210 150 170 172 128"/><path d="M30 260C29 220 20 180 4 150"/><path d="M152 260C152 220 158 190 186 176"/></g><g fill="currentColor"><circle cx="128.6" cy="86" r="2.2"/><circle cx="132.4" cy="90.4" r="2"/><circle cx="129.6" cy="95" r="2.2"/><circle cx="134.4" cy="96" r="1.8"/><circle cx="62.8" cy="104" r="2"/><circle cx="66.4" cy="108.6" r="1.8"/></g></svg>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="rodape-demo">
-    <p>Junco Fisioterapia. Marca fictícia criada pela WunderHub como demonstração. Os textos deste site não são orientação de saúde.</p>
-    <!--#include src/conceitos/comum/selo.html marca="Junco Fisioterapia" voltar="../../#conceito-junco" variante="rodape" -->
-  </footer>
+  <!--#include src/conceitos/junco/partials/rodape.html r="./" voltar="../../#conceito-junco" -->
 </body>
 </html>

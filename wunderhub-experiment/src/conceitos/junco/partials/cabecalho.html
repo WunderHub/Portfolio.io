@@ -1,0 +1,20 @@
+<header class="cab" data-cab>
+  <div class="conteudo cab__barra">
+    <a class="marca" href="{{$r}}">
+      <svg class="marca__simbolo" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M11 30C11 22 10 14 7 4M16 30C16 20 16.5 12 17.5 2M21 30C21.5 23 23 17 27 10" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/><circle cx="19.8" cy="14.4" r="1.35" fill="currentColor"/><circle cx="21.4" cy="16.6" r="1.1" fill="currentColor"/></svg>
+      <span class="marca__nome">Junco</span><span class="marca__tipo">Fisioterapia</span>
+    </a>
+    <button class="cab__menu" type="button" aria-expanded="false" aria-controls="nav-principal" data-menu-botao>
+      <span class="cab__menu-icone" aria-hidden="true"><span></span><span></span></span>
+      Menu
+    </button>
+    <nav class="cab__nav" id="nav-principal" aria-label="Principal" data-menu>
+      <ul class="cab__links" role="list">
+        <li><a href="{{$r}}" {{$ci}}>Início</a></li>
+        <li><a href="{{$r}}tratamentos/" {{$ct}}>Tratamentos</a></li>
+        <li><a href="{{$r}}primeira-consulta/" {{$cp}}>Primeira consulta</a></li>
+      </ul>
+      <a class="botao botao--primario cab__acao" href="{{$r}}agendar/" {{$ca}}>Pedir avaliação</a>
+    </nav>
+  </div>
+</header>

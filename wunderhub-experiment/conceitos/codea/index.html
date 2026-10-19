@@ -7,20 +7,380 @@
   <meta name="description" content="Conceito fictício da WunderHub: landing page de uma padaria de bairro, com cardápio do dia e encomenda para retirar.">
   <!-- Marca fictícia: fora dos buscadores para não parecer um negócio real. -->
   <meta name="robots" content="noindex">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#F5B82E">
+  <link rel="icon" href="/src/conceitos/codea/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/src/conceitos/codea/fonts/bricolage-grotesque-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    // html.js liga os estados que dependem de JavaScript. Se o módulo não rodar em 3s, a página volta ao modo sem JS.
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      window.__codea = setTimeout(function () {
+        if (!d.classList.contains('pronto')) { d.classList.remove('js'); d.classList.add('js-falhou'); }
+      }, 3000);
+    })();
+  </script>
   <script type="module" src="/src/conceitos/codea/main.js"></script>
 </head>
 <body>
-  <!--#include src/conceitos/comum/selo.html marca="Côdea" voltar="../../#conceito-codea" variante="topo" -->
+  <a class="pular" href="#cardapio">Pular para o cardápio</a>
+  <aside aria-label="Aviso de conceito">
+    <!--#include src/conceitos/comum/selo.html marca="Côdea" voltar="../../#conceito-codea" variante="topo" -->
+  </aside>
 
-  <!-- STUB da fundação: a frente codea implementa a página completa (seção 7). -->
+  <header class="barra" data-decisao="A">
+    <div class="barra__dentro">
+      <a class="marca barra__marca" href="#topo">
+        <svg class="marca__simbolo" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M7 41.5C7 27.4 18.2 17 32 17s25 10.4 25 24.5v.5a6 6 0 0 1-6 6H13a6 6 0 0 1-6-6z" fill="currentColor"/><path d="M19 35.5c5.2-6.4 14.6-9.6 25-7.6" fill="none" stroke="var(--gema)" stroke-width="4.5" stroke-linecap="round"/></svg>
+        <span>Côdea</span>
+      </a>
+      <p class="estado" data-estado>
+        <span class="estado__ponto" aria-hidden="true"></span>
+        <span class="estado__texto"><strong data-estado-1>Segunda a sábado, das 6h30 às 19h.</strong> <span data-estado-2>Domingo, das 7h às 13h.</span></span>
+      </p>
+      <nav class="barra__nav" aria-label="Seções da página">
+        <ul>
+          <li class="barra__item-largo"><a href="#cardapio">Cardápio do dia</a></li>
+          <li class="barra__item-largo"><a href="#fornadas">Fornadas</a></li>
+          <li>
+            <a class="barra__chegar" href="#como-chegar">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M12 21.5s-7-6.4-7-11.9a7 7 0 0 1 14 0c0 5.5-7 11.9-7 11.9z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="12" cy="9.6" r="2.6" fill="currentColor"/></svg>
+              Como chegar
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
   <main id="principal">
-    <h1>Pão de fermentação natural, saindo do forno às 7h e às 16h.</h1>
-    <p>Somos uma padaria de bairro na Rua das Paineiras, 214. Encomende até as 18h e retire no dia seguinte.</p>
+    <section class="topo" id="topo" aria-labelledby="topo-titulo">
+      <div class="topo__dentro">
+        <div class="topo__texto">
+          <p class="topo__marca marca" aria-hidden="true">
+            <svg class="marca__simbolo" viewBox="0 0 64 64" focusable="false"><path d="M7 41.5C7 27.4 18.2 17 32 17s25 10.4 25 24.5v.5a6 6 0 0 1-6 6H13a6 6 0 0 1-6-6z" fill="currentColor"/><path d="M19 35.5c5.2-6.4 14.6-9.6 25-7.6" fill="none" stroke="var(--gema)" stroke-width="4.5" stroke-linecap="round"/></svg>
+            <span>Côdea</span>
+          </p>
+          <h1 class="titulo topo__titulo" id="topo-titulo">Pão de fermentação natural, saindo do forno às 7h e às 16h.</h1>
+          <p class="topo__lead">Somos uma padaria de bairro na Rua das Paineiras, 214. Encomende até as 18h e retire no dia seguinte.</p>
+          <div class="topo__acoes">
+            <a class="botao botao--cheio botao--grande" href="#cardapio">Montar encomenda</a>
+            <a class="botao botao--contorno botao--grande" href="#horarios">Ver horários</a>
+          </div>
+          <p class="topo__horario">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5.2l3.4 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Segunda a sábado, das 6h30 às 19h. Domingo, das 7h às 13h.</span>
+          </p>
+        </div>
+        <div class="topo__vitrine">
+        <figure class="topo__foto" data-foto-topo>
+          <img src="/src/conceitos/codea/img/codea-hero-800.webp"
+               srcset="/src/conceitos/codea/img/codea-hero-400.webp 400w, /src/conceitos/codea/img/codea-hero-800.webp 800w, /src/conceitos/codea/img/codea-hero-1600.webp 1600w"
+               sizes="(min-width: 1280px) 500px, (min-width: 1024px) 38vw, (min-width: 768px) 40vw, calc(100vw - 32px)"
+               width="1600" height="2133" fetchpriority="high" decoding="async"
+               alt="Pão de fermentação natural redondo, com uma fatia cortada mostrando o miolo aerado, sobre o balcão de madeira da padaria.">
+        </figure>
+        <!-- Etiqueta de preço da vitrine: repete o primeiro item do cardápio, por isso fica fora da árvore de acessibilidade. -->
+        <p class="etiqueta" aria-hidden="true" data-etiqueta>
+          <span class="etiqueta__nome">Pão de fermentação natural, 800 g</span>
+          <span class="etiqueta__preco">R$&nbsp;28,00</span>
+        </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cardapio" id="cardapio" aria-labelledby="cardapio-titulo" tabindex="-1">
+      <div class="cardapio__dentro">
+        <div class="cardapio__menu" data-decisao="B">
+          <div class="cardapio__cabeca">
+            <h2 class="titulo titulo--secao" id="cardapio-titulo">Saiu do forno hoje</h2>
+            <p class="cardapio__intro">Os preços já estão na lista. Escolha o que quer levar e a gente separa.</p>
+          </div>
+
+          <div class="filtros so-js" role="group" aria-label="Filtrar o cardápio">
+            <button class="filtro" type="button" aria-pressed="true" data-filtro="tudo">Tudo</button>
+            <button class="filtro" type="button" aria-pressed="false" data-filtro="paes">Pães</button>
+            <button class="filtro" type="button" aria-pressed="false" data-filtro="doces">Doces</button>
+            <button class="filtro" type="button" aria-pressed="false" data-filtro="salgados">Salgados</button>
+            <button class="filtro" type="button" aria-pressed="false" data-filtro="sem-lactose">Sem lactose</button>
+          </div>
+          <p class="contagem" role="status" data-contagem>8 itens</p>
+
+          <ul class="lista" data-lista>
+            <li class="item" data-id="pao-natural" data-preco="28" data-categorias="paes sem-lactose"
+                data-curto="pão de fermentação natural" data-um="pão de fermentação natural, 800 g" data-varios="pães de fermentação natural, 800 g">
+              <img class="item__foto" src="/src/conceitos/codea/img/codea-pao-natural-300.webp"
+                   srcset="/src/conceitos/codea/img/codea-pao-natural-300.webp 300w, /src/conceitos/codea/img/codea-pao-natural-600.webp 600w, /src/conceitos/codea/img/codea-pao-natural-1200.webp 1200w"
+                   sizes="96px" width="1200" height="1200" loading="lazy" decoding="async" alt="">
+              <h3 class="item__nome">Pão de fermentação natural, 800 g</h3>
+              <span class="item__pontos" aria-hidden="true"></span>
+              <p class="item__preco">R$&nbsp;28,00</p>
+              <p class="item__desc">Casca grossa e miolo úmido. Fermentação de 24 horas.</p>
+              <p class="item__selos"><span class="selinho">Sem lactose</span></p>
+              <div class="item__acao" data-acao></div>
+            </li>
+            <li class="item" data-id="baguete" data-preco="14" data-categorias="paes sem-lactose"
+                data-curto="baguete" data-um="baguete" data-varios="baguetes">
+              <img class="item__foto" src="/src/conceitos/codea/img/codea-baguete-300.webp"
+                   srcset="/src/conceitos/codea/img/codea-baguete-300.webp 300w, /src/conceitos/codea/img/codea-baguete-600.webp 600w, /src/conceitos/codea/img/codea-baguete-1200.webp 1200w"
+                   sizes="96px" width="1200" height="1200" loading="lazy" decoding="async" alt="">
+              <h3 class="item__nome">Baguete de fermentação natural</h3>
+              <span class="item__pontos" aria-hidden="true"></span>
+              <p class="item__preco">R$&nbsp;14,00</p>
+              <p class="item__desc">Crocante por fora, cheia de alvéolos por dentro.</p>
+              <p class="item__selos"><span class="selinho">Sem lactose</span></p>
+              <div class="item__acao" data-acao></div>
+            </li>
+            <li class="item" data-id="centeio" data-preco="26" data-categorias="paes sem-lactose"
+                data-curto="pão de centeio" data-um="pão de centeio com sementes, 600 g" data-varios="pães de centeio com sementes, 600 g">
+              <img class="item__foto" src="/src/conceitos/codea/img/codea-centeio-300.webp"
+                   srcset="/src/conceitos/codea/img/codea-centeio-300.webp 300w, /src/conceitos/codea/img/codea-centeio-600.webp 600w, /src/conceitos/codea/img/codea-centeio-1200.webp 1200w"
+                   sizes="96px" width="1200" height="1200" loading="lazy" decoding="async" alt="">
+              <h3 class="item__nome">Pão de centeio com sementes, 600 g</h3>
+              <span class="item__pontos" aria-hidden="true"></span>
+              <p class="item__preco">R$&nbsp;26,00</p>
+              <p class="item__desc">Centeio, girassol e linhaça. Dura a semana inteira.</p>
+              <p class="item__selos"><span class="selinho">Sem lactose</span></p>
+              <div class="item__acao" data-acao></div>
+            </li>
+            <li class="item" data-id="pao-de-queijo" data-preco="15" data-categorias="salgados"
+                data-curto="pão de queijo" data-um="porção de pão de queijo (6 unidades)" data-varios="porções de pão de queijo (6 unidades cada)">
+              <img class="item__foto" src="/src/conceitos/codea/img/codea-pao-de-queijo-300.webp"
+                   srcset="/src/conceitos/codea/img/codea-pao-de-queijo-300.webp 300w, /src/conceitos/codea/img/codea-pao-de-queijo-600.webp 600w, /src/conceitos/codea/img/codea-pao-de-queijo-1200.webp 1200w"
+                   sizes="96px" width="1200" height="1200" loading="lazy" decoding="async" alt="">
+              <h3 class="item__nome">Pão de queijo, 6 unidades</h3>
+              <span class="item__pontos" aria-hidden="true"></span>
+              <p class="item__preco">R$&nbsp;15,00</p>
+              <p class="item__desc">Polvilho azedo e queijo meia cura.</p>
+              <div class="item__acao" data-acao></div>
+            </li>
+            <li class="item" data-id="focaccia" data-preco="12" data-categorias="salgados sem-lactose"
+                data-curto="focaccia" data-um="fatia de focaccia de tomate e alecrim" data-varios="fatias de focaccia de tomate e alecrim">
+              <img class="item__foto" src="/src/conceitos/codea/img/codea-focaccia-300.webp"
+                   srcset="/src/conceitos/codea/img/codea-focaccia-300.webp 300w, /src/conceitos/codea/img/codea-focaccia-600.webp 600w, /src/conceitos/codea/img/codea-focaccia-1200.webp 1200w"
+                   sizes="96px" width="1200" height="1200" loading="lazy" decoding="async" alt="">
+              <h3 class="item__nome">Focaccia de tomate e alecrim, fatia</h3>
+              <span class="item__pontos" aria-hidden="true"></span>
+              <p class="item__preco">R$&nbsp;12,00</p>
+              <p class="item__desc">Azeite, tomate assado e flor de sal.</p>
+              <p class="item__selos"><span class="selinho">Sem lactose</span></p>
+              <div class="item__acao" data-acao></div>
+            </li>
+            <li class="item" data-id="bolo-fuba" data-preco="9" data-categorias="doces"
+                data-curto="bolo de fubá" data-um="fatia de bolo de fubá com goiabada" data-varios="fatias de bolo de fubá com goiabada">
+              <img class="item__foto" src="/src/conceitos/codea/img/codea-bolo-fuba-300.webp"
+                   srcset="/src/conceitos/codea/img/codea-bolo-fuba-300.webp 300w, /src/conceitos/codea/img/codea-bolo-fuba-600.webp 600w, /src/conceitos/codea/img/codea-bolo-fuba-1200.webp 1200w"
+                   sizes="96px" width="1200" height="1200" loading="lazy" decoding="async" alt="">
+              <h3 class="item__nome">Bolo de fubá com goiabada, fatia</h3>
+              <span class="item__pontos" aria-hidden="true"></span>
+              <p class="item__preco">R$&nbsp;9,00</p>
+              <p class="item__desc">Fubá cremoso com pedaços de goiabada cascão.</p>
+              <div class="item__acao" data-acao></div>
+            </li>
+            <li class="item" data-id="rosca" data-preco="22" data-categorias="doces"
+                data-curto="rosca de laranja" data-um="rosca de laranja" data-varios="roscas de laranja">
+              <img class="item__foto" src="/src/conceitos/codea/img/codea-rosca-300.webp"
+                   srcset="/src/conceitos/codea/img/codea-rosca-300.webp 300w, /src/conceitos/codea/img/codea-rosca-600.webp 600w, /src/conceitos/codea/img/codea-rosca-1200.webp 1200w"
+                   sizes="96px" width="1200" height="1200" loading="lazy" decoding="async" alt="">
+              <h3 class="item__nome">Rosca de laranja</h3>
+              <span class="item__pontos" aria-hidden="true"></span>
+              <p class="item__preco">R$&nbsp;22,00</p>
+              <p class="item__desc">Massa macia, calda de laranja e raspas por cima.</p>
+              <div class="item__acao" data-acao></div>
+            </li>
+            <li class="item" data-id="cookie" data-preco="8" data-categorias="doces"
+                data-curto="cookie" data-um="cookie de chocolate meio amargo" data-varios="cookies de chocolate meio amargo">
+              <img class="item__foto" src="/src/conceitos/codea/img/codea-cookie-300.webp"
+                   srcset="/src/conceitos/codea/img/codea-cookie-300.webp 300w, /src/conceitos/codea/img/codea-cookie-600.webp 600w, /src/conceitos/codea/img/codea-cookie-1200.webp 1200w"
+                   sizes="96px" width="1200" height="1200" loading="lazy" decoding="async" alt="">
+              <h3 class="item__nome">Cookie de chocolate meio amargo</h3>
+              <span class="item__pontos" aria-hidden="true"></span>
+              <p class="item__preco">R$&nbsp;8,00</p>
+              <p class="item__desc">Borda crocante e centro macio.</p>
+              <div class="item__acao" data-acao></div>
+            </li>
+          </ul>
+          <p class="cardapio__vazio" data-vazio hidden>Nenhum item nesse filtro hoje.</p>
+        </div>
+
+        <section class="encomenda" id="encomenda" aria-labelledby="encomenda-titulo" data-decisao="C">
+          <div class="ticket" data-ticket>
+           <div class="ticket__rolagem" data-ticket-rolagem>
+            <h2 class="ticket__titulo" id="encomenda-titulo" tabindex="-1">Sua encomenda</h2>
+
+            <p class="ticket__sem-js sem-js">Para montar a encomenda nesta página, ative o JavaScript do navegador. Os preços estão na lista do cardápio.</p>
+
+            <div class="ticket__vazia so-js" data-vazia>
+              <svg class="ticket__saco" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
+                <path d="M22 30h52l-4 54a6 6 0 0 1-6 5.5H32a6 6 0 0 1-6-5.5z" fill="var(--farinha)" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M22 30l6-12h40l6 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M36 42c0 7 5 12 12 12s12-5 12-12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <path d="M30 18c4-8 14-12 22-10" fill="none" stroke="var(--casca)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/>
+              </svg>
+              <p>Sua encomenda está vazia. Escolha itens no cardápio do dia.</p>
+            </div>
+
+            <form class="ticket__form" data-form novalidate hidden>
+              <ul class="linhas" data-linhas aria-label="Itens da encomenda"></ul>
+
+              <fieldset class="campo" data-campo-dia>
+                <legend class="campo__legenda">Quando você vai retirar?</legend>
+                <p class="campo__nota" data-nota-prazo hidden>Encomendas feitas depois das 18h ficam para depois de amanhã.</p>
+                <div class="opcoes" data-dias>
+                  <label class="opcao"><input type="radio" name="dia" value="1" checked><span class="opcao__caixa"><span data-rotulo-dia="1">Amanhã</span></span></label>
+                  <label class="opcao"><input type="radio" name="dia" value="2"><span class="opcao__caixa"><span data-rotulo-dia="2">Depois de amanhã</span></span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="campo" data-campo-faixa>
+                <legend class="campo__legenda">Em que horário?</legend>
+                <div class="opcoes opcoes--faixas" data-faixas>
+                  <label class="opcao"><input type="radio" name="faixa" value="7-9" checked><span class="opcao__caixa">7h às 9h</span></label>
+                  <label class="opcao"><input type="radio" name="faixa" value="9-12"><span class="opcao__caixa">9h às 12h</span></label>
+                  <label class="opcao" data-faixa-tarde><input type="radio" name="faixa" value="16-18"><span class="opcao__caixa">16h às 18h</span></label>
+                </div>
+                <p class="campo__nota" data-nota-domingo hidden>No domingo, a retirada vai até as 12h.</p>
+                <p class="campo__erro" id="erro-faixa" data-erro-faixa hidden>Escolha um horário para retirar.</p>
+              </fieldset>
+
+              <div class="campo">
+                <label class="campo__legenda" for="nome">Seu nome</label>
+                <input class="campo__entrada" id="nome" name="nome" type="text" autocomplete="name" autocapitalize="words" spellcheck="false" required>
+                <p class="campo__erro" id="erro-nome" data-erro-nome hidden>Escreva seu nome para a padaria saber de quem é a encomenda.</p>
+              </div>
+
+              <p class="ticket__total" data-total>Total: <strong data-total-valor>R$&nbsp;0,00</strong>. <span class="ticket__pagamento">Pagamento na retirada.</span></p>
+              <button class="botao botao--cheio botao--grande botao--largo" type="submit">Gerar mensagem de encomenda</button>
+            </form>
+
+            <div class="resultado" data-resultado>
+              <div class="resultado__status" role="status" data-resultado-status></div>
+              <button class="botao botao--contorno botao--largo resultado__copiar" type="button" data-copiar hidden>
+                <svg class="icone-copiar" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 5.5A2.5 2.5 0 0 0 13.5 3h-7A3.5 3.5 0 0 0 3 6.5v7A2.5 2.5 0 0 0 5.5 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <svg class="icone-ok" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span data-copiar-texto>Copiar mensagem</span>
+              </button>
+            </div>
+           </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="fornadas" id="fornadas" aria-labelledby="fornadas-titulo">
+      <div class="fornadas__dentro">
+        <div class="fornadas__texto">
+          <h2 class="titulo titulo--secao" id="fornadas-titulo">Fornadas do dia</h2>
+          <div class="fornadas__linha" data-fornadas>
+            <div class="fornadas__trilho" aria-hidden="true">
+              <span class="fornadas__feito" data-feito></span>
+              <span class="fornadas__agora" data-agora hidden><span class="fornadas__agora-rotulo" data-agora-rotulo></span></span>
+            </div>
+            <ol class="fornadas__lista">
+              <li class="fornada" data-minuto="390"><time class="fornada__hora" datetime="06:30">6h30</time><p class="fornada__texto">Portas abertas, com o pão da madrugada.</p></li>
+              <li class="fornada" data-minuto="420"><time class="fornada__hora" datetime="07:00">7h</time><p class="fornada__texto">Pães de fermentação natural e baguetes.</p></li>
+              <li class="fornada" data-minuto="600"><time class="fornada__hora" datetime="10:00">10h</time><p class="fornada__texto">Pão de queijo e focaccia.</p></li>
+              <li class="fornada" data-minuto="960"><time class="fornada__hora" datetime="16:00">16h</time><p class="fornada__texto">Segunda fornada de pães e a rosca de laranja.</p></li>
+              <li class="fornada" data-minuto="1140"><time class="fornada__hora" datetime="19:00">19h</time><p class="fornada__texto">Portas fechadas.</p></li>
+            </ol>
+          </div>
+        </div>
+        <figure class="fornadas__foto">
+          <img src="/src/conceitos/codea/img/codea-forno-800.webp"
+               srcset="/src/conceitos/codea/img/codea-forno-400.webp 400w, /src/conceitos/codea/img/codea-forno-800.webp 800w, /src/conceitos/codea/img/codea-forno-1600.webp 1600w"
+               sizes="(min-width: 1280px) 620px, (min-width: 1024px) 48vw, calc(100vw - 48px)"
+               width="1600" height="1067" loading="lazy" decoding="async"
+               alt="Forno de lastro aberto, com uma assadeira de pães recém-assados lá dentro e a pá de madeira encostada ao lado.">
+        </figure>
+      </div>
+    </section>
+
+    <section class="chegar" id="como-chegar" aria-labelledby="chegar-titulo">
+      <div class="chegar__dentro">
+        <div class="chegar__texto">
+          <h2 class="titulo titulo--secao" id="chegar-titulo">Como chegar</h2>
+          <p class="chegar__endereco">Rua das Paineiras, 214, na esquina com a Rua do Moinho.</p>
+          <div class="horarios" id="horarios" tabindex="-1">
+            <table class="horarios__tabela" data-horarios>
+              <caption>Horários</caption>
+              <thead><tr><th scope="col">Dia</th><th scope="col">Horário</th></tr></thead>
+              <tbody>
+                <tr data-dia="1"><th scope="row">Segunda</th><td>6h30 às 19h</td></tr>
+                <tr data-dia="2"><th scope="row">Terça</th><td>6h30 às 19h</td></tr>
+                <tr data-dia="3"><th scope="row">Quarta</th><td>6h30 às 19h</td></tr>
+                <tr data-dia="4"><th scope="row">Quinta</th><td>6h30 às 19h</td></tr>
+                <tr data-dia="5"><th scope="row">Sexta</th><td>6h30 às 19h</td></tr>
+                <tr data-dia="6"><th scope="row">Sábado</th><td>6h30 às 19h</td></tr>
+                <tr data-dia="0"><th scope="row">Domingo</th><td>7h às 13h</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="mapa">
+          <svg class="mapa__svg" viewBox="0 0 640 460" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="mapa-alt" focusable="false">
+            <title id="mapa-alt">Mapa ilustrativo: a padaria fica na esquina da Rua das Paineiras com a Rua do Moinho.</title>
+            <rect width="640" height="460" fill="var(--fermento)"/>
+            <g fill="var(--quadra)">
+              <rect x="-20" y="-20" width="172" height="96" rx="16"/>
+              <rect x="188" y="-20" width="196" height="96" rx="16"/>
+              <rect x="444" y="-20" width="216" height="96" rx="16"/>
+              <rect x="-20" y="112" width="172" height="94" rx="16"/>
+              <rect x="188" y="112" width="196" height="94" rx="16"/>
+              <rect x="444" y="112" width="216" height="94" rx="16"/>
+              <rect x="-20" y="270" width="172" height="92" rx="16"/>
+              <rect x="188" y="270" width="196" height="92" rx="16"/>
+              <rect x="444" y="270" width="216" height="92" rx="16"/>
+              <rect x="-20" y="398" width="172" height="90" rx="16"/>
+              <rect x="188" y="398" width="196" height="90" rx="16"/>
+              <rect x="444" y="398" width="216" height="90" rx="16"/>
+            </g>
+            <g fill="var(--farinha)">
+              <rect x="-10" y="84" width="660" height="20"/>
+              <rect x="-10" y="370" width="660" height="20"/>
+              <rect x="160" y="-10" width="20" height="480"/>
+              <rect x="-10" y="214" width="660" height="48"/>
+              <rect x="392" y="-10" width="44" height="480"/>
+            </g>
+            <g fill="var(--arvore)">
+              <circle cx="40" cy="198" r="10"/><circle cx="104" cy="198" r="12"/><circle cx="232" cy="198" r="11"/>
+              <circle cx="470" cy="198" r="12"/><circle cx="540" cy="198" r="10"/><circle cx="606" cy="198" r="12"/>
+              <circle cx="66" cy="278" r="12"/><circle cx="214" cy="278" r="10"/><circle cx="290" cy="278" r="12"/>
+              <circle cx="360" cy="278" r="10"/><circle cx="500" cy="278" r="11"/><circle cx="580" cy="278" r="12"/>
+            </g>
+            <rect x="300" y="128" width="84" height="78" rx="14" fill="var(--gema)" stroke="var(--torra)" stroke-width="3"/>
+            <g class="mapa__rotulos" fill="var(--torra)" aria-hidden="true">
+              <text x="98" y="245">Rua das Paineiras</text>
+              <text transform="translate(420 448) rotate(-90)">Rua do Moinho</text>
+            </g>
+            <g class="mapa__marcador" data-marcador>
+              <path d="M342 210c-12-14-22-24-22-39a22 22 0 0 1 44 0c0 15-10 25-22 39z" fill="var(--torra)"/>
+              <path d="M330 176c0-7.3 5.4-12.4 12-12.4s12 5.1 12 12.4v.2a3 3 0 0 1-3 3h-18a3 3 0 0 1-3-3z" fill="var(--gema)"/>
+              <path d="M336 173c2.5-3 7-4.6 12-3.7" fill="none" stroke="var(--torra)" stroke-width="2.4" stroke-linecap="round"/>
+              <rect x="196" y="128" width="104" height="44" rx="22" fill="var(--torra)"/>
+              <path d="M300 150h18" stroke="var(--torra)" stroke-width="3" stroke-linecap="round"/>
+              <text class="mapa__nome" x="248" y="157" text-anchor="middle" fill="var(--gema)">Côdea</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <div class="barra-encomenda" data-barra-encomenda data-decisao="C" hidden>
+      <p class="barra-encomenda__resumo" data-resumo>0 itens, R$&nbsp;0,00</p>
+      <a class="botao botao--gema" href="#encomenda" data-ver-encomenda>Ver encomenda</a>
+    </div>
+
+    <p class="sr-only" aria-live="polite" data-anuncio></p>
   </main>
 
-  <footer class="rodape-demo">
-    <p>Côdea, padaria de bairro. Marca fictícia criada pela WunderHub como demonstração.</p>
+  <footer class="rodape">
+    <div class="rodape__dentro">
+      <p class="rodape__marca" aria-hidden="true">Côdea</p>
+      <div class="rodape__info">
+        <p class="rodape__texto">Côdea, padaria de bairro. Marca fictícia criada pela WunderHub como demonstração.</p>
+        <p class="rodape__endereco">Rua das Paineiras, 214. Segunda a sábado, das 6h30 às 19h. Domingo, das 7h às 13h.</p>
+      </div>
+    </div>
     <!--#include src/conceitos/comum/selo.html marca="Côdea" voltar="../../#conceito-codea" variante="rodape" -->
   </footer>
 </body>

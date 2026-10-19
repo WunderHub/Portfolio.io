@@ -4,25 +4,259 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Louça Torta, cerâmica feita à mão | Conceito da WunderHub</title>
-  <meta name="description" content="Conceito fictício da WunderHub: loja virtual de cerâmica feita à mão.">
+  <meta name="description" content="Conceito fictício da WunderHub: loja virtual de cerâmica feita à mão, com filtros por peça e esmalte e sacola demonstrativa.">
   <!-- Marca fictícia: fora dos buscadores para não parecer um negócio real. -->
   <meta name="robots" content="noindex">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#F3F4EF">
+  <link rel="icon" href="/src/conceitos/louca-torta/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/src/conceitos/louca-torta/fonts/young-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/src/conceitos/louca-torta/fonts/instrument-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    // html.js liga os estados que dependem de JavaScript. Se o módulo não rodar em 3s, a página volta ao modo sem JS.
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      window.__loucaTorta = setTimeout(function () {
+        if (!d.classList.contains('pronto')) { d.classList.remove('js'); d.classList.add('js-falhou'); }
+      }, 3000);
+    })();
+  </script>
   <script type="module" src="/src/conceitos/louca-torta/main.js"></script>
 </head>
-<body>
+<body data-pagina="loja">
+  <a class="pular" href="#pecas">Pular para as peças</a>
   <!--#include src/conceitos/comum/selo.html marca="Louça Torta" voltar="../../#conceito-louca-torta" variante="topo" -->
+  <!--#include src/conceitos/louca-torta/partials/cabecalho.html inicio="./" raiz="" -->
 
-  <!-- STUB da fundação: a frente louca-torta implementa a página completa (seção 7). -->
   <main id="principal">
-    <h1>Louça feita à mão, um pouco torta de propósito.</h1>
-    <p>Canecas, tigelas e pratos de cerâmica de alta temperatura, esmaltados em pequenas fornadas. Nenhuma peça sai igual à outra.</p>
-    <p><a href="produto/?p=caneca-torta&amp;esmalte=cobalto">Caneca Torta</a></p>
+    <section class="topo" aria-labelledby="topo-titulo">
+      <h1 class="topo__titulo" id="topo-titulo"><span class="topo__linha">Louça feita à mão,</span> <span class="topo__linha">um pouco torta de propósito.</span></h1>
+      <div class="topo__texto">
+        <p class="topo__lead">Canecas, tigelas e pratos de cerâmica de alta temperatura, esmaltados em pequenas fornadas. Nenhuma peça sai igual à outra.</p>
+        <a class="botao botao--primario" href="#pecas">Ver as peças</a>
+      </div>
+      <div class="topo__foto" data-foto-topo>
+        <img src="/src/conceitos/louca-torta/img/lt-hero-1600.webp" srcset="/src/conceitos/louca-torta/img/lt-hero-400.webp 400w, /src/conceitos/louca-torta/img/lt-hero-800.webp 800w, /src/conceitos/louca-torta/img/lt-hero-1600.webp 1600w" sizes="(min-width: 1024px) 66vw, 100vw" width="1600" height="900" alt="Mesa posta com louça feita à mão: pratos em azul cobalto, tigelas verde celadon e uma caneca branca um pouco torta, sobre toalha de linho cinza-claro." fetchpriority="high" decoding="async">
+      </div>
+    </section>
+
+    <section class="pecas" id="pecas" aria-labelledby="pecas-titulo">
+      <div class="pecas__cabeca">
+        <h2 class="pecas__titulo" id="pecas-titulo">Peças</h2>
+        <div class="pecas__barra so-js">
+          <button class="botao-filtrar" type="button" aria-haspopup="dialog" aria-controls="filtros-dialogo" data-abrir-filtros data-decisao="A">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+            <span data-filtrar-rotulo>Filtrar</span>
+          </button>
+          <p class="pecas__contagem" role="status" data-contagem>8 peças</p>
+          <div class="ordenar">
+            <label class="ordenar__rotulo" for="ordem">Ordenar por</label>
+            <span class="ordenar__caixa">
+              <select class="ordenar__select" id="ordem" data-ordem>
+                <option value="novidades">Novidades</option>
+                <option value="menor">Menor preço</option>
+                <option value="maior">Maior preço</option>
+              </select>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pecas__corpo">
+        <aside class="filtros so-js" aria-label="Filtros" data-filtros-lateral data-decisao="A">
+          <form class="filtros__form" data-filtros-form>
+            <fieldset class="filtro">
+              <legend class="filtro__titulo">Tipo</legend>
+              <label class="opcao"><input class="opcao__caixa" type="checkbox" name="tipo" value="canecas"><span>Canecas e xícaras</span></label>
+              <label class="opcao"><input class="opcao__caixa" type="checkbox" name="tipo" value="tigelas"><span>Tigelas</span></label>
+              <label class="opcao"><input class="opcao__caixa" type="checkbox" name="tipo" value="pratos"><span>Pratos</span></label>
+              <label class="opcao"><input class="opcao__caixa" type="checkbox" name="tipo" value="vasos"><span>Vasos</span></label>
+              <label class="opcao"><input class="opcao__caixa" type="checkbox" name="tipo" value="travessas"><span>Travessas e potes</span></label>
+            </fieldset>
+            <fieldset class="filtro">
+              <legend class="filtro__titulo">Esmalte</legend>
+              <label class="opcao"><input class="opcao__caixa" type="checkbox" name="esmalte" value="cobalto"><span class="bolinha" data-esmalte="cobalto" aria-hidden="true"></span><span>Cobalto</span></label>
+              <label class="opcao"><input class="opcao__caixa" type="checkbox" name="esmalte" value="celadon"><span class="bolinha" data-esmalte="celadon" aria-hidden="true"></span><span>Celadon</span></label>
+              <label class="opcao"><input class="opcao__caixa" type="checkbox" name="esmalte" value="branco-giz"><span class="bolinha" data-esmalte="branco-giz" aria-hidden="true"></span><span>Branco giz</span></label>
+              <label class="opcao"><input class="opcao__caixa" type="checkbox" name="esmalte" value="preto-fosco"><span class="bolinha" data-esmalte="preto-fosco" aria-hidden="true"></span><span>Preto fosco</span></label>
+            </fieldset>
+            <div class="filtro filtro--interruptor">
+              <button class="interruptor" type="button" role="switch" aria-checked="false" data-pronta>
+                <span class="interruptor__texto">Só pronta entrega</span>
+                <span class="interruptor__trilho" aria-hidden="true"></span>
+              </button>
+            </div>
+            <button class="botao-limpar" type="button" data-limpar disabled>Limpar filtros</button>
+          </form>
+        </aside>
+
+        <div class="pecas__resultado">
+          <ul class="grade" data-grade>
+        <li class="peca peca--destaque" data-peca="caneca-torta">
+          <article class="peca__cartao">
+            <div class="peca__foto">
+              <img src="/src/conceitos/louca-torta/img/lt-caneca-cobalto-600.webp" srcset="/src/conceitos/louca-torta/img/lt-caneca-cobalto-300.webp 300w, /src/conceitos/louca-torta/img/lt-caneca-cobalto-600.webp 600w, /src/conceitos/louca-torta/img/lt-caneca-cobalto-1200.webp 1200w" sizes="(min-width: 1024px) 46vw, (min-width: 768px) 62vw, calc(100vw - 32px)" width="1200" height="1200" alt="" loading="lazy" decoding="async" data-peca-foto>
+            </div>
+            <div class="peca__info">
+              <h3 class="peca__nome"><a href="produto/?p=caneca-torta&amp;esmalte=cobalto" data-peca-link>Caneca Torta</a></h3>
+              <p class="peca__preco">R$&nbsp;89,00</p>
+              <p class="peca__descricao">350 ml. A borda ondulada é feita à mão, uma por uma.</p>
+              <p class="peca__esmaltes"><span class="sr-only">Esmaltes: cobalto, celadon e branco giz.</span><span class="bolinhas" aria-hidden="true"><span class="bolinha" data-esmalte="cobalto"></span><span class="bolinha" data-esmalte="celadon"></span><span class="bolinha" data-esmalte="branco-giz"></span></span></p>
+              <p class="peca__pronta" data-peca-pronta>Pronta entrega</p>
+            </div>
+          </article>
+        </li>
+        <li class="peca" data-peca="tigela-funda">
+          <article class="peca__cartao">
+            <div class="peca__foto">
+              <img src="/src/conceitos/louca-torta/img/lt-tigela-celadon-600.webp" srcset="/src/conceitos/louca-torta/img/lt-tigela-celadon-300.webp 300w, /src/conceitos/louca-torta/img/lt-tigela-celadon-600.webp 600w, /src/conceitos/louca-torta/img/lt-tigela-celadon-1200.webp 1200w" sizes="(min-width: 1024px) 23vw, (min-width: 768px) 31vw, calc(50vw - 24px)" width="1200" height="1200" alt="" loading="lazy" decoding="async" data-peca-foto>
+            </div>
+            <div class="peca__info">
+              <h3 class="peca__nome"><a href="produto/?p=tigela-funda&amp;esmalte=celadon" data-peca-link>Tigela Funda</a></h3>
+              <p class="peca__preco">R$&nbsp;120,00</p>
+              <p class="peca__descricao">16 cm de diâmetro, para caldos e saladas.</p>
+              <p class="peca__esmaltes"><span class="sr-only">Esmaltes: celadon e preto fosco.</span><span class="bolinhas" aria-hidden="true"><span class="bolinha" data-esmalte="celadon"></span><span class="bolinha" data-esmalte="preto-fosco"></span></span></p>
+              <p class="peca__pronta" data-peca-pronta>Pronta entrega</p>
+            </div>
+          </article>
+        </li>
+        <li class="peca" data-peca="prato-raso">
+          <article class="peca__cartao">
+            <div class="peca__foto">
+              <img src="/src/conceitos/louca-torta/img/lt-prato-raso-cobalto-600.webp" srcset="/src/conceitos/louca-torta/img/lt-prato-raso-cobalto-300.webp 300w, /src/conceitos/louca-torta/img/lt-prato-raso-cobalto-600.webp 600w, /src/conceitos/louca-torta/img/lt-prato-raso-cobalto-1200.webp 1200w" sizes="(min-width: 1024px) 23vw, (min-width: 768px) 31vw, calc(50vw - 24px)" width="1200" height="1200" alt="" loading="lazy" decoding="async" data-peca-foto>
+            </div>
+            <div class="peca__info">
+              <h3 class="peca__nome"><a href="produto/?p=prato-raso&amp;esmalte=cobalto" data-peca-link>Prato Raso 26 cm</a></h3>
+              <p class="peca__preco">R$&nbsp;98,00</p>
+              <p class="peca__descricao">Borda irregular e fundo liso, para o dia a dia.</p>
+              <p class="peca__esmaltes"><span class="sr-only">Esmalte: cobalto.</span><span class="bolinhas" aria-hidden="true"><span class="bolinha" data-esmalte="cobalto"></span></span></p>
+              <p class="peca__pronta" data-peca-pronta>Pronta entrega</p>
+            </div>
+          </article>
+        </li>
+        <li class="peca" data-peca="prato-sobremesa">
+          <article class="peca__cartao">
+            <div class="peca__foto">
+              <img src="/src/conceitos/louca-torta/img/lt-prato-sobremesa-giz-600.webp" srcset="/src/conceitos/louca-torta/img/lt-prato-sobremesa-giz-300.webp 300w, /src/conceitos/louca-torta/img/lt-prato-sobremesa-giz-600.webp 600w, /src/conceitos/louca-torta/img/lt-prato-sobremesa-giz-1200.webp 1200w" sizes="(min-width: 1024px) 23vw, (min-width: 768px) 31vw, calc(50vw - 24px)" width="1200" height="1200" alt="" loading="lazy" decoding="async" data-peca-foto>
+            </div>
+            <div class="peca__info">
+              <h3 class="peca__nome"><a href="produto/?p=prato-sobremesa&amp;esmalte=branco-giz" data-peca-link>Prato de Sobremesa 19 cm</a></h3>
+              <p class="peca__preco">R$&nbsp;72,00</p>
+              <p class="peca__descricao">Do tamanho certo para bolo e fruta.</p>
+              <p class="peca__esmaltes"><span class="sr-only">Esmalte: branco giz.</span><span class="bolinhas" aria-hidden="true"><span class="bolinha" data-esmalte="branco-giz"></span></span></p>
+              <p class="peca__pronta" data-peca-pronta>Pronta entrega</p>
+            </div>
+          </article>
+        </li>
+        <li class="peca" data-peca="vaso-alto">
+          <article class="peca__cartao">
+            <div class="peca__foto">
+              <img src="/src/conceitos/louca-torta/img/lt-vaso-giz-600.webp" srcset="/src/conceitos/louca-torta/img/lt-vaso-giz-300.webp 300w, /src/conceitos/louca-torta/img/lt-vaso-giz-600.webp 600w, /src/conceitos/louca-torta/img/lt-vaso-giz-1200.webp 1200w" sizes="(min-width: 1024px) 23vw, (min-width: 768px) 31vw, calc(50vw - 24px)" width="1200" height="1200" alt="" loading="lazy" decoding="async" data-peca-foto>
+            </div>
+            <div class="peca__info">
+              <h3 class="peca__nome"><a href="produto/?p=vaso-alto&amp;esmalte=branco-giz" data-peca-link>Vaso Alto</a></h3>
+              <p class="peca__preco">R$&nbsp;160,00</p>
+              <p class="peca__descricao">28 cm de altura, com as marcas do torno aparentes.</p>
+              <p class="peca__esmaltes"><span class="sr-only">Esmalte: branco giz.</span><span class="bolinhas" aria-hidden="true"><span class="bolinha" data-esmalte="branco-giz"></span></span></p>
+              <p class="peca__pronta" hidden data-peca-pronta>Pronta entrega</p>
+            </div>
+          </article>
+        </li>
+        <li class="peca" data-peca="travessa-oval">
+          <article class="peca__cartao">
+            <div class="peca__foto">
+              <img src="/src/conceitos/louca-torta/img/lt-travessa-celadon-600.webp" srcset="/src/conceitos/louca-torta/img/lt-travessa-celadon-300.webp 300w, /src/conceitos/louca-torta/img/lt-travessa-celadon-600.webp 600w, /src/conceitos/louca-torta/img/lt-travessa-celadon-1200.webp 1200w" sizes="(min-width: 1024px) 23vw, (min-width: 768px) 31vw, calc(50vw - 24px)" width="1200" height="1200" alt="" loading="lazy" decoding="async" data-peca-foto>
+            </div>
+            <div class="peca__info">
+              <h3 class="peca__nome"><a href="produto/?p=travessa-oval&amp;esmalte=celadon" data-peca-link>Travessa Oval</a></h3>
+              <p class="peca__preco">R$&nbsp;180,00</p>
+              <p class="peca__descricao">32 cm. Vai ao forno.</p>
+              <p class="peca__esmaltes"><span class="sr-only">Esmalte: celadon.</span><span class="bolinhas" aria-hidden="true"><span class="bolinha" data-esmalte="celadon"></span></span></p>
+              <p class="peca__pronta" data-peca-pronta>Pronta entrega</p>
+            </div>
+          </article>
+        </li>
+        <li class="peca" data-peca="xicara-pires">
+          <article class="peca__cartao">
+            <div class="peca__foto">
+              <img src="/src/conceitos/louca-torta/img/lt-xicara-preto-600.webp" srcset="/src/conceitos/louca-torta/img/lt-xicara-preto-300.webp 300w, /src/conceitos/louca-torta/img/lt-xicara-preto-600.webp 600w, /src/conceitos/louca-torta/img/lt-xicara-preto-1200.webp 1200w" sizes="(min-width: 1024px) 23vw, (min-width: 768px) 31vw, calc(50vw - 24px)" width="1200" height="1200" alt="" loading="lazy" decoding="async" data-peca-foto>
+            </div>
+            <div class="peca__info">
+              <h3 class="peca__nome"><a href="produto/?p=xicara-pires&amp;esmalte=preto-fosco" data-peca-link>Xícara com Pires</a></h3>
+              <p class="peca__preco">R$&nbsp;95,00</p>
+              <p class="peca__descricao">150 ml, para café coado.</p>
+              <p class="peca__esmaltes"><span class="sr-only">Esmalte: preto fosco.</span><span class="bolinhas" aria-hidden="true"><span class="bolinha" data-esmalte="preto-fosco"></span></span></p>
+              <p class="peca__pronta" data-peca-pronta>Pronta entrega</p>
+            </div>
+          </article>
+        </li>
+        <li class="peca" data-peca="pote-tampa">
+          <article class="peca__cartao">
+            <div class="peca__foto">
+              <img src="/src/conceitos/louca-torta/img/lt-pote-cobalto-600.webp" srcset="/src/conceitos/louca-torta/img/lt-pote-cobalto-300.webp 300w, /src/conceitos/louca-torta/img/lt-pote-cobalto-600.webp 600w, /src/conceitos/louca-torta/img/lt-pote-cobalto-1200.webp 1200w" sizes="(min-width: 1024px) 23vw, (min-width: 768px) 31vw, calc(50vw - 24px)" width="1200" height="1200" alt="" loading="lazy" decoding="async" data-peca-foto>
+            </div>
+            <div class="peca__info">
+              <h3 class="peca__nome"><a href="produto/?p=pote-tampa&amp;esmalte=cobalto" data-peca-link>Pote com Tampa</a></h3>
+              <p class="peca__preco">R$&nbsp;110,00</p>
+              <p class="peca__descricao">Para açúcar, sal ou o que você quiser guardar.</p>
+              <p class="peca__esmaltes"><span class="sr-only">Esmalte: cobalto.</span><span class="bolinhas" aria-hidden="true"><span class="bolinha" data-esmalte="cobalto"></span></span></p>
+              <p class="peca__pronta" hidden data-peca-pronta>Pronta entrega</p>
+            </div>
+          </article>
+        </li>
+          </ul>
+          <div class="pecas__vazio" data-vazio hidden>
+            <svg class="pecas__vazio-anel" viewBox="0 0 32 32" width="72" height="72" aria-hidden="true" focusable="false">
+              <path class="anel" d="M29.82 16C29.94 17.72 29.55 19.75 28.8 21.3C28.05 22.85 26.62 24.19 25.31 25.31C24.01 26.43 22.53 27.37 20.98 28.02C19.43 28.68 17.66 29.22 16 29.22C14.34 29.23 12.53 28.74 11 28.06C9.48 27.38 8.02 26.33 6.85 25.15C5.68 23.97 4.63 22.5 4 20.97C3.37 19.44 3.12 17.68 3.06 16C3 14.32 3.12 12.53 3.62 10.87C4.11 9.21 4.86 7.3 6.04 6.04C7.23 4.78 9.09 3.79 10.75 3.31C12.4 2.84 14.33 2.99 16 3.18C17.67 3.37 19.29 3.81 20.78 4.46C22.27 5.11 23.7 6 24.91 7.09C26.13 8.18 27.25 9.51 28.07 11C28.89 12.49 29.7 14.28 29.82 16Z"/>
+              <path class="anel" d="M23.4 16.6C23.4 17.69 22.99 19 22.38 19.88C21.77 20.75 20.68 21.41 19.73 21.86C18.79 22.3 17.75 22.5 16.7 22.55C15.65 22.61 14.46 22.62 13.46 22.2C12.47 21.79 11.31 20.97 10.74 20.04C10.18 19.11 9.98 17.69 10.08 16.6C10.18 15.51 10.76 14.4 11.35 13.51C11.94 12.62 12.74 11.82 13.63 11.28C14.52 10.74 15.65 10.31 16.7 10.27C17.75 10.23 18.96 10.55 19.9 11.06C20.84 11.57 21.75 12.42 22.33 13.35C22.92 14.27 23.39 15.51 23.4 16.6Z"/>
+            </svg>
+            <p>Nenhuma peça com esses filtros. Tire um filtro ou limpe todos.</p>
+            <button class="botao botao--contorno" type="button" data-limpar>Limpar filtros</button>
+          </div>
+        </div>
+      </div>
+
+      <dialog class="folha-filtros" id="filtros-dialogo" aria-labelledby="filtros-dialogo-titulo" data-filtros-dialogo>
+        <div class="folha-filtros__painel">
+          <div class="folha-filtros__topo">
+            <h2 class="folha-filtros__titulo" id="filtros-dialogo-titulo" tabindex="-1">Filtrar peças</h2>
+            <button class="fechar" type="button" aria-label="Fechar filtros" data-fechar-filtros>
+              <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </div>
+          <div class="folha-filtros__corpo" data-filtros-destino></div>
+          <div class="folha-filtros__rodape">
+            <button class="botao botao--contorno" type="button" data-limpar disabled>Limpar filtros</button>
+            <button class="botao botao--primario" type="button" data-fechar-filtros data-ver-resultado>Ver 8 peças</button>
+            <p class="sr-only" role="status" data-contagem-dialogo></p>
+          </div>
+        </div>
+      </dialog>
+    </section>
+
+    <section class="cuidar" id="cuidar" aria-labelledby="cuidar-titulo">
+      <div class="cuidar__dentro">
+        <h2 class="cuidar__titulo" id="cuidar-titulo">Como cuidar</h2>
+        <ul class="cuidar__lista">
+          <li>Pode ir à lava-louças e ao micro-ondas.</li>
+          <li>Evite choque térmico: não leve do congelador direto ao forno.</li>
+          <li>Pequenas variações de cor e de forma fazem parte de cada peça.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="atelie" id="atelie" aria-labelledby="atelie-titulo">
+      <div class="atelie__foto">
+        <img src="/src/conceitos/louca-torta/img/lt-atelie-1600.webp" srcset="/src/conceitos/louca-torta/img/lt-atelie-400.webp 400w, /src/conceitos/louca-torta/img/lt-atelie-800.webp 800w, /src/conceitos/louca-torta/img/lt-atelie-1600.webp 1600w" sizes="(min-width: 1024px) 58vw, 100vw" width="1600" height="1067" alt="Prateleiras do ateliê com tigelas e canecas recém-esmaltadas secando, e o torno ao fundo." loading="lazy" decoding="async">
+      </div>
+      <div class="atelie__texto">
+        <h2 class="atelie__titulo" id="atelie-titulo">Do ateliê</h2>
+        <p>Cada fornada tem poucas peças. Torneamos, esperamos secar, queimamos duas vezes e esmaltamos à mão. Por isso algumas peças são feitas sob encomenda.</p>
+      </div>
+    </section>
   </main>
 
-  <footer class="rodape-demo">
-    <p>Louça Torta. Marca fictícia criada pela WunderHub como demonstração. Nenhum pagamento é processado nesta loja.</p>
-    <!--#include src/conceitos/comum/selo.html marca="Louça Torta" voltar="../../#conceito-louca-torta" variante="rodape" -->
-  </footer>
+  <!--#include src/conceitos/louca-torta/partials/rodape.html inicio="./" raiz="" voltar="../../#conceito-louca-torta" -->
+  <!--#include src/conceitos/louca-torta/partials/sacola.html raiz="" -->
 </body>
 </html>

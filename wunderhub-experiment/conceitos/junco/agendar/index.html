@@ -7,32 +7,162 @@
   <meta name="description" content="Conceito fictício da WunderHub: pedido de avaliação em quatro passos.">
   <!-- Marca fictícia: fora dos buscadores para não parecer um negócio real. -->
   <meta name="robots" content="noindex">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#EEF3F0">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="/src/conceitos/junco/favicon.svg" type="image/svg+xml">
+  <script>
+  (function () {
+    var d = document.documentElement; d.classList.add('js');
+    window.__junco = { teto: setTimeout(function () { d.classList.remove('js'); d.classList.add('js-falhou'); }, 3000) };
+  })();
+  </script>
+  <link rel="preload" href="/src/conceitos/junco/fonts/newsreader-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <script type="module" src="/src/conceitos/junco/main.js"></script>
 </head>
-<body>
+<body data-pagina="agendar">
+  <a class="pular" href="#principal">Pular para o conteúdo</a>
+  <aside class="selo-faixa" aria-label="Aviso de conceito">
   <!--#include src/conceitos/comum/selo.html marca="Junco Fisioterapia" voltar="../../../#conceito-junco" variante="topo" -->
+  </aside>
+  <!--#include src/conceitos/junco/partials/cabecalho.html r="../" ci="" ct="" cp="" ca="aria-current=page" -->
 
-  <header class="junco-topo">
-    <a class="junco-marca" href="../">Junco Fisioterapia</a>
-    <nav aria-label="Principal">
-      <ul role="list">
-        <li><a href="../">Início</a></li>
-        <li><a href="../tratamentos/">Tratamentos</a></li>
-        <li><a href="../primeira-consulta/">Primeira consulta</a></li>
-        <li><a class="junco-acao" href="../agendar/">Pedir avaliação</a></li>
-      </ul>
-    </nav>
-  </header>
-  <!-- STUB da fundação: a frente junco implementa a página completa (seção 7). -->
-  <main id="principal">
-    <h1>Pedir uma avaliação</h1>
-    <p>Escolha o tipo de atendimento, o dia e o horário. Você revisa tudo antes de enviar.</p>
+  <main id="principal" tabindex="-1">
+    <div class="conteudo agendar">
+      <div class="agendar__principal">
+        <h1 class="agendar__titulo" id="titulo-agendar">Pedir uma avaliação</h1>
+        <p class="lead agendar__lead">Escolha o tipo de atendimento, o dia e o horário. Você revisa tudo antes de enviar.</p>
+
+        <form class="pedido" aria-labelledby="titulo-agendar" novalidate data-pedido data-decisao="C">
+          <div class="pedido__progresso so-js">
+            <p class="pedido__contador" data-contador>Passo 1 de 4</p>
+            <ol class="pedido__passos" role="list">
+              <li class="pedido__passo" aria-current="step" data-indicador="1"><span class="pedido__marca" aria-hidden="true"></span><span class="pedido__rotulo">Tipo</span></li>
+              <li class="pedido__passo" data-indicador="2"><span class="pedido__marca" aria-hidden="true"></span><span class="pedido__rotulo">Dia</span></li>
+              <li class="pedido__passo" data-indicador="3"><span class="pedido__marca" aria-hidden="true"></span><span class="pedido__rotulo">Horário</span></li>
+              <li class="pedido__passo" data-indicador="4"><span class="pedido__marca" aria-hidden="true"></span><span class="pedido__rotulo">Seus dados</span></li>
+            </ol>
+          </div>
+
+          <p class="aviso sem-js">Nesta demonstração, os dias, os horários e a revisão do pedido precisam do JavaScript ligado.</p>
+
+          <div class="resumo-erros" tabindex="-1" hidden data-resumo-erros>
+            <h2 class="resumo-erros__titulo">Antes de continuar, confira:</h2>
+            <ul role="list" data-resumo-lista></ul>
+          </div>
+
+          <fieldset class="passo" data-passo="1">
+            <legend class="passo__legenda" tabindex="-1"><span class="sr-only" data-legenda-prefixo></span>Tipo de atendimento</legend>
+            <p class="interesse" hidden data-interesse>
+              <svg class="icone" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 20C8 14 8 9 6 4M12 20c0-6 .3-11 1.2-16M16 20c.3-4.5 1.4-8 4-11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <span>Tratamento de interesse: <strong data-interesse-nome></strong></span>
+            </p>
+            <div class="opcoes">
+              <label class="opcao">
+                <input type="radio" name="tipo" value="Avaliação inicial, 60 minutos" checked>
+                <span class="opcao__texto">Avaliação inicial, 60 minutos</span>
+              </label>
+              <label class="opcao">
+                <input type="radio" name="tipo" value="Pilates clínico, aula experimental de 50 minutos">
+                <span class="opcao__texto">Pilates clínico, aula experimental de 50 minutos</span>
+              </label>
+              <label class="opcao">
+                <input type="radio" name="tipo" value="Retorno, 50 minutos">
+                <span class="opcao__texto">Retorno, 50 minutos</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="passo" data-passo="2">
+            <legend class="passo__legenda" tabindex="-1"><span class="sr-only" data-legenda-prefixo></span>Dia</legend>
+            <p class="erro" id="erro-dia" hidden data-erro="dia"></p>
+            <div class="dias" data-dias></div>
+          </fieldset>
+
+          <fieldset class="passo" data-passo="3" aria-describedby="nota-horarios">
+            <legend class="passo__legenda" tabindex="-1"><span class="sr-only" data-legenda-prefixo></span>Horário</legend>
+            <p class="passo__nota" id="nota-horarios" data-nota-horarios>Horários de demonstração.</p>
+            <p class="erro" id="erro-horario" hidden data-erro="horario"></p>
+            <div class="horas" data-horas></div>
+          </fieldset>
+
+          <fieldset class="passo" data-passo="4">
+            <legend class="passo__legenda" tabindex="-1"><span class="sr-only" data-legenda-prefixo></span>Seus dados</legend>
+            <div class="campos">
+              <div class="campo">
+                <label for="campo-nome">Nome</label>
+                <input id="campo-nome" name="nome" type="text" autocomplete="name" required>
+                <p class="erro" id="erro-nome" hidden data-erro="nome"></p>
+              </div>
+              <div class="campo">
+                <label for="campo-telefone">Telefone com DDD</label>
+                <input id="campo-telefone" name="telefone" type="tel" inputmode="numeric" autocomplete="tel-national" required aria-describedby="dica-telefone">
+                <p class="campo__dica" id="dica-telefone">Só números. Exemplo: 11912345678.</p>
+                <p class="erro" id="erro-telefone" hidden data-erro="telefone"></p>
+              </div>
+              <div class="campo">
+                <label for="campo-email">E-mail <span class="opcional">(opcional)</span></label>
+                <input id="campo-email" name="email" type="email" autocomplete="email">
+                <p class="erro" id="erro-email" hidden data-erro="email"></p>
+              </div>
+              <div class="campo campo--largo">
+                <label for="campo-mensagem">Quer contar algo antes da consulta? <span class="opcional">(opcional)</span></label>
+                <textarea id="campo-mensagem" name="mensagem" rows="4"></textarea>
+              </div>
+            </div>
+          </fieldset>
+
+          <section class="revisao" aria-labelledby="titulo-revisao" hidden data-passo="revisao">
+            <h2 class="revisao__titulo" id="titulo-revisao" tabindex="-1">Revise o seu pedido</h2>
+            <dl class="revisao__lista">
+              <div class="revisao__item">
+                <dt>Tipo de atendimento</dt>
+                <dd><span data-rev="tipo"></span><span class="revisao__extra" data-rev="tratamento" hidden></span></dd>
+                <dd class="revisao__acao"><button type="button" class="editar" data-editar="1" aria-label="Editar tipo de atendimento">Editar</button></dd>
+              </div>
+              <div class="revisao__item">
+                <dt>Dia</dt>
+                <dd><span data-rev="dia"></span></dd>
+                <dd class="revisao__acao"><button type="button" class="editar" data-editar="2" aria-label="Editar dia">Editar</button></dd>
+              </div>
+              <div class="revisao__item">
+                <dt>Horário</dt>
+                <dd><span data-rev="horario"></span></dd>
+                <dd class="revisao__acao"><button type="button" class="editar" data-editar="3" aria-label="Editar horário">Editar</button></dd>
+              </div>
+              <div class="revisao__item">
+                <dt>Seus dados</dt>
+                <dd class="revisao__dados"><span data-rev="nome"></span><span data-rev="telefone"></span><span data-rev="email"></span><span class="revisao__mensagem" data-rev="mensagem"></span></dd>
+                <dd class="revisao__acao"><button type="button" class="editar" data-editar="4" aria-label="Editar seus dados">Editar</button></dd>
+              </div>
+            </dl>
+          </section>
+
+          <div class="pedido__nav so-js">
+            <button type="button" class="botao botao--secundario botao--grande pedido__voltar" hidden data-voltar>
+              <svg class="icone" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 12H6M11 6.5 5.5 12 11 17.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Voltar
+            </button>
+            <button type="submit" class="botao botao--primario botao--grande pedido__continuar" data-continuar>
+              <span data-continuar-texto>Continuar</span>
+              <svg class="icone" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M13 6.5 18.5 12 13 17.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </form>
+
+        <div class="confirmacao" role="status" data-confirmacao></div>
+      </div>
+
+      <aside class="agendar__lado" aria-label="Endereço e horários">
+        <img class="foto foto--retrato" src="/src/conceitos/junco/img/junco-janela-800.webp" srcset="/src/conceitos/junco/img/junco-janela-400.webp 400w, /src/conceitos/junco/img/junco-janela-800.webp 800w, /src/conceitos/junco/img/junco-janela-1600.webp 1600w" sizes="(min-width: 1440px) 400px, 28vw" width="1600" height="2133" loading="lazy" decoding="async" alt="Juncos verdes e finos num vaso de cerâmica branca, ao lado de uma janela com luz suave.">
+        <dl class="horarios horarios--compacto">
+          <div><dt>Endereço</dt><dd>Rua dos Juncos, 88, sala 12</dd></div>
+          <div><dt>Segunda a sexta</dt><dd>das 7h às 20h</dd></div>
+          <div><dt>Sábado</dt><dd>das 8h às 12h</dd></div>
+        </dl>
+      </aside>
+    </div>
   </main>
 
-  <footer class="rodape-demo">
-    <p>Junco Fisioterapia. Marca fictícia criada pela WunderHub como demonstração. Os textos deste site não são orientação de saúde.</p>
-    <!--#include src/conceitos/comum/selo.html marca="Junco Fisioterapia" voltar="../../../#conceito-junco" variante="rodape" -->
-  </footer>
+  <!--#include src/conceitos/junco/partials/rodape.html r="../" voltar="../../../#conceito-junco" -->
 </body>
 </html>
