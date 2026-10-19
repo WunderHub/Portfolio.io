@@ -3,3 +3,4 @@ dist/
 .DS_Store
 *.log
 showreel/renders/*_draft*
+src/conceitos/*/img/originais/
