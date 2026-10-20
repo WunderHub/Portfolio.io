@@ -4,7 +4,7 @@
    clip-path da placa "No ar"; o CSS cuida das cores e das camadas (transições de 160ms).
    Geometria da palavra: caixa de linha de .74em com a versal centrada (padding-top
    --letreiro-desvio-y), versal de .0325em a .7075em. O corte de 16° da etapa 5 passa pelo centro da
-   versal no meio da palavra (no celular, no meio de NEGÓCIO): A e B são os pontos onde a reta cruza
+   versal no meio da frase (no celular, em NEGÓCIO, sobre as mesmas hastes de N e E): A e B são os pontos onde a reta cruza
    y = −.5em e y = 1.24em (Δx = 1,74em / tan 16° = 6,069em). */
 
 .processo {
@@ -45,8 +45,9 @@
   --fenda: max(6px, .1em);
 }
 /* Com JS, a caixa ocupa o seu lugar desde o primeiro paint (sem deslocar a página quando o módulo
-   carrega) e só aparece quando o processo.js tira o hidden. Sem JS (ou com o teto estourado) some. */
-.js .processo__controles[hidden] {
+   carrega) e só aparece quando o processo.js tira o hidden. Sem JS, com o teto estourado ou se o
+   processo.js não carregar (main.js marca a seção com data-modulo-falhou), some. */
+.js .processo:not([data-modulo-falhou]) .processo__controles[hidden] {
   display: block !important;
   visibility: hidden;
 }
@@ -398,7 +399,6 @@
   gap: var(--e-4);
 }
 .etapa {
-  container-type: inline-size;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--e-2);
@@ -413,6 +413,13 @@
 .etapa[data-ativa] {
   border-top-color: var(--vermelho-acrilico);
   color: var(--preto-acm);
+}
+/* nome e mini-palavra: o contêiner mede a coluna real onde a mini-palavra mora */
+.etapa__topo {
+  container: mini / inline-size;
+  display: grid;
+  gap: var(--e-2);
+  align-content: start;
 }
 .etapa__nome {
   display: flex;
@@ -444,11 +451,15 @@
   color: var(--preto-acm);
 }
 
-/* mini-palavra: a etapa nos seus eixos, a 28px (ou menos, quando a coluna não comporta 900/150) */
+/* mini-palavra: a etapa nos seus eixos, sempre a 28px. Numa linha quando a coluna comporta a mais
+   larga (900/150, 10,835em = 303,4px); senão as cinco vão para duas linhas (SEU / NEGÓCIO, como a
+   palavra grande no celular; NEGÓCIO 900/150 = 7,211em = 202px). Como as cinco colunas têm a mesma
+   largura, as cinco caixas têm a mesma altura e os textos de baixo ficam na mesma linha. */
 .etapa__mini {
+  --linhas: 1;
   display: block;
   box-sizing: border-box;
-  height: .74em;
+  height: calc(var(--linhas) * .74em);
   margin-block: .2em .12em;
   padding-top: var(--letreiro-desvio-y);
   font-family: var(--fonte-letreiro);
@@ -456,36 +467,57 @@
   line-height: .74em;
   white-space: nowrap;
   color: var(--preto-acm);
+  /* guias de versal e base (Mapa e Desenho), de ponta a ponta da coluna; a grade só no Desenho */
+  --guias-mini:
+    linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .0325em / 100% 1px no-repeat,
+    linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .7075em / 100% 1px no-repeat;
+}
+.etapa__mini-baixo,
+.etapa__mini-cima {
+  display: block;
+  box-sizing: border-box;
+  height: calc(var(--linhas) * .74em);
+  padding-top: var(--letreiro-desvio-y);
+}
+@container mini (width < 303.4px) {
+  .etapa__mini {
+    --linhas: 2;
+    --guias-mini:
+      linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .0325em / 100% 1px no-repeat,
+      linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .7075em / 100% 1px no-repeat,
+      linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .7725em / 100% 1px no-repeat,
+      linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 1.4475em / 100% 1px no-repeat;
+  }
+  .etapa__l1,
+  .etapa__l2 {
+    display: block;
+  }
 }
 .etapa[data-etapa='1'] .etapa__mini {
   /* a 28px o contorno de 1px empasta as letras de 100/50: a mini-palavra usa o traço cheio */
   font-weight: 100;
   font-stretch: 50%;
 }
-.etapa[data-etapa='2'] .etapa__mini,
-.etapa[data-etapa='3'] .etapa__mini {
-  /* guias de versal e base, de ponta a ponta da coluna */
-  background:
-    linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .0325em / 100% 1px no-repeat,
-    linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .7075em / 100% 1px no-repeat;
-}
 .etapa[data-etapa='2'] .etapa__mini {
   font-weight: 300;
   font-stretch: 50%;
+  background: var(--guias-mini);
 }
 .etapa[data-etapa='3'] .etapa__mini {
   font-weight: 560;
   font-stretch: 62%;
   color: var(--grafite-fio);
   background:
-    linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .0325em / 100% 1px no-repeat,
-    linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .7075em / 100% 1px no-repeat,
+    var(--guias-mini),
     repeating-linear-gradient(90deg, rgb(0 0 0 / .06) 0 calc(100% / 12), transparent calc(100% / 12) calc(100% / 6));
 }
 .etapa[data-etapa='4'] .etapa__mini {
   font-weight: 850;
   font-stretch: 62%;
 }
+/* No ar: as duas metades do corte de 16°, afastadas 3px na perpendicular. Numa linha o corte passa
+   pelo centro da versal no meio da frase; em duas, só por NEGÓCIO, no mesmo ponto das letras que no
+   desktop (1,7935em do início da palavra: hastes de N e E), como a palavra grande no celular. */
 .etapa[data-etapa='5'] .etapa__mini {
   position: relative;
   width: max-content;
@@ -495,16 +527,18 @@
   font-weight: 900;
   font-stretch: 150%;
   --fenda: 3px;
+  --mini-clip-baixo: polygon(-1em -.5em, calc(50% - 3.0345em) -.5em, calc(50% + 3.0345em) 1.24em, -1em 1.24em);
+  --mini-clip-cima: polygon(calc(50% - 3.0345em) -.5em, calc(100% + 1em) -.5em, calc(100% + 1em) 1.24em, calc(50% + 3.0345em) 1.24em);
 }
-.etapa__mini-baixo,
-.etapa__mini-cima {
-  display: block;
-  box-sizing: border-box;
-  height: .74em;
-  padding-top: var(--letreiro-desvio-y);
+@container mini (width < 303.4px) {
+  .etapa[data-etapa='5'] .etapa__mini {
+    font-size: min(28px, 100cqi / var(--negocio-em-5));
+    --mini-clip-baixo: polygon(-1em .74em, .503em .74em, 3.5025em 1.6em, -1em 1.6em);
+    --mini-clip-cima: polygon(-1em -.6em, calc(100% + 1em) -.6em, calc(100% + 1em) 1.6em, 3.5025em 1.6em, .503em .74em, -1em .74em);
+  }
 }
 .etapa__mini-baixo {
-  clip-path: polygon(-1em -.5em, calc(50% - 3.0345em) -.5em, calc(50% + 3.0345em) 1.24em, -1em 1.24em);
+  clip-path: var(--mini-clip-baixo);
   transform: translate(calc(-.138 * var(--fenda)), calc(.4805 * var(--fenda)));
 }
 .etapa__mini-cima {
@@ -512,7 +546,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  clip-path: polygon(calc(50% - 3.0345em) -.5em, calc(100% + 1em) -.5em, calc(100% + 1em) 1.24em, calc(50% + 3.0345em) 1.24em);
+  clip-path: var(--mini-clip-cima);
   transform: translate(calc(.138 * var(--fenda)), calc(-.4805 * var(--fenda)));
 }
 
@@ -522,10 +556,15 @@
     font-size: calc(100cqi / 7.3);
     height: 1.48em;
     margin-bottom: calc(.11em + 32px + 32px);
-    /* corte só em NEGÓCIO (segunda linha), pelo centro da versal: (50%, 1.11em) */
-    --clip-cima: polygon(-1em -.6em, calc(100% + 1em) -.6em, calc(100% + 1em) 1.6em, calc(50% + 1.709em) 1.6em, calc(50% - 1.2905em) .74em, -1em .74em);
-    --clip-baixo: polygon(-1em .74em, calc(50% - 1.2905em) .74em, calc(50% + 1.709em) 1.6em, -1em 1.6em);
-    --clip-aresta: polygon(calc(50% - 1.2905em) calc(.74em - 2px), calc(50% + 1.709em) calc(1.6em - 2px), calc(50% + 1.709em) 1.6em, calc(50% - 1.2905em) .74em);
+    /* corte só em NEGÓCIO (segunda linha), pelo centro da versal, no mesmo ponto das letras que no
+       desktop: x = 1,7935em do início de NEGÓCIO (o meio da frase menos SEU e o espaço, 5,4175em −
+       3,624em), y = 1,11em. Assim cruza as hastes retas de N e E, e não as curvas de G e Ó.
+       A (y = .74em): 1,7935 − .37 / tan 16° = .503em; B (y = 1.6em): 1,7935 + .49 / tan 16° = 3,5025em. */
+    --clip-cima: polygon(-1em -.6em, calc(100% + 1em) -.6em, calc(100% + 1em) 1.6em, 3.5025em 1.6em, .503em .74em, -1em .74em);
+    --clip-baixo: polygon(-1em .74em, .503em .74em, 3.5025em 1.6em, -1em 1.6em);
+    --clip-aresta: polygon(.503em calc(.74em - 2px), 3.5025em calc(1.6em - 2px), 3.5025em 1.6em, .503em .74em);
+    /* saída pela base de NEGÓCIO (y = 1.4475em): 1,7935 + 1,177 */
+    --saida-x: 2.9705em;
     --saida-y: 1.4475em;
   }
   .m3__guia--l2 {
@@ -575,26 +614,15 @@
   }
 }
 
-/* ---------- 600–1023px: cada etapa numa linha (nome e mini-palavra | textos) ---------- */
-@media (min-width: 600px) and (max-width: 1023.98px) {
+/* ---------- 600–1279px: cada etapa numa linha (nome e mini-palavra | textos). Abaixo de 1280px as
+   cinco colunas ficariam estreitas demais para NEGÓCIO a 28px e para os textos. ---------- */
+@media (min-width: 600px) and (max-width: 1279.98px) {
   .etapas {
     gap: var(--e-3);
   }
   .etapa {
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    grid-template-rows: auto 1fr;
     column-gap: var(--gutter);
-  }
-  .etapa__nome,
-  .etapa__mini {
-    grid-column: 1;
-  }
-  .etapa__detalhes {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-  }
-  .etapa[data-etapa='5'] .etapa__mini {
-    font-size: min(28px, 41.6cqi / var(--seu-negocio-em-5));
   }
 }
 
@@ -611,6 +639,8 @@
   .processo__cabeca p {
     grid-column: 7 / span 6;
   }
+}
+@media (min-width: 1280px) {
   .etapas {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     column-gap: var(--gutter);

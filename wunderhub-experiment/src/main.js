@@ -107,7 +107,10 @@ for (const { secao, modulos } of sobDemanda) {
     for (const [nome, importar] of Object.entries(modulos)) {
       importar()
         .then((modulo) => iniciar(nome, modulo, { gatilho, evento }))
-        .catch((erro) => console.warn(`[wunderhub] não foi possível carregar ${nome}; a página segue no modo estático`, erro));
+        .catch((erro) => {
+          el.dataset.moduloFalhou = ''; // o CSS da seção solta o espaço reservado para os controles
+          console.warn(`[wunderhub] não foi possível carregar ${nome}; a página segue no modo estático`, erro);
+        });
     }
   }
   el.addEventListener('pointerdown', aoPonteiro, true);

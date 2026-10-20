@@ -1,8 +1,13 @@
 // Momento 3, o projeto ganha peso (seção 5.3). Frente dona: meio.
 // O range nativo (1..5, passos inteiros) é a fonte de verdade para o leitor de tela e o teclado;
 // o valor visual e ∈ [1, 5] é contínuo (MotionValue) e anda até o inteiro com Motion:
-//   teclado e botões: 420ms --ease-corte; soltar o polegar: mola `encaixe`; dica de primeira entrada:
-//   1 → 1,18 → 1 em 700ms. Reduced motion (ou teto estourado): e salta, as guias aparecem prontas.
+//   teclado, botões, clique ou toque no trilho: 420ms --ease-corte; soltar o polegar: mola `encaixe`;
+//   dica de primeira entrada: 1 → 1,18 → 1 em 700ms. Reduced motion (ou teto estourado): e salta,
+//   as guias aparecem prontas.
+// Ponteiro: pressionar não arrasta. O arraste começa depois de LIMIAR_TOQUE px na horizontal (no toque,
+// só se o gesto for mais horizontal que vertical, senão é rolagem); se começar longe de e, e alcança o
+// ponteiro com a mola `encaixe` e depois o segue direto. Clique do mouse vai à etapa ao pressionar;
+// toque, ao soltar (até lá pode virar rolagem).
 // Motores (seção 5): este módulo é o único escritor de --w, --s, --e e data-etapa do .m3, num único
 // frame.render; o Motion anima e, as guias (stroke-dashoffset) e o clip-path da placa "No ar";
 // o CSS faz as cores e as camadas.
@@ -176,16 +181,23 @@ export function init({ estatico = false } = {}) {
       e.jump(n);
       return;
     }
-    animE = animate(e, n, opcoes || { duration: DUR_TECLADO, ease: easeCorte });
+    const anim = animate(e, n, opcoes || { duration: DUR_TECLADO, ease: easeCorte });
+    animE = anim;
+    anim.then(() => {
+      if (animE === anim) animE = null;
+    });
   }
 
   // ---------- teclado e botões ----------
   let arrastando = false;
-  let ponteiro = null; // { id, x0, y0, tipo }
+  let perseguindo = false; // o arraste começou longe de e: e alcança o ponteiro com a mola antes de segui-lo
+  let ponteiro = null; // { id, x0, y0, tipo } enquanto um ponteiro está pressionado no trilho
+  let ultimoV = 1; // valor no ponteiro do último movimento do arraste (o encaixe vai ao inteiro dele)
   function aoInput() {
     const n = limitar(Math.round(Number(range.value) || 1), 1, 5);
-    if (ponteiro?.tipo === 'touch' && !arrastando) {
-      // toque ainda indefinido (pode virar rolagem): o nativo não muda a etapa; o toque é tratado ao soltar
+    if (ponteiro && !arrastando) {
+      // ponteiro pressionado e ainda sem arraste: quem decide a etapa é este módulo (o mouse já foi ao
+      // ponto em pointerdown; o toque pode virar rolagem e é tratado ao soltar). O nativo volta.
       range.value = String(valorAtual);
       return;
     }
@@ -211,15 +223,41 @@ export function init({ estatico = false } = {}) {
   }
   for (const b of botoes) b.addEventListener('click', aoBotao);
 
-  // ---------- arraste contínuo ----------
+  // ---------- ponteiro: clique, toque e arraste contínuo ----------
   function valorNoPonteiro(x) {
     const caixa = range.getBoundingClientRect();
     const util = Math.max(1, caixa.width - POLEGAR);
     return 1 + 4 * limitar((x - caixa.left - POLEGAR / 2) / util, 0, 1);
   }
+  /** Vai à etapa do ponto (clique ou toque sem arraste), animando como o teclado. */
+  function irAoPonto(x) {
+    const n = limitar(Math.round(valorNoPonteiro(x)), 1, 5);
+    range.value = String(n);
+    if (n === valorAtual && !animE && Math.abs(e.get() - n) < 0.001) return;
+    sincronizar(n);
+    irPara(n);
+  }
   function seguir(x) {
     const v = valorNoPonteiro(x);
-    e.set(v);
+    ultimoV = v;
+    if (perseguindo && !semMovimento && Math.abs(v - e.get()) > 0.02) {
+      // retoma a mola a cada movimento: o Motion herda a velocidade de e, sem degrau
+      animE?.stop();
+      const anim = animate(e, v, encaixe);
+      animE = anim;
+      anim.then(() => {
+        if (animE !== anim) return;
+        animE = null;
+        perseguindo = false;
+      });
+    } else {
+      if (perseguindo) {
+        perseguindo = false;
+        animE?.stop();
+        animE = null;
+      }
+      e.set(v);
+    }
     const n = Math.round(v);
     if (Number(range.value) !== n) {
       range.value = String(n);
@@ -228,12 +266,12 @@ export function init({ estatico = false } = {}) {
   }
   function comecarArraste(evento) {
     arrastando = true;
-    animE?.stop();
-    animE = null;
-    try {
-      range.setPointerCapture(evento.pointerId);
-    } catch {
-      /* ponteiro já liberado */
+    const v = valorNoPonteiro(evento.clientX);
+    // longe de e (clique ainda animando, ou toque longe do polegar): alcança com a mola em vez de saltar
+    perseguindo = !semMovimento && (Boolean(animE) || Math.abs(v - e.get()) > 0.25);
+    if (!perseguindo) {
+      animE?.stop();
+      animE = null;
     }
     seguir(evento.clientX);
   }
@@ -242,17 +280,18 @@ export function init({ estatico = false } = {}) {
     interagiu = true;
     pararDica();
     ponteiro = { id: evento.pointerId, x0: evento.clientX, y0: evento.clientY, tipo: evento.pointerType };
-    if (evento.pointerType === 'touch') return; // espera saber se é arraste horizontal ou rolagem
-    // sem preventDefault: o range recebe o foco do clique (sem anel de foco), e o valor que o
-    // arraste nativo grava é corrigido em aoInput para a posição arredondada do ponteiro
-    comecarArraste(evento);
+    if (evento.pointerType === 'touch') return; // espera saber se é arraste horizontal, toque ou rolagem
+    // mouse e caneta: sem preventDefault, o range recebe o foco do clique (sem anel de foco). A etapa
+    // do ponto anima já ao pressionar, como um botão.
+    irAoPonto(evento.clientX);
   }
   function aoPointerMove(evento) {
     if (!ponteiro || evento.pointerId !== ponteiro.id) return;
     if (!arrastando) {
       const dx = evento.clientX - ponteiro.x0;
       const dy = evento.clientY - ponteiro.y0;
-      if (Math.abs(dx) < LIMIAR_TOQUE || Math.abs(dx) < Math.abs(dy)) return;
+      if (Math.abs(dx) < LIMIAR_TOQUE) return;
+      if (ponteiro.tipo === 'touch' && Math.abs(dx) < Math.abs(dy)) return;
       comecarArraste(evento);
       return;
     }
@@ -260,34 +299,30 @@ export function init({ estatico = false } = {}) {
   }
   function soltar(evento, cancelado) {
     if (!ponteiro || evento.pointerId !== ponteiro.id) return;
-    const eraToque = !arrastando;
+    const { tipo } = ponteiro;
     ponteiro = null;
-    if (eraToque) {
-      // toque sem arraste: vai à etapa tocada como um botão (a rolagem que começou no trilho é ignorada)
-      if (cancelado) return;
-      const n = Math.round(valorNoPonteiro(evento.clientX));
-      range.value = String(n);
-      sincronizar(n);
-      irPara(n);
+    if (!arrastando) {
+      // toque sem arraste: vai à etapa tocada como um botão (a rolagem que começou no trilho é ignorada).
+      // Mouse e caneta já foram ao ponto em pointerdown.
+      if (tipo === 'touch' && !cancelado) irAoPonto(evento.clientX);
       return;
     }
     arrastando = false;
-    try {
-      range.releasePointerCapture(evento.pointerId);
-    } catch {
-      /* já liberado */
-    }
-    const n = limitar(Math.round(e.get()), 1, 5);
+    perseguindo = false;
+    const n = limitar(Math.round(ultimoV), 1, 5);
     range.value = String(n);
     sincronizar(n);
     irPara(n, encaixe);
   }
   const aoPointerUp = (evento) => soltar(evento, false);
   const aoPointerCancel = (evento) => soltar(evento, true);
+  // Movimento e soltura na janela: o slider nativo do Chrome toma a captura do mouse para si (troca
+  // got/lostpointercapture durante o arraste), então o arraste não depende de captura nem de o
+  // ponteiro continuar sobre o trilho, e o pointerup fora dele também solta.
   range.addEventListener('pointerdown', aoPointerDown);
-  range.addEventListener('pointermove', aoPointerMove);
-  range.addEventListener('pointerup', aoPointerUp);
-  range.addEventListener('pointercancel', aoPointerCancel);
+  window.addEventListener('pointermove', aoPointerMove);
+  window.addEventListener('pointerup', aoPointerUp);
+  window.addEventListener('pointercancel', aoPointerCancel);
   const marcarInteracao = () => {
     interagiu = true;
     pararDica();
@@ -335,9 +370,9 @@ export function init({ estatico = false } = {}) {
     e.destroy();
     range.removeEventListener('input', aoInput);
     range.removeEventListener('pointerdown', aoPointerDown);
-    range.removeEventListener('pointermove', aoPointerMove);
-    range.removeEventListener('pointerup', aoPointerUp);
-    range.removeEventListener('pointercancel', aoPointerCancel);
+    window.removeEventListener('pointermove', aoPointerMove);
+    window.removeEventListener('pointerup', aoPointerUp);
+    window.removeEventListener('pointercancel', aoPointerCancel);
     m3.removeEventListener('keydown', marcarInteracao);
     for (const b of botoes) b.removeEventListener('click', aoBotao);
     // volta ao HTML de partida: controles escondidos, lista sem etapa ativa

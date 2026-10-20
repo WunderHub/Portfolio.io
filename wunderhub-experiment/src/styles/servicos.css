@@ -4,8 +4,8 @@
    - andares: "Site" / "institucional" em 125/700, cada andar sobre uma laje;
    - pilares: "Loja virtual" em 50/800, cada letra num vão entre pilares, como prateleiras.
    Os corpos preenchem a largura útil até 120px (96px nos pilares do celular): a largura de cada nome
-   em em vem das métricas geradas (--formato-*-em). Nenhuma animação: hover e foco só mudam cor e
-   sublinhado (princípio 4). */
+   em em vem das métricas geradas (--formato-*-em). Nenhuma animação: hover e foco só mudam o
+   sublinhado (princípio 4; a seta não se move). */
 
 .servicos {
   container-type: inline-size;
@@ -171,11 +171,6 @@
 }
 .formato__seta {
   flex: none;
-  transition: transform var(--dur-toque) var(--ease-resposta);
-}
-.formato__exemplo:hover .formato__seta,
-.formato__exemplo:focus-visible .formato__seta {
-  transform: translateX(3px);
 }
 
 @media (forced-colors: active) {
@@ -196,11 +191,27 @@
   }
 }
 
-/* ---------- celular: pilares mais justos para chegar perto dos 96px ---------- */
+/* ---------- celular: pilares só nas bordas das palavras (┃Loja┃virtual┃, wireframe 4.2), a 96px ----------
+   O pilar do meio faz o papel do espaço; dentro de cada palavra as letras ficam no espaçamento natural.
+   Largura das letras em spans separados: --formato-loja-em − .0945 (o espaço) + .0045 (kerning perdido). */
 @media (max-width: 599.98px) {
   .formato--loja .formato__nome {
-    --vao-n: .035;
     --pilares-max: 96px;
+    font-size: min(var(--pilares-max), (var(--util) - 3 * var(--fio-aco)) / (var(--formato-loja-em) - .09 + 4 * var(--vao-n)));
+  }
+  .pilares > span {
+    padding-inline: 0;
+    border-left: 0;
+  }
+  .pilares > .pilares__vao {
+    display: none;
+  }
+  .pilares > .pilares__inicio {
+    padding-left: var(--vao-pad);
+    border-left: var(--fio-aco) solid var(--prata);
+  }
+  .pilares > .pilares__fim {
+    padding-right: var(--vao-pad);
   }
 }
 
