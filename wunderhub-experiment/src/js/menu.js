@@ -6,11 +6,57 @@
 // Fechar, Escape (evento cancel) e destinos fecham com a animação de saída; nos dois primeiros o foco
 // volta ao botão "Menu"; num destino, a rolagem vai para a âncora depois de fechar.
 // Se a janela passar de 767px com o menu aberto, fecha sem animação. Reduced motion: sem deslocamento.
+//
+// Chegada às âncoras (links do header e destinos do menu): a rolagem até #servicos, #processo ou
+// #contato passa por #trabalhos, e os módulos sob demanda que carregam no caminho podem mudar a altura
+// do que fica acima do destino (a vitrine recolhe os painéis fechados). Durante 3s depois do clique,
+// se a rolagem parar (ou a página mudar de altura) com o destino fora do lugar, rola de novo até ele.
+// Qualquer gesto da pessoa (roda, toque, tecla, ponteiro) desarma a correção.
 import { animate } from 'motion';
 import { preferencias, suporta } from './motion/preferencias.js';
 import { easeCorte, easeSaida, dur, distancia } from './motion/tokens.js';
 
 const DURACAO_ENTRADA = 0.28;
+const JANELA_CHEGADA_MS = 3000;
+const GESTOS = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
+
+/** Garante que a rolagem até `alvo` termine com ele no lugar (ver cabeçalho). Devolve o desarme. */
+function vigiarChegada(alvo) {
+  let tentativas = 0;
+  let ocioso = 0;
+  let quadro = 0;
+  const raiz = document.documentElement;
+  const conferir = () => {
+    quadro = 0;
+    const esperado = parseFloat(getComputedStyle(raiz).scrollPaddingTop) || 0;
+    const fora = Math.abs(alvo.getBoundingClientRect().top - esperado) > 4;
+    const noFim = window.scrollY >= raiz.scrollHeight - window.innerHeight - 1;
+    if (!fora || noFim) return;
+    if (++tentativas > 3) return desarmar();
+    alvo.scrollIntoView({ block: 'start' });
+  };
+  const agendar = () => {
+    if (!quadro) quadro = requestAnimationFrame(conferir);
+  };
+  const aoRolar = () => {
+    clearTimeout(ocioso);
+    ocioso = setTimeout(agendar, 140);
+  };
+  const observador = new ResizeObserver(() => aoRolar());
+  observador.observe(document.body);
+  addEventListener('scroll', aoRolar, { passive: true });
+  for (const gesto of GESTOS) addEventListener(gesto, desarmar, { passive: true, capture: true });
+  const limite = setTimeout(desarmar, JANELA_CHEGADA_MS);
+  function desarmar() {
+    clearTimeout(ocioso);
+    clearTimeout(limite);
+    cancelAnimationFrame(quadro);
+    observador.disconnect();
+    removeEventListener('scroll', aoRolar);
+    for (const gesto of GESTOS) removeEventListener(gesto, desarmar, { capture: true });
+  }
+  return desarmar;
+}
 
 /**
  * @param {{ raiz: HTMLElement }} contexto
@@ -32,8 +78,15 @@ export function init() {
   link.replaceWith(botao);
 
   const largo = matchMedia('(min-width: 768px)');
+  const navHeader = document.querySelector('.header__nav');
   let animacao = null;
   let fechando = false;
+  let desarmarChegada = () => {};
+  const vigiar = (hash) => {
+    const alvo = hash && hash.length > 1 && hash.startsWith('#') ? document.getElementById(hash.slice(1)) : null;
+    desarmarChegada();
+    desarmarChegada = alvo ? vigiarChegada(alvo) : () => {};
+  };
 
   const deslocamento = () => (preferencias.reduzido ? 0 : -distancia.menu);
 
@@ -91,6 +144,7 @@ export function init() {
           // e move o ponto de partida do Tab para a seção.
           if (location.hash === hash) alvo.scrollIntoView({ block: 'start' });
           else location.hash = hash;
+          vigiar(hash);
         },
       });
       return;
@@ -100,13 +154,21 @@ export function init() {
   const aoMudarLargura = () => {
     if (largo.matches) fechar({ instantaneo: true });
   };
+  // Links do header (≥768px): a navegação é a nativa; só vigia a chegada.
+  const aoClicarHeader = (evento) => {
+    const link = evento.target.closest('a[href^="#"]');
+    if (link && !evento.defaultPrevented) vigiar(link.getAttribute('href'));
+  };
 
   botao.addEventListener('click', aoClicarBotao);
   dialog.addEventListener('cancel', aoCancelar);
   dialog.addEventListener('click', aoClicarDialog);
   largo.addEventListener('change', aoMudarLargura);
+  navHeader?.addEventListener('click', aoClicarHeader);
 
   return () => {
+    desarmarChegada();
+    navHeader?.removeEventListener('click', aoClicarHeader);
     animacao?.stop();
     if (dialog.open) dialog.close();
     dialog.style.opacity = '';

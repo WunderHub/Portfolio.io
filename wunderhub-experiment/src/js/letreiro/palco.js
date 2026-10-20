@@ -14,6 +14,7 @@ import { easeCorte, easeSaida, dur, stagger, CORTE_TAN } from '../motion/tokens.
 import { criarRenderizador } from './render.js';
 
 const LIMIAR_PLACAS = 0.85;
+const PASSO_PESO = 40;
 
 /**
  * @param {{ raiz: HTMLElement, estatico: boolean }} contexto
@@ -107,10 +108,13 @@ export function init({ raiz, estatico }) {
   let vivo = null; // { desmontar }
   let assinatura = '';
 
-  function montarVivo(pref) {
+  function montarVivo() {
     const headerH = parseFloat(getComputedStyle(raiz).getPropertyValue('--header-h')) || 64;
     const renderizador = criarRenderizador(fachada, {
-      passoPeso: () => pref.passoPeso,
+      // Plano B do orçamento (5.1): passos de 40 também com ponteiro fino. Medido no Chromium 141
+      // headless com CPU 4x: cada peso novo custa 20–45ms de estilo (instância da fonte variável) e o
+      // custo não cai com passos de 20; com 40 há metade desses quadros na primeira passada.
+      passoPeso: () => PASSO_PESO,
       fonteLenta: () => raiz.classList.contains('fonte-lenta'),
     });
     renderizador.medir();
@@ -159,7 +163,7 @@ export function init({ raiz, estatico }) {
   function aplicar(pref) {
     const emEstatico = estatico || pref.estatico;
     // remonta o modo vivo quando muda algo que entra nas medidas fixas (header, torre/linha, passo)
-    const nova = emEstatico ? 'estatico' : `vivo:${pref.navegacao}:${pref.desktop}:${pref.passoPeso}`;
+    const nova = emEstatico ? 'estatico' : `vivo:${pref.navegacao}:${pref.desktop}`;
     if (nova === assinatura) return;
     assinatura = nova;
     if (vivo) {
@@ -167,7 +171,7 @@ export function init({ raiz, estatico }) {
       vivo = null;
     }
     if (emEstatico) montarEstatico();
-    else vivo = montarVivo(pref);
+    else vivo = montarVivo();
   }
 
   const pararPreferencias = subscribe((pref) => aplicar(pref));

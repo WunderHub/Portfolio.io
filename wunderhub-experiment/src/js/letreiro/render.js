@@ -1,6 +1,8 @@
 // Renderizador do palco (seção 5.1, Motores): único escritor, num único frame.render do Motion, de
 //   transform das metades, das persianas e da imagem de trás, opacidade do véu, visibilidade do plano
-//   de trás, --peso e --brilho da .fachada e --v (varredura da carga) das arestas.
+//   de trás, --peso e --brilho da .fachada, --v (varredura da carga) das arestas e data-corte da
+//   .fachada ('cortando' durante a varredura; 'pronto' depois: o CSS troca as cópias de texto da
+//   aresta e do retorno pela faixa desenhada no próprio aço, mais barata para a troca de peso).
 // Escreve só quando algum valor quantizado muda. Não lê layout ao desenhar (medidas vêm de medir()).
 // Usado por palco.js (que entrega p) e por carga.js (que escreve os números da carga e pede um quadro).
 // Frente dona: topo.
@@ -64,7 +66,8 @@ export function criarRenderizador(fachada, { passoPeso, fonteLenta }) {
     if (mapa.get(prop) === valor) return;
     mapa.set(prop, valor);
     tocados.add(el);
-    if (prop.startsWith('--')) el.style.setProperty(prop, valor);
+    if (prop.startsWith('data-')) el.setAttribute(prop, valor);
+    else if (prop.startsWith('--')) el.style.setProperty(prop, valor);
     else el.style[prop] = valor;
   }
 
@@ -94,6 +97,7 @@ export function criarRenderizador(fachada, { passoPeso, fonteLenta }) {
       definir(fachada, '--peso', String(peso));
     }
     definir(fachada, '--brilho', String(Math.round((0.15 + 0.7 * p) * 200) / 200));
+    definir(fachada, 'data-corte', carga.varredura.every((v) => v >= 1) ? 'pronto' : 'cortando');
 
     const veu = String(Math.round(0.75 * (1 - b) * 200) / 200);
     const imagem = torre ? 'none' : `translateX(${r1(12 - 24 * b)}px) scale(${r3(1.06 - 0.06 * b)})`;
@@ -153,7 +157,8 @@ export function criarRenderizador(fachada, { passoPeso, fonteLenta }) {
         const mapa = escrito.get(el);
         if (!mapa) continue;
         for (const prop of mapa.keys()) {
-          if (prop.startsWith('--')) el.style.removeProperty(prop);
+          if (prop.startsWith('data-')) el.removeAttribute(prop);
+          else if (prop.startsWith('--')) el.style.removeProperty(prop);
           else el.style[prop] = '';
         }
       }

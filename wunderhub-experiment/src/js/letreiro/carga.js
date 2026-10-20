@@ -6,6 +6,13 @@
 // DOM é o render.js. A rolagem (p > 0) completa tudo na hora. Reduced motion, sem JS, fonte lenta,
 // volta pelo bfcache ou página aberta no meio do palco: estado final direto, sem repetir.
 //
+// Volta pelo histórico sem bfcache (o navegador recarrega a página): também sem repetir, pelo tipo
+// de navegação 'back_forward'.
+//
+// Fallback do letreiro (.fonte-lenta, desktop): a face local é larga e cada glifo é comprimido no
+// centro da própria célula. A escala de cada célula (--escala) é medida aqui, uma vez, pela largura do
+// glifo na face que o navegador escolheu, para cada letra caber na sua célula com a mesma folga.
+//
 // Fonte: não confia em html.fonte-pronta. O script inline chama document.fonts.load antes de existir
 // o CSS com o @font-face, e a promessa resolve na hora sem carregar nada (visto no build: fonte-pronta
 // com a fonte atrasada 2,5s e fonte-lenta nunca marcada). Aqui o CSS já está aplicado (o módulo roda
@@ -33,13 +40,59 @@ export function init({ raiz, estatico }) {
   let vigia = 0;
 
   // ---------- vigia da fonte (vale com ou sem o corte) ----------
+  let ajusteFeito = false;
+  let pararAjuste = () => {};
   const marcarLenta = () => {
-    if (!fontePronta()) raiz.classList.add('fonte-lenta');
+    if (fontePronta()) return;
+    raiz.classList.add('fonte-lenta');
+    ajustarFallback();
   };
-  if (!fontePronta() && !raiz.classList.contains('fonte-lenta')) {
+  if (raiz.classList.contains('fonte-lenta')) ajustarFallback();
+  else if (!fontePronta()) {
     const resta = LIMITE_FONTE_MS - performance.now();
     if (resta <= 0) marcarLenta();
     else vigia = setTimeout(marcarLenta, resta);
+  }
+
+  /** --escala por célula: largura da célula / largura do glifo no fallback, com 6% de respiro. */
+  function ajustarFallback() {
+    if (ajusteFeito || !palco) return;
+    ajusteFeito = true;
+    const fachada = palco.querySelector('[data-fachada]');
+    if (!fachada) return;
+    const sonda = document.createElement('span');
+    sonda.style.cssText = 'position:absolute;left:0;top:0;visibility:hidden;white-space:nowrap;font:inherit;font-stretch:inherit;line-height:1';
+    let quadro = 0;
+    const medir = () => {
+      quadro = 0;
+      fachada.append(sonda);
+      const corpo = parseFloat(getComputedStyle(fachada).fontSize) || 1;
+      const larguras = new Map();
+      for (const letra of 'WUNDERHB') {
+        sonda.textContent = letra;
+        larguras.set(letra, sonda.getBoundingClientRect().width / corpo);
+      }
+      sonda.remove();
+      for (const cel of fachada.querySelectorAll('.cel')) {
+        const vao = cel.closest('[data-vao]');
+        const celula = parseFloat(getComputedStyle(vao).getPropertyValue(`--cel-${cel.dataset.i}`)) || 0;
+        const glifo = larguras.get(cel.textContent.trim()) || 0;
+        if (!celula || !glifo) continue;
+        cel.style.setProperty('--escala', String(Math.min(1, Math.round(((celula * 0.94) / glifo) * 1000) / 1000)));
+      }
+    };
+    // depois do recálculo de estilo com a classe nova; de novo se a face local terminar de carregar
+    quadro = requestAnimationFrame(medir);
+    const aoCarregarFonte = () => {
+      if (!quadro) quadro = requestAnimationFrame(medir);
+    };
+    fontes?.addEventListener?.('loadingdone', aoCarregarFonte);
+    pararAjuste = () => {
+      cancelAnimationFrame(quadro);
+      fontes?.removeEventListener?.('loadingdone', aoCarregarFonte);
+      sonda.remove();
+      for (const cel of fachada.querySelectorAll('.cel')) cel.style.removeProperty('--escala');
+    };
   }
 
   // ---------- o corte ----------
@@ -61,13 +114,16 @@ export function init({ raiz, estatico }) {
   const limpar = () => {
     clearTimeout(vigia);
     window.removeEventListener('pageshow', aoMostrarPagina);
+    pararAjuste();
     finalizar();
   };
 
   // p = 0 enquanto o topo do palco ainda não chegou ao header (a abertura ainda está na tela)
   const headerH = parseFloat(getComputedStyle(raiz).getPropertyValue('--header-h')) || 64;
   const emRepouso = palco && palco.getBoundingClientRect().top >= headerH - 1;
-  const podeCorrer = !estatico && !preferencias.estatico && palco && emRepouso && !raiz.classList.contains('fonte-lenta');
+  const voltando = performance.getEntriesByType?.('navigation')?.[0]?.type === 'back_forward';
+  const podeCorrer =
+    !estatico && !preferencias.estatico && palco && emRepouso && !voltando && !raiz.classList.contains('fonte-lenta');
   if (!podeCorrer || !fontes?.load || performance.now() >= LIMITE_FONTE_MS && !fontePronta()) {
     finalizar();
     return limpar;

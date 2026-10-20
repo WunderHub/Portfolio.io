@@ -46,7 +46,6 @@
   display: flex;
   align-items: center;
   gap: var(--e-1);
-  margin-right: -4px; /* o botão Menu alinha a borda com a margem; o ícone tem respiro próprio */
 }
 .header__whatsapp {
   display: inline-flex;
@@ -66,7 +65,22 @@
 }
 .header__menu {
   padding-inline: var(--e-2);
-  margin-right: 4px;
+}
+/* 360px: wordmark (186px) + ícone (48px) + Menu cabem nos 328px úteis sem estourar a margem */
+@media (max-width: 399.98px) {
+  .header__linha {
+    gap: var(--e-1);
+  }
+  .header__acoes {
+    gap: 0;
+  }
+  .header__menu {
+    padding-inline: 12px;
+  }
+  /* abaixo de ~340px (zoom de 400% em 1280) o wordmark encolhe para a linha caber; 18px no resto */
+  .header__marca {
+    font-size: min(18px, (100vw - 2 * var(--margem) - 130px) / var(--wordmark-em));
+  }
 }
 @media (min-width: 768px) {
   .header__nav {

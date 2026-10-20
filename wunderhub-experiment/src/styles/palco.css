@@ -17,6 +17,31 @@
    Geometria (5.1): U e D são as folgas acima e abaixo do letreiro; a fachada ocupa a largura inteira de
    .topo e recua as letras pela margem. Todas as medidas de letra vêm de styles/generated/letreiro.css. */
 
+/* ---------- custo por quadro ----------
+   --peso (render.js) e --brilho (registrada em tokens.css) são escritas por quadro na .fachada. Para a
+   troca não recalcular os ~90 elementos da fachada (medido: metade dos quadros passava de 15ms de
+   estilo com CPU 4x), as duas não herdam: só a cadeia vão → metade → linha de letras as recebe por
+   `inherit`, e a faixa especular é desenhada pela própria linha de letras a partir de --brilho (a
+   --especular global, que herda, fica constante dentro da fachada). Capturas, véus e persianas não
+   recalculam com o peso nem com o brilho. */
+@property --peso {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 900;
+}
+.topo .fachada {
+  --especular: none;
+}
+.fachada .vao,
+.fachada .vao__metade,
+.fachada [data-linha] {
+  --peso: inherit;
+  --brilho: inherit;
+}
+.fachada [data-linha] {
+  font-weight: var(--peso);
+}
+
 /* ---------- variáveis do palco ---------- */
 .topo {
   container-type: inline-size;
@@ -29,11 +54,13 @@
   /* torre (abaixo de 1024px) */
   --fs-letreiro: calc(var(--largura-letreiro) / var(--letreiro-em-torre));
   --L: calc(3 * .74 * var(--fs-letreiro));
-  --abre-cima: 2svh; /* metade de cima, na perpendicular */
-  --abre-baixo: calc(6px + 7svh); /* metade de baixo, fenda incluída */
-  --cascata: 9svh; /* andar k desce k × 9svh */
+  /* unidade das aberturas: 1svh (é o que o render.js mede); fixa em 8px nas telas baixas (abaixo) */
+  --vh: 1svh;
+  --abre-cima: calc(2 * var(--vh)); /* metade de cima, na perpendicular */
+  --abre-baixo: calc(6px + 7 * var(--vh)); /* metade de baixo, fenda incluída */
+  --cascata: calc(9 * var(--vh)); /* andar k desce k × 9svh */
   --U: var(--abre-cima);
-  --D: calc(6px + 7svh + 18svh + 8px);
+  --D: calc(6px + 25 * var(--vh) + 8px);
   --pista: 90svh;
   --placa-largura: 3em; /* a placa de aço: o gradiente atravessa o letreiro inteiro */
   --placa-altura: calc(3 * var(--letreiro-linha));
@@ -54,13 +81,22 @@
   .topo {
     --fs-letreiro: calc(var(--largura-letreiro) / var(--letreiro-em-linha));
     --L: calc(.74 * var(--fs-letreiro));
-    --abre-cima: 6svh;
-    --abre-baixo: calc(6px + 22svh);
+    --abre-cima: calc(6 * var(--vh));
+    --abre-baixo: calc(6px + 22 * var(--vh));
     --cascata: 0px;
-    --D: calc(6px + 22svh + 8px);
+    --D: calc(6px + 22 * var(--vh) + 8px);
     --pista: 120svh;
     --placa-largura: calc(var(--letreiro-em-linha) * 1em);
     --placa-altura: var(--letreiro-linha);
+  }
+}
+
+/* Telas baixas (inclui zoom de 200% em 1440×900): o palco é sempre estático e as aberturas medidas em
+   svh ficariam rasas demais para a janela (e a placa da torre subiria sobre a abertura). Valem as
+   proporções de uma tela de 800px de altura. */
+@media (max-height: 499.98px) {
+  .topo {
+    --vh: 8px;
   }
 }
 
@@ -82,11 +118,13 @@
   flex-direction: column;
   align-items: flex-start;
   padding: var(--U) var(--recuo-letreiro) var(--D);
-  contain: layout paint style;
+  /* Altura conhecida (folgas + letreiro): com contain strict a fachada é raiz de layout, e a troca de
+     peso das letras não remonta o resto da página. */
+  height: calc(var(--U) + var(--L) + var(--D));
+  contain: strict;
   container-type: inline-size;
   font-family: var(--fonte-letreiro);
   font-size: var(--fs-letreiro);
-  font-weight: var(--peso);
   line-height: var(--letreiro-linha);
   font-kerning: none;
   font-synthesis: none;
@@ -210,6 +248,14 @@
   object-fit: cover;
   object-position: 50% 28%;
 }
+/* No desktop a janela é mais estreita que a captura 16:10 e o corte é nas laterais: alinhada à
+   esquerda, a janela mostra o começo do título de cada demonstração (as três alinham o texto à
+   esquerda) em vez de cortá-lo no meio da palavra. */
+@media (min-width: 1024px) {
+  .vao__captura {
+    object-position: 0% 28%;
+  }
+}
 .vao__fundo--falhou .vao__captura {
   visibility: hidden;
 }
@@ -269,25 +315,51 @@
 }
 
 /* Aço escovado (2.2): gradiente, grão horizontal e faixa especular dimensionados pela placa inteira
-   e deslocados por vão, para o letreiro ler como uma chapa só. */
+   e deslocados por vão, para o letreiro ler como uma chapa só.
+   Aresta polida (2px de Prata Luz no lábio de cima do corte) e retorno (2px de Prata Sombra no lábio
+   de baixo) são uma camada do próprio aço (--faixa), recortada às letras pelo background-clip: text.
+   Sem cópias de texto, a troca de peso do palco remonta só uma linha de letras por metade (orçamento
+   de quadro da seção 5.1). A faixa corre paralela ao corte: um linear-gradient a 196° tem as linhas de
+   mesma cor a 16° e, na caixa da linha (largura --vao-l), a reta do corte fica na posição
+   t0 = sen 16° × largura + cos 16° × y0 do gradiente. 2px na vertical são 1,92px na perpendicular. */
 .fachada .letras {
+  --t0: calc(.2756 * var(--vao-l) + .9613 * var(--corte-y0));
   color: transparent;
-  background-image: var(--especular), var(--grao-letreiro), var(--prata-escovada);
-  background-size: var(--placa-largura) var(--placa-altura), 2400px 128px, var(--placa-largura) var(--placa-altura);
-  background-position: var(--aco-x) var(--aco-y);
-  background-repeat: no-repeat, repeat, no-repeat;
-  background-blend-mode: normal, soft-light, normal;
+  /* 1ª camada: a mesma --especular da seção 2.2, escrita aqui (e não por uma variável que herda) com o
+     --brilho da própria linha, para a troca por quadro não recalcular as células */
+  background-image:
+    linear-gradient(104deg,
+      transparent calc(var(--brilho) * 100% - 9%),
+      rgb(255 255 255 / .55) calc(var(--brilho) * 100%),
+      transparent calc(var(--brilho) * 100% + 9%)),
+    var(--faixa), var(--grao-letreiro), var(--prata-escovada);
+  background-size:
+    var(--placa-largura) var(--placa-altura),
+    100% 100%,
+    2400px 128px,
+    var(--placa-largura) var(--placa-altura);
+  background-position: var(--aco-x) var(--aco-y), 0 0, var(--aco-x) var(--aco-y), var(--aco-x) var(--aco-y);
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat;
+  background-blend-mode: normal, normal, soft-light, normal;
   -webkit-background-clip: text;
   background-clip: text;
 }
+.fachada .vao__metade--cima .letras {
+  --faixa: linear-gradient(196deg, transparent calc(var(--t0) - 1.92px), var(--prata-luz) 0 var(--t0), transparent 0);
+}
+.fachada .vao__metade--baixo .letras {
+  --faixa: linear-gradient(196deg, transparent var(--t0), var(--prata-sombra) 0 calc(var(--t0) + 1.92px), transparent 0);
+}
 
-/* Aresta polida: 2px de Prata Luz no lábio de cima do corte, só sobre as letras.
-   --v (0..1) é a varredura da carga (5.0): a aresta acende atrás de um brilho que corre da esquerda
-   para a direita. Fora da carga --v = 1 (aresta inteira). */
+/* Cópias de texto da aresta e do retorno: só durante o acontecimento de carga (a aresta acende atrás
+   de um brilho que corre da esquerda para a direita; --v de 0 a 1 é a varredura, escrita pelo
+   render.js) e no fallback da fonte lenta (sem eixo de peso, cada célula leva o próprio aço).
+   Nesses estados a --faixa sai das letras. */
 .fachada .aresta,
 .fachada .retorno {
   position: absolute;
   inset: 0;
+  display: none;
   color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
@@ -304,7 +376,6 @@
     -.5em calc(var(--corte-y0) - .14335em)
   );
 }
-/* Retorno: 2px de Prata Sombra no lábio de baixo. */
 .fachada .retorno {
   background-color: var(--prata-sombra);
   clip-path: polygon(
@@ -313,6 +384,13 @@
     calc(100% + .5em) calc(var(--corte-y1) + .14335em + 2px),
     -.5em calc(var(--corte-y0) - .14335em + 2px)
   );
+}
+.fonte-lenta .fachada .aresta,
+.fonte-lenta .fachada .retorno {
+  display: block;
+}
+.fonte-lenta .fachada .letras {
+  --faixa: none;
 }
 
 /* will-change só enquanto o palco está perto da tela (palco.js, inView com margem de 50%) */
@@ -389,6 +467,14 @@
   .js .fachada .aresta {
     --v: 0;
   }
+  /* até o render.js declarar o corte concluído (data-corte="pronto"), as arestas são as cópias */
+  .js .fachada:not([data-corte='pronto']) .aresta,
+  .js .fachada:not([data-corte='pronto']) .retorno {
+    display: block;
+  }
+  .js .fachada:not([data-corte='pronto']) .letras {
+    --faixa: none;
+  }
   .js .vao__veu {
     opacity: .75;
   }
@@ -447,7 +533,13 @@
     --cel-c: calc(var(--cel-2) / 2 + var(--folga));
   }
   .fonte-lenta .fachada .letras .cel {
-    background-image: var(--especular), var(--grao-letreiro), var(--prata-escovada);
+    --brilho: inherit;
+    background-image:
+      linear-gradient(104deg,
+        transparent calc(var(--brilho) * 100% - 9%),
+        rgb(255 255 255 / .55) calc(var(--brilho) * 100%),
+        transparent calc(var(--brilho) * 100% + 9%)),
+      var(--grao-letreiro), var(--prata-escovada);
     background-repeat: no-repeat, repeat, no-repeat;
     background-blend-mode: normal, soft-light, normal;
     background-size:
