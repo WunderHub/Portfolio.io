@@ -2,8 +2,10 @@
 // Quando a Anybody fica pronta em até 900ms, com o palco em p=0 e sem reduced motion: para cada vão,
 // com atraso de i × 90ms, a faixa especular percorre a aresta da esquerda para a direita em 520ms
 // (--ease-corte) e acende a aresta atrás dela; depois a metade de baixo desce 6px na perpendicular em
-// 240ms. Termina em 940ms. Este módulo só anima números (animate(0, 1, { onUpdate })); quem escreve no
-// DOM é o render.js. A rolagem (p > 0) completa tudo na hora. Reduced motion, sem JS, fonte lenta,
+// 240ms. Junto com o corte, uma faixa de luz larga (a mesma faixa especular do palco) cruza o letreiro
+// inteiro, WUN, DER e HUB, da esquerda para a direita em 760ms (--ease-corte); ao sair, a faixa volta ao
+// repouso acendendo a opacidade em 320ms (--ease-resposta), sem deslizar de volta. Termina em ~1,1s.
+// Este módulo só anima números (animate(0, 1, { onUpdate })); quem escreve no DOM é o render.js. A rolagem (p > 0) completa tudo na hora. Reduced motion, sem JS, fonte lenta,
 // volta pelo bfcache ou página aberta no meio do palco: estado final direto, sem repetir.
 //
 // Volta pelo histórico sem bfcache (o navegador recarrega a página): também sem repetir, pelo tipo
@@ -20,11 +22,13 @@
 // 900ms desde o início da navegação, este módulo marca html.fonte-lenta (letreiro no fallback estreito).
 import { animate } from 'motion';
 import { preferencias } from '../motion/preferencias.js';
-import { easeCorte, dur, stagger } from '../motion/tokens.js';
+import { easeCorte, easeResposta, dur, stagger } from '../motion/tokens.js';
 import { carga, pedirQuadro, observarProgresso } from './render.js';
 
 const LIMITE_FONTE_MS = 900;
 const FONTE = '900 100px "Anybody Letreiro"';
+const DUR_LUZ = 0.76; // a luz atravessa o letreiro
+const DUR_ACENDE = 0.32; // a faixa reacende em repouso (2 × --dur-resposta)
 
 /**
  * @param {{ raiz: HTMLElement, estatico: boolean }} contexto
@@ -104,6 +108,8 @@ export function init({ raiz, estatico }) {
     animacoes = [];
     carga.fenda = [1, 1, 1];
     carga.varredura = [1, 1, 1];
+    carga.luz = 1;
+    carga.acende = 1;
     pedirQuadro();
   }
 
@@ -132,6 +138,8 @@ export function init({ raiz, estatico }) {
   // Estado inicial do corte: metades encostadas, aresta apagada (o letreiro já está pintado).
   carga.fenda = [0, 0, 0];
   carga.varredura = [0, 0, 0];
+  carga.luz = 0;
+  carga.acende = 0;
   pedirQuadro();
 
   // Qualquer rolagem que tire o palco de p = 0 completa a carga na hora.
@@ -142,6 +150,32 @@ export function init({ raiz, estatico }) {
   function correr() {
     if (encerrado) return;
     if (preferencias.estatico || raiz.classList.contains('fonte-lenta')) return finalizar();
+    // a luz: entra, cruza o letreiro e sai; só então a faixa reacende em repouso
+    const luz = animate(0, 1, {
+      duration: DUR_LUZ,
+      ease: easeCorte,
+      onUpdate: (v) => {
+        carga.luz = v;
+        pedirQuadro();
+      },
+    });
+    animacoes.push(luz);
+    // o corte só termina quando a luz e os três vãos terminam
+    const partes = [
+      luz.then(() => {
+        if (encerrado) return;
+        const acende = animate(0, 1, {
+          duration: DUR_ACENDE,
+          ease: easeResposta,
+          onUpdate: (v) => {
+            carga.acende = v;
+            pedirQuadro();
+          },
+        });
+        animacoes.push(acende);
+        return acende;
+      }),
+    ];
     for (let i = 0; i < 3; i++) {
       const varredura = animate(0, 1, {
         duration: dur.revelacao,
@@ -153,20 +187,23 @@ export function init({ raiz, estatico }) {
         },
       });
       animacoes.push(varredura);
-      varredura.then(() => {
-        if (encerrado) return;
-        const descida = animate(0, 1, {
-          duration: dur.saidaLonga,
-          ease: easeCorte,
-          onUpdate: (v) => {
-            carga.fenda[i] = v;
-            pedirQuadro();
-          },
-        });
-        animacoes.push(descida);
-        if (i === 2) descida.then(() => finalizar());
-      });
+      partes.push(
+        varredura.then(() => {
+          if (encerrado) return;
+          const descida = animate(0, 1, {
+            duration: dur.saidaLonga,
+            ease: easeCorte,
+            onUpdate: (v) => {
+              carga.fenda[i] = v;
+              pedirQuadro();
+            },
+          });
+          animacoes.push(descida);
+          return descida;
+        }),
+      );
     }
+    Promise.all(partes).then(() => finalizar());
   }
 
   if (fontePronta()) {

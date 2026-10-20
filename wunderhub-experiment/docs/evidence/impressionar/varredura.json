@@ -1,0 +1,217 @@
+{
+ "390": {
+  "passeio": {
+   "passos": 41,
+   "excessoHorizontalMax": 0,
+   "altura": 12197
+  },
+  "foraDaTela": [],
+  "log": {
+   "console": [],
+   "bad": [],
+   "pageerrors": []
+  },
+  "m3": [
+   {
+    "et": "1",
+    "traco": "1",
+    "pressed": "truefalsefalsefalsefalse",
+    "vt": "Etapa 1 de 5: Conversa",
+    "tracoAria": true
+   },
+   {
+    "et": "2",
+    "traco": "1",
+    "pressed": "falsetruefalsefalsefalse",
+    "vt": "Etapa 2 de 5: Mapa",
+    "tracoAria": true
+   },
+   {
+    "et": "3",
+    "traco": "1",
+    "pressed": "falsefalsetruefalsefalse",
+    "vt": "Etapa 3 de 5: Desenho",
+    "tracoAria": true
+   },
+   {
+    "et": "4",
+    "traco": "1",
+    "pressed": "falsefalsefalsetruefalse",
+    "vt": "Etapa 4 de 5: Construção",
+    "tracoAria": true
+   },
+   {
+    "et": "5",
+    "traco": "0",
+    "pressed": "falsefalsefalsefalsetrue",
+    "vt": "Etapa 5 de 5: No ar",
+    "tracoAria": true
+   },
+   {
+    "et": "1",
+    "traco": "1",
+    "pressed": "truefalsefalsefalsefalse",
+    "vt": "Etapa 1 de 5: Conversa",
+    "tracoAria": true
+   },
+   {
+    "teclado": "3",
+    "et": "3",
+    "vt": "Etapa 3 de 5: Desenho"
+   }
+  ],
+  "m3log": {
+   "console": [],
+   "bad": [],
+   "pageerrors": []
+  },
+  "foco": [
+   "pular ring=true sombra=true vis=true coberto=false",
+   "wordmark header__marca ring=true sombra=true vis=true coberto=false",
+   "header__whatsapp ring=true sombra=true vis=true coberto=false",
+   "botao header__menu ring=true sombra=true vis=true coberto=false",
+   "placa abertura__whatsapp ring=true sombra=true vis=true coberto=false",
+   "abertura__ver ring=true sombra=true vis=true coberto=false",
+   "placa conceito__abrir ring=true sombra=true vis=false coberto=true",
+   "botao conceito__alternar ring=true sombra=true vis=false coberto=true",
+   "placa conceito__abrir ring=true sombra=true vis=false coberto=true",
+   "botao conceito__alternar ring=true sombra=true vis=false coberto=true",
+   "placa conceito__abrir ring=true sombra=true vis=false coberto=true",
+   "botao conceito__alternar ring=true sombra=true vis=false coberto=true",
+   "formato__exemplo ring=true sombra=true vis=false coberto=true",
+   "formato__exemplo ring=true sombra=true vis=false coberto=true",
+   "formato__exemplo ring=true sombra=true vis=false coberto=true",
+   "placa ring=true sombra=true vis=false coberto=true"
+  ],
+  "foco_semAnel": 0,
+  "foco_cobertos": 0,
+  "focolog": {
+   "console": [],
+   "bad": [],
+   "pageerrors": []
+  },
+  "barra": {
+   "oculta": false,
+   "alturaBarra": 48,
+   "placa": [
+    233,
+    48
+   ],
+   "direita": 16,
+   "pctVermelho": 3.4,
+   "href": "https://wa.me/5511959300"
+  },
+  "barraScrollPad": "64px",
+  "barralog": {
+   "console": [],
+   "bad": [],
+   "pageerrors": []
+  }
+ },
+ "1440": {
+  "passeio": {
+   "passos": 26,
+   "excessoHorizontalMax": 0,
+   "altura": 10104
+  },
+  "foraDaTela": [],
+  "log": {
+   "console": [],
+   "bad": [],
+   "pageerrors": []
+  },
+  "m3": [
+   {
+    "et": "1",
+    "traco": "1",
+    "pressed": "truefalsefalsefalsefalse",
+    "vt": "Etapa 1 de 5: Conversa",
+    "tracoAria": true
+   },
+   {
+    "et": "2",
+    "traco": "1",
+    "pressed": "falsetruefalsefalsefalse",
+    "vt": "Etapa 2 de 5: Mapa",
+    "tracoAria": true
+   },
+   {
+    "et": "3",
+    "traco": "1",
+    "pressed": "falsefalsetruefalsefalse",
+    "vt": "Etapa 3 de 5: Desenho",
+    "tracoAria": true
+   },
+   {
+    "et": "4",
+    "traco": "1",
+    "pressed": "falsefalsefalsetruefalse",
+    "vt": "Etapa 4 de 5: Construção",
+    "tracoAria": true
+   },
+   {
+    "et": "5",
+    "traco": "0",
+    "pressed": "falsefalsefalsefalsetrue",
+    "vt": "Etapa 5 de 5: No ar",
+    "tracoAria": true
+   },
+   {
+    "et": "1",
+    "traco": "1",
+    "pressed": "truefalsefalsefalsefalse",
+    "vt": "Etapa 1 de 5: Conversa",
+    "tracoAria": true
+   },
+   {
+    "teclado": "3",
+    "et": "3",
+    "vt": "Etapa 3 de 5: Desenho"
+   }
+  ],
+  "m3log": {
+   "console": [],
+   "bad": [],
+   "pageerrors": []
+  },
+  "foco": [
+   "pular ring=true sombra=true vis=true coberto=false",
+   "wordmark header__marca ring=true sombra=true vis=true coberto=false",
+   "A ring=true sombra=true vis=true coberto=false",
+   "A ring=true sombra=true vis=true coberto=false",
+   "A ring=true sombra=true vis=true coberto=false",
+   "A ring=true sombra=true vis=true coberto=false",
+   "placa abertura__whatsapp ring=true sombra=true vis=true coberto=false",
+   "abertura__ver ring=true sombra=true vis=true coberto=false",
+   "placa conceito__abrir ring=true sombra=true vis=false coberto=true",
+   "botao conceito__alternar ring=true sombra=true vis=false coberto=true",
+   "botao conceito__testar ring=true sombra=true vis=false coberto=true",
+   "placa conceito__abrir ring=true sombra=true vis=false coberto=true",
+   "botao conceito__alternar ring=true sombra=true vis=false coberto=true",
+   "placa conceito__abrir ring=true sombra=true vis=false coberto=true",
+   "botao conceito__alternar ring=true sombra=true vis=false coberto=true",
+   "formato__exemplo ring=true sombra=true vis=false coberto=true"
+  ],
+  "foco_semAnel": 0,
+  "foco_cobertos": 0,
+  "focolog": {
+   "console": [],
+   "bad": [],
+   "pageerrors": []
+  },
+  "cta": {
+   "normal": "rgb(200, 16, 46)",
+   "hover": "rgb(229, 36, 59)",
+   "ativo": "rgb(200, 16, 46)"
+  },
+  "ctaPorta": {
+   "normal": "rgb(200, 16, 46)",
+   "hover": "rgb(229, 36, 59)"
+  },
+  "hoverlog": {
+   "console": [],
+   "bad": [],
+   "pageerrors": []
+  }
+ }
+}

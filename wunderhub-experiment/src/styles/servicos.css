@@ -191,10 +191,33 @@
   }
 }
 
+/* ---------- 600px+: a colunata ocupa a largura útil inteira, como a viga e as lajes ----------
+   Os doze vãos (as letras e o espaço) dividem a largura em partes iguais, com o pilar de 2px entre
+   eles: viga, andares e pilares passam a ter a mesma medida e a seção fecha como a estrutura de uma
+   fachada. O corpo das letras continua o mesmo; só os vãos se abrem. */
+@media (min-width: 600px) {
+  .formato--loja .pilares {
+    display: flex;
+    width: var(--util);
+  }
+  .formato--loja .pilares > span {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 0;
+    text-align: center;
+  }
+}
+
 /* ---------- celular: pilares só nas bordas das palavras (┃Loja┃virtual┃, wireframe 4.2), a 96px ----------
    O pilar do meio faz o papel do espaço; dentro de cada palavra as letras ficam no espaçamento natural.
    Largura das letras em spans separados: --formato-loja-em − .0945 (o espaço) + .0045 (kerning perdido). */
 @media (max-width: 599.98px) {
+  /* a viga não pode sair menor que o título da seção (36px): a 150% "Landing page" dava 31,9px em 390.
+     A 112% a linha mede 8,316em e, na largura útil, chega a ~43px, ao lado dos 41,7px de "institucional". */
+  .formato--landing .formato__nome {
+    font-stretch: 112%;
+    font-size: min(120px, var(--util) / 8.316);
+  }
   .formato--loja .formato__nome {
     --pilares-max: 96px;
     font-size: min(var(--pilares-max), (var(--util) - 3 * var(--fio-aco)) / (var(--formato-loja-em) - .09 + 4 * var(--vao-n)));

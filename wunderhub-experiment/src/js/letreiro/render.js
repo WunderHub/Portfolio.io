@@ -4,11 +4,17 @@
 //   - --peso das linhas de letras ([data-linha]), escrito direto em quem o usa (ver "custo por
 //     quadro" em palco.css);
 //   - posição da faixa especular (o --brilho da seção 5.1), escrita como transform da .brilho (que
-//     leva a máscara) e da cópia .brilho__contra, que anda ao contrário (as letras ficam paradas);
+//     leva a máscara) e da cópia .brilho__contra, que anda ao contrário (as letras ficam paradas),
+//     e a opacidade da .brilho (só o acendimento da faixa depois do corte de carga);
 //   - --v (varredura da carga) das arestas e data-corte da .fachada ('cortando' durante a varredura;
 //     'pronto' depois: o CSS troca as cópias de texto da aresta e do retorno pela faixa desenhada no
 //     próprio aço, mais barata para a troca de peso).
 // Escreve só quando algum valor quantizado muda. Não lê layout ao desenhar (medidas vêm de medir()).
+// O peso troca no máximo um degrau (passoPeso) por quadro: numa rolagem muito rápida (arrastar a barra,
+// fling do trackpad) ele segue p com um pequeno atraso e alcança o alvo logo depois que ela para. Cada
+// degrau move a ponta esquerda das letras (centradas nas células) de 1 a 6px, e o Chromium só ignora no
+// CLS o que se move menos de 3px entre dois quadros: vários degraus num quadro só viravam deslocamento
+// de layout (0,1 por ida e volta em 1024); um degrau por quadro fica no ritmo de uma rolagem lenta.
 // Usado por palco.js (que entrega p) e por carga.js (que escreve os números da carga e pede um quadro).
 // Frente dona: topo.
 import { frame, cancelFrame } from 'motion';
@@ -23,10 +29,12 @@ const PX = -0.276;
 const PY = 0.961;
 
 /**
- * Números do acontecimento de carga (5.0), 0..1 por vão: fenda (0 = metades encostadas, 1 = 6px) e
- * varredura da aresta (0 = apagada, 1 = inteira). Valem 1 (estado final) a menos que carga.js rode.
+ * Números do acontecimento de carga (5.0): por vão, fenda (0 = metades encostadas, 1 = 6px) e varredura
+ * da aresta (0 = apagada, 1 = inteira); do letreiro todo, luz (0..1: a faixa especular entra pela
+ * esquerda e sai pela direita, de --brilho −0,15 a 1,15) e acende (0..1: a opacidade com que a faixa
+ * reaparece em repouso, sem deslizar de volta). Valem 1 (estado final) a menos que carga.js rode.
  */
-export const carga = { fenda: [1, 1, 1], varredura: [1, 1, 1] };
+export const carga = { fenda: [1, 1, 1], varredura: [1, 1, 1], luz: 1, acende: 1 };
 
 let ativo = null;
 const ouvintesProgresso = new Set();
@@ -85,6 +93,7 @@ export function criarRenderizador(fachada, { passoPeso, fonteLenta }) {
   let medidas = { svh: 9, torre: false, curso: 0 };
   let p = 0;
   let pedido = null;
+  let pesoAtual = null; // peso já escrito nas linhas (null até o primeiro quadro)
 
   function desenhar() {
     pedido = null;
@@ -99,19 +108,29 @@ export function criarRenderizador(fachada, { passoPeso, fonteLenta }) {
     // das metades (sem a fenda de 6px), para a abertura ficar centrada e nenhuma letra sair da tela.
     const centra = 0.138 * (abreBaixo - cima);
 
-    // peso quantizado (passo do palco.js); o fallback não é variável
+    // peso quantizado (passo do palco.js), um degrau por quadro no máximo; o fallback não é variável
     if (!fonteLenta()) {
       const minimo = torre ? 220 : 140;
       const passo = passoPeso();
       const alvo = 900 - w * (900 - minimo);
-      const peso = Math.max(minimo, Math.min(900, 900 - Math.round((900 - alvo) / passo) * passo));
-      for (const linha of linhas) definir(linha, '--peso', String(peso));
+      const pesoAlvo = Math.max(minimo, Math.min(900, 900 - Math.round((900 - alvo) / passo) * passo));
+      // a primeira escrita (e a volta depois de uma pausa do modo vivo) cai direto no alvo
+      if (pesoAtual === null) pesoAtual = pesoAlvo;
+      else pesoAtual += Math.max(-passo, Math.min(passo, pesoAlvo - pesoAtual));
+      for (const linha of linhas) definir(linha, '--peso', String(pesoAtual));
+      if (pesoAtual !== pesoAlvo) api.pedir(); // ainda a caminho: mais um quadro
     }
-    // faixa especular: --brilho = 0,15 + 0,7 × p vira deslocamento horizontal (palco.css, .brilho):
-    // a máscara anda x e a cópia das letras anda −x. Só transforms: nada de aço recalculado.
-    const x = r1((0.15 + 0.7 * p - 0.5) * medidas.curso);
+    // faixa especular: --brilho vira deslocamento horizontal (palco.css, .brilho): a máscara anda x e a
+    // cópia das letras anda −x. Só transforms (e a opacidade no acendimento): nada de aço recalculado.
+    // Em repouso --brilho = 0,15 + 0,7 × p. No corte de carga (carga.luz < 1) a mesma faixa cruza o
+    // letreiro de −0,15 a 1,15 junto com as arestas; ao sair, volta ao repouso acendendo a opacidade.
+    const luzViva = carga.luz < 1;
+    const brilho = luzViva ? -0.15 + 1.3 * carga.luz : 0.15 + 0.7 * p;
+    const x = r1((brilho - 0.5) * medidas.curso);
+    const acesa = luzViva ? '1' : String(r3(carga.acende));
     for (const f of faixas) {
       definir(f.brilho, 'transform', `translateX(${x}px)`);
+      definir(f.brilho, 'opacity', acesa);
       definir(f.contra, 'transform', `translateX(${-x}px)`);
     }
     definir(fachada, 'data-corte', carga.varredura.every((v) => v >= 1) ? 'pronto' : 'cortando');

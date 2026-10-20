@@ -2,7 +2,8 @@
 // O range nativo (1..5, passos inteiros) é a fonte de verdade para o leitor de tela e o teclado;
 // o valor visual e ∈ [1, 5] é contínuo (MotionValue) e anda até o inteiro com Motion:
 //   teclado, botões, clique ou toque no trilho: 420ms --ease-corte; soltar o polegar: mola `encaixe`;
-//   dica de primeira entrada: 1 → 1,18 → 1 em 700ms. Reduced motion (ou teto estourado): e salta,
+//   dica de primeira entrada: 1 → 1,45 → 1 em 900ms (arredondado, continua na etapa 1; a palavra
+//   respira em direção ao traçado gravado). Reduced motion (ou teto estourado): e salta,
 //   as guias aparecem prontas.
 // Ponteiro: pressionar não arrasta. O arraste começa depois de LIMIAR_TOQUE px na horizontal (no toque,
 // só se o gesto for mais horizontal que vertical, senão é rolagem); se começar longe de e, e alcança o
@@ -28,7 +29,8 @@ const DUR_TECLADO = 0.42; // tabela 6: M3 teclado e botões
 const DUR_GUIAS = 0.4; // M3 guias, stagger 40ms
 const STAGGER_GUIAS = 0.04;
 const DUR_GUIAS_SAIDA = dur.saida; // reverso: 200ms
-const DUR_DICA = 0.7;
+const DUR_DICA = 0.9;
+const PICO_DICA = 1.45; // abaixo de 1,5: data-etapa não muda, as guias não piscam
 const POLEGAR = 48; // largura do polegar (px): igual no CSS
 const LIMIAR_TOQUE = 6; // px até um toque virar arraste horizontal
 
@@ -39,7 +41,18 @@ const comGuias = (n) => n === 2 || n === 3;
  * @param {{ raiz: HTMLElement, estatico: boolean, gatilho: 'imediato'|'vista'|'ponteiro'|'foco', evento: Event|null }} contexto
  * @returns {() => void} limpeza: remove listeners, observers, timers e animações criados aqui
  */
-export function init({ estatico = false } = {}) {
+export function init(contexto) {
+  try {
+    return montar(contexto);
+  } catch (erro) {
+    // init que lança deixa os controles em hidden: o CSS solta o espaço reservado para eles (o mesmo
+    // marcador que o main.js usa quando o módulo nem carrega) e a lista segue sozinha na página
+    document.getElementById('processo')?.setAttribute('data-modulo-falhou', '');
+    throw erro;
+  }
+}
+
+function montar({ estatico = false } = {}) {
   const secao = document.getElementById('processo');
   const m3 = secao?.querySelector('[data-processo-controles]');
   const range = m3?.querySelector('#etapa');
@@ -344,7 +357,7 @@ export function init({ estatico = false } = {}) {
         dicaFeita = true;
         pararDica();
         if (interagiu || semMovimento || Number(range.value) !== 1 || animE) return;
-        animE = animate(e, [1, 1.18, 1], { duration: DUR_DICA, ease: easeCorte, times: [0, 0.5, 1] });
+        animE = animate(e, [1, PICO_DICA, 1], { duration: DUR_DICA, ease: easeCorte, times: [0, 0.5, 1] });
         animE.then(() => {
           animE = null;
         });

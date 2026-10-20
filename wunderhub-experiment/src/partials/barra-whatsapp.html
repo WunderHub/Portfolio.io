@@ -1,5 +1,9 @@
 <!-- Barra de WhatsApp no mobile (<768px), visível entre o fim do palco e a Porta (seção 5.4). Frente: topo.
-     hidden até barra-whatsapp.js assumir; sem JS o WhatsApp continua no header, na abertura e no contato. -->
-<div class="barra-whatsapp" data-barra-whatsapp hidden>
-  <a class="placa placa--total placa--compacta barra-whatsapp__placa" href="{{whatsappUrl}}" target="_blank" rel="noopener">Chamar no WhatsApp</a>
-</div>
+     hidden até barra-whatsapp.js assumir; sem JS o WhatsApp continua no header, na abertura e no contato.
+     Faixa de ACM preto de 48px com uma placa de acrílico presa à direita (do lado do polegar), em vez de
+     uma barra vermelha de largura total: o CTA continua sendo o único bloco vermelho à vista.
+     <aside> com nome: a barra é um landmark (complementary), então nenhum conteúdo fica fora de região
+     quando ela aparece (axe "region"). -->
+<aside class="barra-whatsapp" data-barra-whatsapp aria-label="Contato rápido" hidden>
+  <a class="placa placa--compacta barra-whatsapp__placa" href="{{whatsappUrl}}" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+</aside>

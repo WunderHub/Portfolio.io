@@ -66,8 +66,12 @@
     column-gap: var(--gutter);
     align-items: start;
   }
+  /* Manchete com massa contra o letreiro: o condensado pesado a até 88px (6,1vw, de 1180px a 1440px)
+     ocupa oito colunas em duas linhas; abaixo de ~1180px vale --t-h1 (72px). A altura da abertura
+     continua vindo da coluna do lead e das ações e do min-height: o letreiro não se move. */
   .abertura__titulo {
-    grid-column: 1 / span 7;
+    grid-column: 1 / span 8;
+    font-size: clamp(var(--t-h1), 6.1vw, 5.5rem);
   }
   .abertura__texto {
     grid-column: 9 / span 4;
@@ -76,4 +80,19 @@
   .abertura__acoes {
     margin-top: var(--e-4);
   }
+}
+
+/* Hover da placa de acrílico: a luz acende (Vermelho Acrílico → Vermelho Sinal, 160ms). O sublinhado de
+   2px do .placa continua. Branco sobre #E5243B = 4,53:1: só para texto de 16px ou mais (nunca em
+   texto menor). Só com ponteiro que passa por cima; :active volta ao Vermelho Acrílico. */
+.abertura__whatsapp::before {
+  transition: background-color var(--dur-resposta) var(--ease-resposta);
+}
+@media (hover: hover) {
+  .abertura__whatsapp:hover::before {
+    background-color: var(--vermelho-sinal);
+  }
+}
+.abertura__whatsapp:active::before {
+  background-color: var(--vermelho-acrilico);
 }

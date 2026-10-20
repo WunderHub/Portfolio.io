@@ -88,10 +88,14 @@ const sobDemanda = [
       configurador: () => import('./js/configurador.js'),
       'copiar-email': () => import('./js/copiar-email.js'),
     },
+    // Teto de carga (frente contato, registrado): com a rede travada o chunk da Porta pode ficar pendente e a Porta
+    // fechada esconderia o WhatsApp e o e-mail. Passado o teto, a seção segue no modo estático (data-modulo-falhou,
+    // que o CSS já trata: Porta aberta); se o chunk chegar depois, porta.js vê a marca e abre sem animação.
+    teto: 4000,
   },
 ];
 
-for (const { secao, modulos } of sobDemanda) {
+for (const { secao, modulos, teto } of sobDemanda) {
   const el = document.querySelector(secao);
   if (!el) continue;
   let feito = false;
@@ -105,9 +109,19 @@ for (const { secao, modulos } of sobDemanda) {
     el.removeEventListener('pointerdown', aoPonteiro, true);
     el.removeEventListener('focusin', aoFoco, true);
     for (const [nome, importar] of Object.entries(modulos)) {
+      const aoEstourar = teto
+        ? setTimeout(() => {
+            el.dataset.moduloFalhou = '';
+            console.warn(`[wunderhub] ${nome} demorou mais de ${teto}ms para carregar; a página segue no modo estático`);
+          }, teto)
+        : 0;
       importar()
-        .then((modulo) => iniciar(nome, modulo, { gatilho, evento }))
+        .then((modulo) => {
+          clearTimeout(aoEstourar);
+          iniciar(nome, modulo, { gatilho, evento });
+        })
         .catch((erro) => {
+          clearTimeout(aoEstourar);
           el.dataset.moduloFalhou = ''; // o CSS da seção solta o espaço reservado para os controles
           console.warn(`[wunderhub] não foi possível carregar ${nome}; a página segue no modo estático`, erro);
         });

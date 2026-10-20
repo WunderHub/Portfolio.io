@@ -1,21 +1,297 @@
 /* Contato: a Porta e o configurador (seções 3.4, 4 e 5.4). Frente: contato.
-   Provisório da fundação: porta aberta (estado sem JS), miolo centralizado. */
+
+   A PORTA. O letreiro WUNDERHUB (Anybody Letreiro 50/900, o mesmo corpo do hero) é uma porta de duas folhas:
+     .porta__cima   metades de cima das letras, cortadas a 16° (um corte por vão: WUN, DER, HUB)
+     .porta__miolo  o conteúdo (H2, texto, WhatsApp, e-mail)
+     .porta__baixo  metades de baixo
+   Cada folha é um painel preto (.porta__chapa) que se estende para longe da abertura, com a borda de dentro
+   recortada pelos três cortes das letras: fechada, a folha de cima cobre o miolo até o corte e a de baixo
+   cobre dali para baixo, e quem revela o conteúdo é a própria linha do corte. As folhas são caixas
+   absolutas com metade da altura da Porta: o translateY em % (100%) é, portanto, metade da Porta, e a
+   posição fechada sai de CSS puro, sem medir nada, já no primeiro quadro.
+     fechada  só com .js, sem reduced motion e sem falha de módulo: as folhas se encontram no meio do miolo,
+              o nome lê inteiro com a fenda de 6px (3px para cada lado, na vertical) e a veda preta (faixa
+              parada na altura dos cortes) fecha a fenda: nada do miolo aparece por ela. Segue "fechada" também
+              nos 120ms em que porta.js alarga a fenda a 14px (o transform das folhas é inline nessa etapa)
+     abrindo  as folhas correm por 720ms (transform inline de porta.js, único escritor); a veda sai
+     aberta   estado de layout; é também o estado de quem não tem JS, usa reduced motion, ou teve o teto
+              de 3s estourado
+
+   Geometria vem de styles/generated/letreiro.css (.letreiro--linha). Os números do corte nos polígonos das
+   chapas (X, y0, y1 de cada vão, em em) são os de src/generated/letreiro.json: vão 0 X 0, y 0,1604 → 0,5796;
+   vão 1 X 1,462, y 0,227 → 0,513; vão 2 X 2,4596, y 0,21 → 0,53; largura 3,5756. */
 
 .contato {
-  overflow: clip;
+  container-type: inline-size;
+  /* corpo do letreiro da Porta: o do hero (largura útil / 3,5756). No mobile dá cerca de 100px */
+  --largura-porta: min(100cqi - 2 * var(--margem), var(--conteudo-max));
+  --fs-porta: calc(var(--largura-porta) / var(--letreiro-em-linha));
 }
+
+.contato .sem-quebra {
+  white-space: nowrap;
+}
+
+/* ---------- a Porta ---------- */
+.porta {
+  --p-resp: clamp(var(--e-6), 6cqi, var(--e-8)); /* respiro de preto acima e abaixo do letreiro */
+  --p-a: calc(var(--fs-porta) * .6); /* altura útil da folha de cima: o corte mais baixo está a .5796em */
+  --p-c: calc(var(--fs-porta) * .6); /* altura útil da folha de baixo: o corte mais alto está a .1604em */
+  position: relative;
+  overflow: clip;
+  padding-block: calc(var(--p-resp) + var(--p-a)) calc(var(--p-resp) + var(--p-c));
+}
+
+.porta__folha {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  /* o letreiro (corpo, família, sem kerning nem sintético, como na fachada). A família é escrita por extenso, não
+     por var(--fonte-letreiro): com html.fonte-lenta (a Anybody passou de 900ms) essa variável vira o fallback
+     estreito, que é só do hero (palco.css refaz a fachada célula a célula para ele). A Porta usa células de largura
+     wdth 50 e cortes de 16° medidos na Anybody; no fallback as letras se sobrepõem e os cortes não casam. A Porta
+     fica abaixo da dobra, então a Anybody Letreiro (a mesma URL do preload) já chegou quando ela aparece; o fallback
+     fica só como último recurso, se a fonte nunca chegar. A classe fonte-lenta não é removida depois. */
+  font-family: 'Anybody Letreiro', 'Anybody Fallback Estreita', 'Anybody Fallback', sans-serif;
+  font-size: var(--fs-porta);
+  font-weight: 900;
+  font-kerning: none;
+  font-synthesis: none;
+  user-select: none;
+  -webkit-user-select: none;
+  /* placa de aço única (o gradiente atravessa as três metades como uma chapa só) */
+  --placa-largura: calc(var(--letreiro-em-linha) * 1em);
+  --placa-altura: var(--letreiro-linha);
+  /* curso da faixa especular por unidade de brilho (ver .porta__brilho) */
+  --curso: calc(var(--placa-largura) + .2493 * var(--placa-altura));
+}
+.porta__cima {
+  top: 0;
+  bottom: 50%;
+}
+.porta__baixo {
+  top: 50%;
+  bottom: 0;
+}
+
+/* a linha de letras: 3,5756em de largura, centrada; a de cima rente ao respiro de cima, a de baixo ao de baixo */
+.porta__linha {
+  position: absolute;
+  z-index: 1;
+  left: calc(50% - var(--letreiro-em-linha) * .5em);
+  width: calc(var(--letreiro-em-linha) * 1em);
+  height: var(--letreiro-linha);
+  display: flex;
+}
+.porta__cima .porta__linha {
+  top: var(--p-resp);
+}
+.porta__baixo .porta__linha {
+  bottom: var(--p-resp);
+}
+
+/* painel preto: estende-se para longe da abertura (a de cima para cima, a de baixo para baixo) e tem a
+   borda de dentro desenhada pelos três cortes. Cobre o miolo quando a Porta está fechada e captura o
+   ponteiro (nada se clica por baixo das folhas). */
+.porta__chapa {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  background: var(--preto-acm);
+  pointer-events: auto;
+}
+.porta__cima .porta__chapa {
+  top: calc(-100% - 8px);
+  bottom: calc(100% - var(--p-resp) - var(--letreiro-linha));
+  /* B(Y) = a altura Y do corte contada na linha de letras, a partir da base dela (100% do painel) */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - .21em),
+    calc(50% + 1.7878em) calc(100% - .21em),
+    calc(50% + .6718em) calc(100% - .53em),
+    calc(50% + .6718em) calc(100% - .227em),
+    calc(50% - .3258em) calc(100% - .513em),
+    calc(50% - .3258em) calc(100% - .1604em),
+    calc(50% - 1.7878em) calc(100% - .5796em),
+    0 calc(100% - .5796em)
+  );
+}
+.porta__baixo .porta__chapa {
+  top: calc(100% - var(--p-resp) - var(--letreiro-linha));
+  bottom: calc(-100% - 8px);
+  clip-path: polygon(
+    0 calc(.1604em),
+    calc(50% - 1.7878em) calc(.1604em),
+    calc(50% - .3258em) calc(.5796em),
+    calc(50% - .3258em) calc(.227em),
+    calc(50% + .6718em) calc(.513em),
+    calc(50% + .6718em) calc(.21em),
+    calc(50% + 1.7878em) calc(.53em),
+    100% calc(.53em),
+    100% 100%,
+    0 100%
+  );
+}
+
+/* Veda: faixa preta parada, entre o miolo e as folhas, na altura dos três cortes (de 0,1604em a 0,5796em do
+   nome, mais 12px). Só existe com a Porta fechada e na pausa de 120ms em que a fenda vai de 6px a 14px: o que
+   aparece pela fenda é preto, nunca um pedaço do miolo. Quando as folhas começam a correr, ela sai. */
+.porta__veda {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: calc(50% - .2096 * var(--fs-porta) - 12px);
+  height: calc(.4192 * var(--fs-porta) + 24px);
+  background: var(--preto-acm);
+  pointer-events: auto;
+}
+
+/* metade do vão: a caixa do vão com o polígono do corte (4 pontos, estático) */
+.porta__vao {
+  position: relative;
+  flex: none;
+  width: var(--vao-l);
+  height: var(--letreiro-linha);
+  /* o aço é contínuo entre os vãos: cada vão desloca o gradiente da placa inteira */
+  --aco-x: calc(-1 * var(--vao-x));
+}
+.porta__cima .porta__vao,
+.porta__cima .porta__vao-brilho {
+  clip-path: polygon(
+    -.5em -.5em,
+    calc(100% + .5em) -.5em,
+    calc(100% + .5em) calc(var(--corte-y1) + .14335em),
+    -.5em calc(var(--corte-y0) - .14335em)
+  );
+}
+.porta__baixo .porta__vao,
+.porta__baixo .porta__vao-brilho {
+  clip-path: polygon(
+    -.5em calc(var(--corte-y0) - .14335em),
+    calc(100% + .5em) calc(var(--corte-y1) + .14335em),
+    calc(100% + .5em) calc(100% + .5em),
+    -.5em calc(100% + .5em)
+  );
+}
+
+.porta__vao-brilho {
+  position: relative;
+  flex: none;
+  width: var(--vao-l);
+  height: var(--letreiro-linha);
+}
+
+/* Aço escovado (2.2) com a aresta polida (2px de Prata Luz no lábio de cima do corte) e o retorno (2px de
+   Prata Sombra no lábio de baixo) como uma camada do próprio aço (--faixa), recortada às letras pelo
+   background-clip: text. A faixa corre paralela ao corte: um linear-gradient a 196° tem as linhas de mesma
+   cor a 16° e a reta do corte fica em t0 = sen 16° × largura + cos 16° × y0 (mesma conta do palco). */
+.porta__letras {
+  --t0: calc(.2756 * var(--vao-l) + .9613 * var(--corte-y0));
+  color: transparent;
+  background-image: var(--faixa), var(--grao-letreiro), var(--prata-escovada);
+  background-size: 100% 100%, 2400px 128px, var(--placa-largura) var(--placa-altura);
+  background-position: 0 0, var(--aco-x) 0, var(--aco-x) 0;
+  background-repeat: no-repeat, repeat, no-repeat;
+  background-blend-mode: normal, soft-light, normal;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.porta__cima .porta__letras {
+  --faixa: linear-gradient(196deg, transparent calc(var(--t0) - 1.92px), var(--prata-luz) 0 var(--t0), transparent 0);
+}
+.porta__baixo .porta__letras {
+  --faixa: linear-gradient(196deg, transparent var(--t0), var(--prata-sombra) 0 calc(var(--t0) + 1.92px), transparent 0);
+}
+
+/* Faixa especular: a mesma montagem do palco (cópia branca a 55% das letras vista por uma máscara com a faixa;
+   .porta__brilho anda por transform levando a máscara e .porta__contra anda o mesmo tanto ao contrário, então as
+   letras ficam paradas e só a luz corre). Na Porta aberta a luz parada fica em --brilho 0,62 (x = +.12 curso);
+   fechada, a faixa está fora da placa (--brilho -0,1, x = -.6 curso); porta.js a leva de um ponto ao outro
+   enquanto as folhas abrem. A faixa tem 18% da largura da placa e alfa 0,55 (regra anti-chrome). */
+.porta__brilho {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translateX(calc(.12 * var(--curso)));
+}
+.porta__mascara {
+  position: absolute;
+  inset: 0 calc(-1 * var(--curso));
+  -webkit-mask-image: linear-gradient(104deg, transparent 41%, #000 50%, transparent 59%);
+  mask-image: linear-gradient(104deg, transparent 41%, #000 50%, transparent 59%);
+  -webkit-mask-size: var(--placa-largura) var(--placa-altura);
+  mask-size: var(--placa-largura) var(--placa-altura);
+  -webkit-mask-position: var(--curso) 0;
+  mask-position: var(--curso) 0;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.porta__contra {
+  position: absolute;
+  inset: 0 var(--curso);
+  transform: translateX(calc(-.12 * var(--curso)));
+}
+.porta__brilho-linha {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+.porta__brilho-texto {
+  color: rgb(255 255 255 / .55);
+}
+
+/* ---------- fechada: só com .js, movimento permitido e sem falha de módulo ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .contato:not([data-modulo-falhou]) .porta[data-estado='fechada'] .porta__cima {
+    transform: translateY(calc(100% - var(--p-resp) - var(--letreiro-linha) * .5 - 3px));
+  }
+  html.js .contato:not([data-modulo-falhou]) .porta[data-estado='fechada'] .porta__baixo {
+    transform: translateY(calc(-100% + var(--p-resp) + var(--letreiro-linha) * .5 + 3px));
+  }
+  html.js .contato:not([data-modulo-falhou]) .porta[data-estado='fechada'] .porta__veda {
+    display: block;
+  }
+  html.js .contato:not([data-modulo-falhou]) .porta[data-estado='fechada'] .porta__brilho {
+    transform: translateX(calc(-.6 * var(--curso)));
+  }
+  html.js .contato:not([data-modulo-falhou]) .porta[data-estado='fechada'] .porta__contra {
+    transform: translateX(calc(.6 * var(--curso)));
+  }
+}
+/* camadas próprias só enquanto as folhas andam */
+.porta[data-animando] .porta__folha,
+.porta[data-animando] .porta__brilho,
+.porta[data-animando] .porta__contra {
+  will-change: transform;
+}
+
+/* ---------- o miolo ---------- */
 .porta__miolo {
+  position: relative;
+  z-index: 1;
   display: grid;
   justify-items: center;
   gap: var(--e-3);
+  width: min(100% - 2 * var(--margem), 46rem);
+  margin-inline: auto;
+  padding-block: var(--e-6);
   text-align: center;
-  padding-block: var(--e-8);
 }
 .porta__miolo h2 {
-  max-width: 16ch;
+  max-width: 20ch;
+  font-size: var(--t-h1); /* o clímax da página: o título da Porta usa o corpo do H1 */
+  line-height: var(--lh-titulo);
 }
-.porta__miolo p {
+.porta__texto {
   max-width: var(--medida-lead);
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
 }
 .porta__whatsapp,
 .porta__email {
@@ -23,11 +299,17 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--e-1) var(--e-3);
+  gap: var(--e-1) var(--e-4);
+}
+.porta__whatsapp {
+  margin-top: var(--e-1);
 }
 .porta__numero {
   color: var(--prata-luz);
+  font-size: var(--t-lead);
   font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .porta__email-link {
   display: inline-flex;
@@ -35,7 +317,363 @@
   min-height: var(--alvo-min);
   color: var(--prata-luz);
   font-size: var(--t-lead);
+  font-weight: 500;
+  overflow-wrap: anywhere;
 }
+.porta__status {
+  min-height: 0;
+}
+.porta__status.porta__status--visivel {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  clip: auto !important;
+  clip-path: none !important;
+  white-space: normal !important;
+  color: var(--prata-luz);
+  font-size: var(--t-16);
+}
+
+/* "Copiar e-mail": dois rótulos empilhados na mesma célula (a largura é a do maior) com crossfade de 160ms */
+.porta__copiar {
+  display: inline-grid;
+}
+.porta__copiar-rotulo {
+  grid-area: 1 / 1;
+  transition: opacity var(--dur-resposta) var(--ease-resposta);
+}
+.porta__copiar-rotulo--ok {
+  opacity: 0;
+}
+.porta__copiar[data-estado='copiado'] .porta__copiar-rotulo {
+  opacity: 0;
+}
+.porta__copiar[data-estado='copiado'] .porta__copiar-rotulo--ok {
+  opacity: 1;
+}
+
+@media (max-width: 599.98px) {
+  .porta__whatsapp .placa {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+  .porta__whatsapp {
+    gap: var(--e-2);
+  }
+  .porta__email {
+    gap: var(--e-1);
+  }
+}
+
+/* ---------- configurador ---------- */
 .configurador {
-  padding: var(--e-6) var(--e-3);
+  position: relative;
+  padding-block: 0 var(--secao-y);
+}
+.configurador__quadro {
+  --c: clamp(32px, 12cqi, 96px); /* chanfro do canto de cima à direita (2.6) */
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: var(--e-6);
+  padding: var(--e-6) var(--e-3) var(--e-4);
+  background: none; /* o grafite vem do ::before, recortado: o foco dos controles nunca é cortado */
+}
+.configurador__quadro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--grafite-parede);
+  clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% calc(var(--c) * .2867), 100% 100%, 0 100%);
+}
+/* aresta polida no lábio do chanfro: 2px de Prata Luz */
+.configurador__quadro::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: -1;
+  width: var(--c);
+  height: calc(var(--c) * .2867 + 2.1px);
+  background: var(--prata-luz);
+  clip-path: polygon(0 0, 100% calc(100% - 2.1px), 100% 100%, 0 2.1px);
+}
+.configurador__cabeca {
+  display: grid;
+  gap: var(--e-2);
+}
+.configurador__cabeca p {
+  max-width: 42ch;
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
+}
+.configurador__campos {
+  display: grid;
+  gap: var(--e-4);
+}
+.grupo {
+  display: grid;
+  gap: var(--e-2);
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+.grupo > legend,
+.grupo__rotulo {
+  float: none;
+  padding: 0;
+  color: var(--prata-luz);
+  font-size: var(--t-18);
+  font-weight: 650;
+  line-height: 1.3;
+}
+fieldset.grupo > legend {
+  margin-bottom: var(--e-2);
+}
+
+/* opções: rádios e caixas de marcar. O <input> é o alvo inteiro (invisível, sobre a opção) e o desenho é o
+   .opcao__marca. Rádio: quadrado com a borda direita a 16° (a forma da placa); caixa: quadrado com o V. */
+.opcoes {
+  display: grid;
+  gap: var(--e-1);
+}
+.opcao {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--alvo-min);
+  padding: 0 var(--e-2);
+  background: var(--preto-acm);
+  border: 1px solid var(--grafite-fio);
+  color: var(--prata);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-toque) var(--ease-resposta),
+    color var(--dur-toque) var(--ease-resposta);
+}
+.opcao input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.opcao__marca {
+  position: relative;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  box-shadow: inset 0 0 0 2px var(--prata);
+  transition: box-shadow var(--dur-toque) var(--ease-resposta);
+}
+/* rádio: a forma da placa (borda direita a 16°), desenhada em três camadas: aro, miolo preto e ponto */
+.opcao input[type='radio'] + .opcao__marca {
+  box-shadow: none;
+  background: var(--prata);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 5.73px) 100%, 0 100%);
+  transition: background-color var(--dur-toque) var(--ease-resposta);
+}
+.opcao input[type='radio'] + .opcao__marca::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: var(--preto-acm);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 3.3px) 100%, 0 100%);
+}
+.opcao__marca::after {
+  content: '';
+  position: absolute;
+  background: var(--prata-luz);
+  opacity: 0;
+}
+.opcao input[type='radio'] + .opcao__marca::after {
+  inset: 5px 8px 5px 5px;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 1px) 100%, 0 100%);
+}
+/* caixa: o V desenhado em preto sobre o preenchimento claro */
+.opcao input[type='checkbox'] + .opcao__marca::after {
+  inset: 0;
+  background: var(--preto-acm);
+  clip-path: polygon(22% 52%, 30% 44%, 44% 58%, 72% 26%, 80% 34%, 44% 74%);
+}
+.opcao__texto {
+  line-height: 1.25;
+  font-weight: 500;
+}
+.opcao:hover {
+  border-color: var(--prata);
+  color: var(--prata-luz);
+}
+.opcao:has(input:checked) {
+  border-color: var(--prata-luz);
+  color: var(--prata-luz);
+}
+.opcao:has(input:checked)::before {
+  content: '';
+  position: absolute;
+  inset: -1px auto -1px -1px;
+  width: 4px;
+  background: var(--vermelho-sinal); /* estado marcado: o vermelho de sinal da marca */
+}
+.opcao input[type='radio']:checked + .opcao__marca {
+  background: var(--prata-luz);
+}
+.opcao input[type='checkbox']:checked + .opcao__marca {
+  box-shadow: inset 0 0 0 2px var(--prata-luz);
+  background: var(--prata-luz);
+}
+.opcao input:checked + .opcao__marca::after {
+  opacity: 1;
+}
+/* foco no <input> invisível: o anel vai na opção inteira (mesma receita da seção 2.9) */
+.opcao:has(input:focus-visible) {
+  outline: 2px solid var(--foco-contorno);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--foco-folga), 0 0 0 7px var(--foco-anel);
+}
+
+.campo {
+  display: block;
+  width: 100%;
+  /* a barra de WhatsApp (mobile) cobre os últimos 48px da tela: o scroll-padding-bottom de html.com-barra já
+     deixa 64px, e esta folga extra põe o campo inteiro, com o anel de foco, acima dela */
+  scroll-margin-bottom: 24px;
+  min-height: var(--alvo-primario);
+  padding: 0 var(--e-2);
+  background: var(--preto-acm);
+  border: 1px solid var(--prata-sombra);
+  border-radius: 0;
+  color: var(--prata-luz);
+  font-family: var(--fonte-leitura);
+  font-size: var(--t-18);
+  transition: border-color var(--dur-toque) var(--ease-resposta);
+}
+.campo:hover {
+  border-color: var(--prata);
+}
+
+/* prévia e envio */
+.configurador__saida {
+  display: grid;
+  align-content: start;
+  gap: var(--e-2);
+  min-width: 0;
+}
+.previa {
+  --c: 32px;
+  display: block;
+  min-height: 7.5rem;
+  padding: var(--e-3);
+  background: var(--preto-acm);
+  color: var(--prata-luz);
+  font-size: var(--t-18);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% calc(var(--c) * .2867), 100% 100%, 0 100%);
+}
+.configurador__acoes {
+  display: grid;
+  gap: var(--e-2);
+  justify-items: start;
+  margin-top: var(--e-1);
+}
+.configurador__acoes .placa {
+  text-wrap: balance;
+}
+.configurador__aviso {
+  color: var(--prata);
+  font-size: var(--t-16);
+  line-height: 1.5;
+  max-width: 46ch;
+}
+
+@media (max-width: 599.98px) {
+  .configurador__acoes {
+    justify-items: stretch;
+  }
+  .configurador__acoes .placa {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (min-width: 600px) {
+  .configurador__quadro {
+    padding: var(--e-8) var(--e-6) var(--e-6);
+  }
+  .opcoes--itens {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .opcoes--tipo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  /* duas colunas: à esquerda o cabeçalho e as duas perguntas; à direita o nome, a prévia e o envio.
+     A ordem do DOM (e do Tab) é a da leitura: cabeçalho, tipo, itens, nome, prévia e envio. */
+  .configurador__quadro {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-areas:
+      'cabeca nome'
+      'tipo   saida'
+      'itens  saida';
+    column-gap: var(--e-8);
+    row-gap: var(--e-6);
+    align-items: start;
+    padding: var(--e-12) var(--e-8) var(--e-8);
+  }
+  .configurador__campos {
+    display: contents;
+  }
+  .configurador__cabeca {
+    grid-area: cabeca;
+  }
+  .grupo--tipo {
+    grid-area: tipo;
+  }
+  .grupo--itens {
+    grid-area: itens;
+  }
+  .grupo--nome {
+    grid-area: nome;
+    align-self: end;
+  }
+  .configurador__saida {
+    grid-area: saida;
+  }
+}
+
+@media (min-width: 1280px) {
+  .configurador__quadro {
+    column-gap: var(--e-12);
+    padding-inline: var(--e-12);
+  }
+}
+
+/* Hover da placa de acrílico: a luz acende (Vermelho Acrílico → Vermelho Sinal, 160ms). O sublinhado de
+   2px do .placa continua. Branco sobre #E5243B = 4,53:1: só para texto de 16px ou mais (nunca em
+   texto menor). Só com ponteiro que passa por cima; :active volta ao Vermelho Acrílico. */
+.porta__whatsapp .placa::before,
+.configurador__acoes .placa::before {
+  transition: background-color var(--dur-resposta) var(--ease-resposta);
+}
+@media (hover: hover) {
+  .porta__whatsapp .placa:hover::before,
+  .configurador__acoes .placa:hover::before {
+    background-color: var(--vermelho-sinal);
+  }
+}
+.porta__whatsapp .placa:active::before,
+.configurador__acoes .placa:active::before {
+  background-color: var(--vermelho-acrilico);
 }

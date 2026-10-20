@@ -1,9 +1,9 @@
-<!-- Rodapé (seção 3.4). Frente: contato. #mapa é o destino do "Menu" sem JS. -->
+<!-- Rodapé (seção 3.4). Frente: contato. Preto, quieto. #mapa é o destino do "Menu" sem JS (lista "Nesta página"). -->
 <footer class="rodape">
   <div class="rodape__grade conteudo">
     <div class="rodape__assinatura">
-      <p class="rodape__marca"><!--#include src/partials/simbolo.html --><span class="wordmark">WunderHub</span></p>
-      <p>WunderHub, sites para pequenos negócios e profissionais. Feito por Kauê Ribeiro.</p>
+      <p class="rodape__marca"><span class="rodape__simbolo" aria-hidden="true"><!--#include src/partials/simbolo.html --></span><span class="wordmark">WunderHub</span></p>
+      <p class="rodape__frase">WunderHub, sites para pequenos negócios e profissionais. Feito por Kauê Ribeiro.</p>
     </div>
     <nav class="rodape__mapa" id="mapa" aria-label="Nesta página">
       <ul role="list">
@@ -18,9 +18,12 @@
       <li><a href="{{mailtoUrl}}">{{email}}</a></li>
     </ul>
     <div class="rodape__fim">
-      <p>Côdea, Junco e Louça Torta são marcas fictícias criadas como demonstração.</p>
-      <p>© {{ano}} WunderHub</p>
-      <a class="rodape__topo" href="#topo">Voltar ao topo</a>
+      <p class="rodape__aviso">Côdea, Junco e Louça Torta são marcas fictícias criadas como demonstração.</p>
+      <p class="rodape__direitos">© {{ano}} WunderHub</p>
+      <a class="rodape__topo" href="#topo">
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16"><path d="M8 14V2M2.5 7.5 8 2l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="miter"/></svg>
+        Voltar ao topo
+      </a>
     </div>
   </div>
 </footer>

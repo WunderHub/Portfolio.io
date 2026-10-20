@@ -1,25 +1,99 @@
 <!-- Contato: a Porta e o configurador (seções 3.4 e 5.4). Frente: contato.
-     Sem JS: porta aberta, links de WhatsApp e e-mail funcionando; "Copiar e-mail" e o configurador ficam hidden
-     até os módulos carregarem. Provisório da fundação: sem as folhas do letreiro. -->
-<section class="contato secao" id="contato" aria-labelledby="titulo-contato">
-  <div class="porta">
-    <div class="porta__miolo conteudo">
+     A Porta: .porta__cima e .porta__baixo são as folhas (metades de cima e de baixo do letreiro WUNDERHUB, cortadas
+     a 16°, decorativas e aria-hidden) e .porta__miolo é o conteúdo. Cada folha leva um painel preto (.porta__chapa)
+     que se estende para longe da abertura. Fechada (só com JS, sem reduced motion e antes de abrir), as folhas se
+     encontram no meio do miolo e o cobrem; porta.js abre uma vez por visita. Sem JS, com reduced motion ou com o
+     teto de 3s estourado, a Porta nasce aberta: tudo aparece e os links de WhatsApp e e-mail funcionam.
+     "Copiar e-mail" e o configurador ficam hidden até os módulos carregarem. -->
+<section class="contato" id="contato" aria-labelledby="titulo-contato" data-contato>
+  <div class="porta" data-porta data-estado="fechada">
+    <div class="porta__folha porta__cima letreiro letreiro--linha" aria-hidden="true" data-folha="cima">
+      <span class="porta__chapa"></span>
+      <span class="porta__linha">
+        <span class="porta__vao" data-vao="0"><span class="porta__letras" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></span>
+        <span class="porta__vao" data-vao="1"><span class="porta__letras" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></span>
+        <span class="porta__vao" data-vao="2"><span class="porta__letras" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></span>
+        <span class="porta__brilho"><span class="porta__mascara"><span class="porta__contra"><span class="porta__brilho-linha"><span class="porta__vao-brilho" data-vao="0"><span class="porta__brilho-texto" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></span><span class="porta__vao-brilho" data-vao="1"><span class="porta__brilho-texto" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></span><span class="porta__vao-brilho" data-vao="2"><span class="porta__brilho-texto" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></span></span></span></span></span>
+      </span>
+    </div>
+
+    <div class="porta__miolo">
       <h2 id="titulo-contato">Vamos conversar sobre o seu site</h2>
-      <p>Me conte o que você vende e o que precisa no site. Respondo pelo WhatsApp ou por e-mail.</p>
+      <p class="porta__texto">Me conte o que você vende e o que precisa no site. Respondo pelo WhatsApp ou por <span class="sem-quebra">e-mail</span>.</p>
       <div class="porta__whatsapp">
         <a class="placa" href="{{whatsappUrl}}" target="_blank" rel="noopener">Chamar no WhatsApp</a>
         <span class="porta__numero">{{whatsappExibicao}}</span>
       </div>
       <div class="porta__email">
         <a class="porta__email-link" href="{{mailtoUrl}}" data-email>{{email}}</a>
-        <button class="botao" type="button" data-copiar-email hidden>Copiar e-mail</button>
-        <span class="sr-only" role="status" data-copiar-status></span>
+        <button class="botao porta__copiar" type="button" data-copiar-email hidden>
+          <span class="porta__copiar-rotulo" data-rotulo="copiar">Copiar e-mail</span>
+          <span class="porta__copiar-rotulo porta__copiar-rotulo--ok" data-rotulo="copiado" aria-hidden="true">E-mail copiado</span>
+        </button>
       </div>
+      <p class="porta__status sr-only" role="status" data-copiar-status></p>
+    </div>
+    <span class="porta__veda" aria-hidden="true"></span>
+
+    <div class="porta__folha porta__baixo letreiro letreiro--linha" aria-hidden="true" data-folha="baixo">
+      <span class="porta__chapa"></span>
+      <span class="porta__linha">
+        <span class="porta__vao" data-vao="0"><span class="porta__letras" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></span>
+        <span class="porta__vao" data-vao="1"><span class="porta__letras" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></span>
+        <span class="porta__vao" data-vao="2"><span class="porta__letras" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></span>
+        <span class="porta__brilho"><span class="porta__mascara"><span class="porta__contra"><span class="porta__brilho-linha"><span class="porta__vao-brilho" data-vao="0"><span class="porta__brilho-texto" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></span><span class="porta__vao-brilho" data-vao="1"><span class="porta__brilho-texto" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></span><span class="porta__vao-brilho" data-vao="2"><span class="porta__brilho-texto" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></span></span></span></span></span>
+      </span>
     </div>
   </div>
 
-  <div class="configurador conteudo superficie-grafite" data-configurador hidden>
-    <h3>Monte um rascunho do pedido</h3>
-    <p>Marque o que você imagina. Eu recebo a mensagem pronta e a gente ajusta na conversa.</p>
+  <div class="configurador" data-configurador hidden>
+    <form class="configurador__quadro conteudo superficie-grafite" aria-labelledby="titulo-configurador" autocomplete="off" novalidate data-formulario>
+      <div class="configurador__cabeca">
+        <h3 id="titulo-configurador">Monte um rascunho do pedido</h3>
+        <p>Marque o que você imagina. Eu recebo a mensagem pronta e a gente ajusta na conversa.</p>
+      </div>
+
+      <div class="configurador__campos">
+        <fieldset class="grupo grupo--tipo">
+          <legend>Que tipo de site você precisa?</legend>
+          <div class="opcoes opcoes--tipo">
+          <label class="opcao"><input type="radio" name="tipo" value="landing" data-texto-resumo="landing page" data-mensagem="uma landing page"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Landing page</span></label>
+          <label class="opcao"><input type="radio" name="tipo" value="institucional" data-texto-resumo="site institucional" data-mensagem="um site institucional"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Site institucional</span></label>
+          <label class="opcao"><input type="radio" name="tipo" value="loja" data-texto-resumo="loja virtual" data-mensagem="uma loja virtual"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Loja virtual</span></label>
+          <label class="opcao"><input type="radio" name="tipo" value="indefinido" data-texto-resumo="tipo de site ainda não definido" data-mensagem="Ainda não sei qual tipo de site preciso."><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Ainda não sei</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="grupo grupo--itens">
+          <legend>O que o site precisa ter?</legend>
+          <div class="opcoes opcoes--itens">
+          <label class="opcao"><input type="checkbox" name="item" value="whatsapp" data-texto="botão de WhatsApp"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Botão de WhatsApp</span></label>
+          <label class="opcao"><input type="checkbox" name="item" value="catalogo" data-texto="cardápio ou catálogo"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Cardápio ou catálogo</span></label>
+          <label class="opcao"><input type="checkbox" name="item" value="servicos" data-texto="lista de serviços"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Lista de serviços</span></label>
+          <label class="opcao"><input type="checkbox" name="item" value="horarios" data-texto="horários ou agenda"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Horários ou agenda</span></label>
+          <label class="opcao"><input type="checkbox" name="item" value="mapa" data-texto="mapa e endereço"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Mapa e endereço</span></label>
+          <label class="opcao"><input type="checkbox" name="item" value="galeria" data-texto="galeria de fotos"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Galeria de fotos</span></label>
+          <label class="opcao"><input type="checkbox" name="item" value="sacola" data-texto="sacola de compras"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Sacola de compras</span></label>
+          <label class="opcao"><input type="checkbox" name="item" value="faq" data-texto="perguntas frequentes"><span class="opcao__marca" aria-hidden="true"></span><span class="opcao__texto">Perguntas frequentes</span></label>
+          </div>
+        </fieldset>
+
+        <div class="grupo grupo--nome">
+          <label class="grupo__rotulo" for="configurador-nome">Nome do negócio (opcional)</label>
+          <input class="campo" id="configurador-nome" name="nome" type="text" maxlength="80" autocomplete="organization" enterkeyhint="done" data-nome>
+        </div>
+      </div>
+
+      <div class="configurador__saida">
+        <p class="grupo__rotulo" id="configurador-previa-rotulo">Sua mensagem</p>
+        <output class="previa" aria-labelledby="configurador-previa-rotulo" aria-live="off" data-previa></output>
+        <div class="configurador__acoes">
+          <a class="placa" href="{{whatsappUrl}}" target="_blank" rel="noopener" data-enviar-whatsapp>Enviar este rascunho pelo WhatsApp</a>
+          <a class="botao" href="{{mailtoUrl}}" data-enviar-email>Enviar por e-mail</a>
+        </div>
+        <p class="configurador__aviso">O site não envia nada sozinho. O WhatsApp ou o seu <span class="sem-quebra">e-mail</span> abre com a mensagem pronta e você revisa antes de mandar.</p>
+        <p class="sr-only" aria-live="polite" aria-atomic="true" data-resumo></p>
+      </div>
+    </form>
   </div>
 </section>

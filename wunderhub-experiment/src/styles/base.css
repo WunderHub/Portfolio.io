@@ -315,6 +315,19 @@ a:focus-visible {
   transform: translate(-.55px, 1.92px);
 }
 
+/* Cores forçadas (Windows Alto Contraste): o vermelho da placa é um ::before e o fundo vira a cor do
+   Canvas, então só o texto sobraria, sem forma de botão. Uma borda na cor do próprio texto (LinkText nos
+   links, ButtonText nos botões) devolve o contorno sem mexer no layout: a caixa é border-box e a altura
+   de 48/56px (min-height) já a inclui. O .botao já tem borda de 1px. */
+@media (forced-colors: active) {
+  .placa {
+    border: 2px solid currentColor;
+  }
+  .placa--etiqueta {
+    border-width: 1px;
+  }
+}
+
 /* ---------- utilitários ---------- */
 .sr-only {
   position: absolute !important;

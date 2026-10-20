@@ -430,6 +430,9 @@
 .palco--em-vista .brilho__contra {
   will-change: transform;
 }
+.palco--em-vista .brilho {
+  will-change: transform, opacity;
+}
 .palco--em-vista .vao__veu {
   will-change: opacity;
 }
@@ -527,12 +530,13 @@
   .js .fachada [data-linha] {
     --peso: 900;
   }
-  /* --brilho = 0,15: faixa em (0,15 − 0,5) × curso */
+  /* p = 0 antes do corte de carga: a faixa espera fora do letreiro (--brilho = −0,15, à esquerda) e
+     o render.js a faz cruzar com o corte; em repouso volta a --brilho = 0,15 acendendo a opacidade */
   .js .fachada .brilho {
-    transform: translateX(calc(-.35 * var(--curso)));
+    transform: translateX(calc(-.65 * var(--curso)));
   }
   .js .fachada .brilho__contra {
-    transform: translateX(calc(.35 * var(--curso)));
+    transform: translateX(calc(.65 * var(--curso)));
   }
   .js .vao__fundo {
     visibility: hidden; /* janela fechada: nada a pintar (render.js mostra quando a > 0) */

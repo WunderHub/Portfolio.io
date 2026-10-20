@@ -183,11 +183,41 @@ html:has(.menu[open]) {
   padding: 0 var(--margem) env(safe-area-inset-bottom);
   background: var(--preto-acm);
 }
-.barra-whatsapp__placa {
+/* Faixa de ACM preto com um fio de grafite no topo (decorativo, dentro dos 48px) e a placa de
+   acrílico presa à direita, do lado do polegar: ~230px em 390 em vez da barra vermelha de largura
+   total (5,2% da tela só nela, acima dos ~5% do princípio 2 com qualquer outro vermelho à vista).
+   O alvo de toque continua com 48px de altura. */
+.barra-whatsapp {
+  box-shadow: inset 0 1px 0 var(--grafite-fio);
+}
+.barra-whatsapp .barra-whatsapp__placa {
+  display: flex;
+  width: fit-content;
+  margin-left: auto;
+  padding-left: 28px;
+  padding-right: calc(28px + var(--h) * var(--corte-tan));
   font-size: var(--t-16);
 }
 @media (min-width: 768px) {
   .barra-whatsapp {
     display: none !important;
   }
+}
+
+/* Hover da placa de acrílico: a luz acende (Vermelho Acrílico → Vermelho Sinal, 160ms). O sublinhado de
+   2px do .placa continua. Branco sobre #E5243B = 4,53:1: só para texto de 16px ou mais (nunca em
+   texto menor). Só com ponteiro que passa por cima; :active volta ao Vermelho Acrílico. */
+.barra-whatsapp__placa::before,
+.menu__whatsapp::before {
+  transition: background-color var(--dur-resposta) var(--ease-resposta);
+}
+@media (hover: hover) {
+  .barra-whatsapp__placa:hover::before,
+  .menu__whatsapp:hover::before {
+    background-color: var(--vermelho-sinal);
+  }
+}
+.barra-whatsapp__placa:active::before,
+.menu__whatsapp:active::before {
+  background-color: var(--vermelho-acrilico);
 }

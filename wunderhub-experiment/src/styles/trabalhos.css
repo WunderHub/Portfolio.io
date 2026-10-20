@@ -37,6 +37,22 @@
 .conceitos {
   order: 1;
 }
+/* AJUSTE MÍNIMO da frente contato (revisão, 2026-10-20), registrado no relatório. filme.js solta o hidden da
+   fachada ao carregar (a uma tela de distância) e isso empurrava tudo abaixo (92px no desktop, cerca de 550px no
+   celular) quando o navegador ainda rolava até uma âncora como /#contato. Com JS e sem falha, a fachada já ocupa
+   o próprio espaço desde o início, invisível e fora da árvore de acessibilidade; filme.js a revela no mesmo lugar.
+   O !important é preciso porque base.css fixa [hidden] { display: none !important }. Se a fachada do filme deixar
+   de existir ou de ser mostrada pelo filme.js, apague esta regra (senão fica um vão em branco no lugar dela). */
+html.js:not(.js-falhou) .trabalhos:not([data-modulo-falhou]) .filme[hidden] {
+  display: block !important;
+  visibility: hidden;
+}
+/* Mesma razão para o botão "Ver decisões": vitrine.js o solta do hidden ao iniciar e, no celular, ele ocupa uma
+   linha própria (64px por linha, 192px no total). Antes do módulo o botão já ocupa o lugar, invisível. */
+html.js:not(.js-falhou) .trabalhos:not(.vitrine-ativa):not([data-modulo-falhou]) .conceito__alternar[hidden] {
+  display: inline-flex !important;
+  visibility: hidden;
+}
 
 @media (min-width: 1024px) {
   .trabalhos__grade {
@@ -205,6 +221,18 @@
 .conceito__painel {
   display: grid;
   grid-template-rows: 1fr; /* vitrine.js escreve 0fr…1fr inline */
+}
+/* AJUSTE MÍNIMO da frente contato (revisão, 2026-10-20), registrado no relatório. Com JS, vitrine.js recolhe
+   todas as linhas menos a inicial (a primeira, ou a do hash) ao iniciar; como ele carrega a uma tela de
+   distância, a altura de #trabalhos encolhia ~1170px DEPOIS de o navegador resolver âncoras como /#contato, e o
+   visitante pousava mais de 1000px depois do alvo. Aqui as linhas que o módulo vai recolher já nascem
+   recolhidas (e fora da árvore de acessibilidade), então o layout de antes e o de depois do módulo são o mesmo.
+   Só vale com .js, sem o teto de 3s, sem falha de carga e até o módulo assumir (.vitrine-ativa); depois disso
+   quem escreve é o vitrine.js (inline). Sem JS, no modo estático e se o módulo não carregar, segue tudo aberto. */
+html.js:not(.js-falhou) .trabalhos:not(.vitrine-ativa):not([data-modulo-falhou]) .conceito:not(:first-child):not(:target) .conceito__painel,
+html.js:not(.js-falhou) .trabalhos:not(.vitrine-ativa):not([data-modulo-falhou]) .conceitos:has(.conceito:not(:first-child):target) .conceito:first-child .conceito__painel {
+  grid-template-rows: 0fr;
+  visibility: hidden;
 }
 .conceito__miolo {
   min-height: 0;

@@ -10,6 +10,48 @@
 .processo {
   /* toque: rolagem vertical e zoom livres; o arraste horizontal fica com o trilho (5.3, Toque) */
   touch-action: pan-y pinch-zoom;
+  position: relative;
+  /* chanfro da chapa: largura no desktop e no celular; a altura segue o ângulo do sistema (16°) */
+  --chanfro-w: 64px;
+  --chanfro-h: calc(var(--chanfro-w) * var(--corte-tan));
+  /* arestas da peça: de cima pega luz, de baixo fica na sombra */
+  box-shadow: inset 0 1px 0 var(--prata-luz), inset 0 -1px 0 var(--prata-sombra);
+}
+@media (min-width: 768px) {
+  .processo {
+    --chanfro-w: 128px;
+  }
+}
+
+/* A Chapa como peça cortada: uma chapa de inox parafusada na parede grafite (a cor de Serviços e
+   Sobre, as vizinhas). O canto de cima à direita e o de baixo à esquerda são chanfrados a 16°, e o
+   lábio de cada chanfro leva a mesma aresta polida de 2px em Prata Luz do canto do configurador.
+   Estático, decorativo e dentro do padding da seção (longe do conteúdo e dos anéis de foco). O
+   degradê vai de canto a canto: o ponto de 50% passa pelos outros dois cantos da caixa, que é a
+   hipotenusa do chanfro (as bordas têm 1px de transição para não serrilhar). */
+.processo::before,
+.processo::after {
+  content: '';
+  position: absolute;
+  width: var(--chanfro-w);
+  height: var(--chanfro-h);
+  pointer-events: none;
+}
+.processo::before {
+  top: 0;
+  right: 0;
+  background: linear-gradient(to bottom left,
+    var(--grafite-parede) calc(50% - .5px),
+    var(--prata-luz) calc(50% + .5px) calc(50% + 2px),
+    rgb(238 240 242 / 0) calc(50% + 3px));
+}
+.processo::after {
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to top right,
+    var(--grafite-parede) calc(50% - .5px),
+    var(--prata-luz) calc(50% + .5px) calc(50% + 2px),
+    rgb(238 240 242 / 0) calc(50% + 3px));
 }
 
 /* ---------- cabeça ---------- */
@@ -135,6 +177,30 @@
 }
 /* As metades só existem na etapa 5 (fora dela, display: none poupa três moldagens de texto por
    quadro); ao sair, ficam 160ms para a fenda fechar (display discreto) antes de sumir. */
+/* Traçado gravado: a palavra final (900/150) a 7% de preto, fixa por baixo da palavra viva. É o molde
+   que cada etapa preenche (a traçagem do metalúrgico antes do corte). Eixos fixos: não lê --w nem
+   --s, então não entra no relayout do arraste; contain: layout isola a caixa (sem paint, o acento
+   do Ó seria cortado). Só preenchimento, sem contorno, para a fonte variável não mostrar
+   sobreposição. Some na etapa 5, quando a palavra inteira ocupa o lugar dele. */
+.m3__copia--traco {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-weight: 900;
+  font-stretch: 150%;
+  color: rgb(0 0 0 / .07);
+  -webkit-text-stroke: 0;
+  contain: layout style;
+  pointer-events: none;
+  transition: opacity var(--dur-resposta) var(--ease-resposta);
+}
+.m3[data-etapa='5'] .m3__copia--traco {
+  opacity: 0;
+}
+/* a palavra viva pinta por cima do traçado (as outras três cópias já são absolutas e vêm depois) */
+.m3__copia--inteira {
+  position: relative;
+}
 .m3__copia--baixo,
 .m3__copia--cima,
 .m3__copia--aresta {
@@ -447,6 +513,10 @@
 .etapa__detalhes dt {
   font-weight: 650;
 }
+/* "e-mail" não quebra no hífen (a linha cairia em "e-" / "mail") */
+.etapa__junto {
+  white-space: nowrap;
+}
 .etapa[data-ativa] .etapa__detalhes dt {
   color: var(--preto-acm);
 }
@@ -648,6 +718,12 @@
 }
 
 @media (forced-colors: active) {
+  /* decorativos (o traçado seria forçado a cheio e as pontas chanfradas não têm sentido sem as cores) */
+  .m3__copia--traco,
+  .processo::before,
+  .processo::after {
+    display: none;
+  }
   .m3__polegar-forma,
   .m3__progresso,
   .m3__marca,

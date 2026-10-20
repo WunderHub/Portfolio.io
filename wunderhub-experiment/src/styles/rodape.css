@@ -1,29 +1,46 @@
-/* Rodapé (seção 3.4). Frente: contato. Preto, quieto. */
+/* Rodapé (seção 3.4). Frente: contato. Preto, quieto: a assinatura (símbolo exploratório e wordmark), a lista
+   "Nesta página" (#mapa, destino do Menu sem JS) em Anybody, os contatos e o fecho com o aviso das marcas
+   fictícias. Estático: hover e foco só mudam cor e sublinhado (herdados do base.css). */
 
 .rodape {
-  padding-block: var(--e-8) calc(var(--e-6) + env(safe-area-inset-bottom));
+  padding-block: var(--e-8) calc(var(--e-4) + env(safe-area-inset-bottom));
   border-top: 1px solid var(--grafite-fio);
   font-size: var(--t-16);
 }
 html.com-barra .rodape {
-  padding-bottom: calc(var(--e-6) + 48px + env(safe-area-inset-bottom));
+  padding-bottom: calc(var(--e-4) + 48px + env(safe-area-inset-bottom));
 }
 .rodape__grade {
   display: grid;
-  gap: var(--e-4);
+  gap: var(--e-6);
 }
+
+/* assinatura */
 .rodape__marca {
   display: flex;
   align-items: center;
   gap: var(--e-2);
-  margin-bottom: var(--e-2);
+  margin-bottom: var(--e-3);
   color: var(--prata-luz);
+}
+/* o símbolo é decorativo ao lado do texto "WunderHub": fora da árvore de acessibilidade (o svg traz um <title> que
+   um leitor de tela anunciaria como imagem). A caixa flex evita a folga de linha base de um svg inline. */
+.rodape__simbolo {
+  display: flex;
+  flex: none;
 }
 .rodape .simbolo {
   flex: none;
-  height: 24px;
+  height: 32px;
   width: auto;
 }
+.rodape__frase {
+  max-width: 34ch;
+  color: var(--prata);
+  line-height: 1.5;
+}
+
+/* listas */
 .rodape ul {
   display: grid;
   gap: 0;
@@ -33,29 +50,75 @@ html.com-barra .rodape {
   align-items: center;
   min-height: var(--alvo-min);
 }
+/* "Nesta página": peças de estrutura em Anybody, como os destinos do menu mobile */
+.rodape__mapa li a {
+  color: var(--prata-luz);
+  font-family: var(--fonte-estrutura);
+  font-size: var(--t-h3);
+  font-stretch: 62%;
+  font-weight: 800;
+  line-height: 1;
+}
+.rodape__contatos li a {
+  color: var(--prata);
+  overflow-wrap: anywhere;
+}
+.rodape__contatos li a:hover,
+.rodape__contatos li a:focus-visible {
+  color: var(--prata-luz);
+}
+
+/* fecho */
 .rodape__fim {
   display: grid;
   gap: var(--e-1);
+  padding-top: var(--e-4);
+  border-top: 1px solid var(--grafite-fio);
   color: var(--prata-sombra); /* auxiliar sobre preto (5,49:1) */
+  font-size: var(--t-14);
+}
+.rodape__fim p {
+  max-width: none;
 }
 .rodape__topo {
   justify-self: start;
   display: inline-flex;
   align-items: center;
+  gap: var(--e-1);
   min-height: var(--alvo-min);
   color: var(--prata);
+  font-size: var(--t-16);
+  font-weight: 500;
+}
+.rodape__topo svg {
+  flex: none;
+}
+
+@media (min-width: 768px) {
+  .rodape__mapa ul {
+    grid-template-columns: repeat(2, max-content);
+    column-gap: var(--e-6);
+  }
 }
 
 @media (min-width: 1024px) {
+  .rodape {
+    padding-top: var(--e-12);
+  }
   .rodape__grade {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--gutter);
+    row-gap: var(--e-12);
+    align-items: start;
   }
   .rodape__assinatura {
     grid-column: 1 / span 5;
   }
   .rodape__mapa {
-    grid-column: 7 / span 2;
+    grid-column: 6 / span 3;
+  }
+  .rodape__mapa ul {
+    grid-template-columns: 1fr;
   }
   .rodape__contatos {
     grid-column: 9 / span 4;
@@ -64,8 +127,7 @@ html.com-barra .rodape {
     grid-column: 1 / -1;
     grid-template-columns: 1fr auto auto;
     align-items: center;
-    gap: var(--e-4);
-    padding-top: var(--e-4);
-    border-top: 1px solid var(--grafite-fio);
+    column-gap: var(--e-6);
+    padding-top: var(--e-3);
   }
 }
