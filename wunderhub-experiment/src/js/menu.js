@@ -29,9 +29,12 @@ function vigiarChegada(alvo) {
   const conferir = () => {
     quadro = 0;
     const esperado = parseFloat(getComputedStyle(raiz).scrollPaddingTop) || 0;
-    const fora = Math.abs(alvo.getBoundingClientRect().top - esperado) > 4;
+    const topo = alvo.getBoundingClientRect().top;
+    const fora = Math.abs(topo - esperado) > 4;
+    // no fim da página um destino abaixo do lugar não sobe mais; um destino que passou do lugar
+    // (a página encolheu durante a rolagem) ainda pode voltar
     const noFim = window.scrollY >= raiz.scrollHeight - window.innerHeight - 1;
-    if (!fora || noFim) return;
+    if (!fora || (noFim && topo > esperado)) return;
     if (++tentativas > 3) return desarmar();
     alvo.scrollIntoView({ block: 'start' });
   };

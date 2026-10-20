@@ -18,12 +18,12 @@
    .topo e recua as letras pela margem. Todas as medidas de letra vêm de styles/generated/letreiro.css. */
 
 /* ---------- custo por quadro ----------
-   --peso (render.js) e --brilho (registrada em tokens.css) são escritas por quadro na .fachada. Para a
-   troca não recalcular os ~90 elementos da fachada (medido: metade dos quadros passava de 15ms de
-   estilo com CPU 4x), as duas não herdam: só a cadeia vão → metade → linha de letras as recebe por
-   `inherit`, e a faixa especular é desenhada pela própria linha de letras a partir de --brilho (a
-   --especular global, que herda, fica constante dentro da fachada). Capturas, véus e persianas não
-   recalculam com o peso nem com o brilho. */
+   --peso e --brilho (registradas, não herdam) são escritas pelo render.js direto nas linhas de letras
+   que as usam: --peso em cada [data-linha] (font-weight; as células herdam o font-weight) e --brilho na
+   forma de transform da faixa especular (ver .brilho). Nada na fachada usa `inherit` explícito: ele
+   obriga o navegador a recalcular o filho sempre que o pai muda, e as metades e a faixa mudam de
+   transform a cada quadro (medido com CPU 4x: 0,54ms por metade com uma cadeia de `inherit`, 0,013ms
+   sem ela). A --especular global (que herda) fica desligada na fachada. */
 @property --peso {
   syntax: '<number>';
   inherits: false;
@@ -32,14 +32,15 @@
 .topo .fachada {
   --especular: none;
 }
-.fachada .vao,
-.fachada .vao__metade,
+/* estado estático (p = 0,62): peso do caixilho (a luz, --brilho = 0,584, está na faixa: ver .brilho) */
 .fachada [data-linha] {
-  --peso: inherit;
-  --brilho: inherit;
-}
-.fachada [data-linha] {
+  --peso: 440;
   font-weight: var(--peso);
+}
+@media (min-width: 1024px) {
+  .fachada [data-linha] {
+    --peso: 390;
+  }
 }
 
 /* ---------- variáveis do palco ---------- */
@@ -64,6 +65,8 @@
   --pista: 90svh;
   --placa-largura: 3em; /* a placa de aço: o gradiente atravessa o letreiro inteiro */
   --placa-altura: calc(3 * var(--letreiro-linha));
+  /* curso da faixa especular: deslocamento horizontal por unidade de --brilho (ver .brilho) */
+  --curso: calc(var(--placa-largura) + .2493 * var(--placa-altura));
 
   /* deriva horizontal das metades (componente x da perpendicular) */
   --dt: calc(.276 * var(--abre-cima));
@@ -130,14 +133,10 @@
   font-synthesis: none;
   user-select: none;
   -webkit-user-select: none;
-  /* estado estático (p = 0,62): peso do caixilho, luz quase toda acesa */
-  --peso: 440;
-  --brilho: .584;
 }
 @media (min-width: 1024px) {
   .fachada {
     flex-direction: row;
-    --peso: 390;
   }
 }
 
@@ -314,35 +313,65 @@
   transform: translate(calc(-1 * var(--deriva-baixo)), calc(.961 * var(--abre-baixo) + var(--k) * var(--cascata)));
 }
 
-/* Aço escovado (2.2): gradiente, grão horizontal e faixa especular dimensionados pela placa inteira
-   e deslocados por vão, para o letreiro ler como uma chapa só.
+/* Aço escovado (2.2): gradiente e grão horizontal dimensionados pela placa inteira e deslocados por
+   vão, para o letreiro ler como uma chapa só.
    Aresta polida (2px de Prata Luz no lábio de cima do corte) e retorno (2px de Prata Sombra no lábio
    de baixo) são uma camada do próprio aço (--faixa), recortada às letras pelo background-clip: text.
    Sem cópias de texto, a troca de peso do palco remonta só uma linha de letras por metade (orçamento
    de quadro da seção 5.1). A faixa corre paralela ao corte: um linear-gradient a 196° tem as linhas de
    mesma cor a 16° e, na caixa da linha (largura --vao-l), a reta do corte fica na posição
-   t0 = sen 16° × largura + cos 16° × y0 do gradiente. 2px na vertical são 1,92px na perpendicular. */
+   t0 = sen 16° × largura + cos 16° × y0 do gradiente. 2px na vertical são 1,92px na perpendicular.
+   O aço não muda com a rolagem (só o peso, em degraus): a faixa especular fica na cópia .brilho. */
 .fachada .letras {
   --t0: calc(.2756 * var(--vao-l) + .9613 * var(--corte-y0));
   color: transparent;
-  /* 1ª camada: a mesma --especular da seção 2.2, escrita aqui (e não por uma variável que herda) com o
-     --brilho da própria linha, para a troca por quadro não recalcular as células */
-  background-image:
-    linear-gradient(104deg,
-      transparent calc(var(--brilho) * 100% - 9%),
-      rgb(255 255 255 / .55) calc(var(--brilho) * 100%),
-      transparent calc(var(--brilho) * 100% + 9%)),
-    var(--faixa), var(--grao-letreiro), var(--prata-escovada);
+  background-image: var(--faixa), var(--grao-letreiro), var(--prata-escovada);
   background-size:
-    var(--placa-largura) var(--placa-altura),
     100% 100%,
     2400px 128px,
     var(--placa-largura) var(--placa-altura);
-  background-position: var(--aco-x) var(--aco-y), 0 0, var(--aco-x) var(--aco-y), var(--aco-x) var(--aco-y);
-  background-repeat: no-repeat, no-repeat, repeat, no-repeat;
-  background-blend-mode: normal, normal, soft-light, normal;
+  background-position: 0 0, var(--aco-x) var(--aco-y), var(--aco-x) var(--aco-y);
+  background-repeat: no-repeat, repeat, no-repeat;
+  background-blend-mode: normal, soft-light, normal;
   -webkit-background-clip: text;
   background-clip: text;
+}
+/* Faixa especular (a --especular da seção 2.2) sem recalcular nem repintar o aço a cada quadro: uma
+   cópia das letras em branco a 55% (.brilho__texto) vista por uma máscara com a faixa
+   (.brilho__mascara). A .brilho anda na horizontal por transform levando a máscara, e a
+   .brilho__contra anda o mesmo tanto ao contrário, então as letras ficam paradas e só a faixa corre;
+   com camadas próprias (will-change, abaixo) o compositor só move camadas. Quem anda não tem máscara
+   nem medidas em var() (o recálculo por quadro fica mínimo); a máscara fica num elemento parado.
+   Mesmo desenho de antes: o centro da faixa em --brilho × 100% da linha do gradiente a 104° (placa
+   inteira) é a imagem deslocada (--brilho − 0,5) × (largura + 0,2493 × altura), o --curso. A caixa
+   da máscara sobra um --curso para cada lado, para a cópia deslocada nunca sair dela (a máscara
+   recorta na borda da caixa). Sem JS, o estado estático (--brilho = 0,584) vem dos transforms abaixo;
+   com o palco vivo, o render.js escreve os dois transforms. */
+.fachada .brilho {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translateX(calc(.084 * var(--curso)));
+}
+.fachada .brilho__mascara {
+  position: absolute;
+  inset: 0 calc(-1 * var(--curso));
+  -webkit-mask-image: linear-gradient(104deg, transparent 41%, #000 50%, transparent 59%);
+  mask-image: linear-gradient(104deg, transparent 41%, #000 50%, transparent 59%);
+  -webkit-mask-size: var(--placa-largura) var(--placa-altura);
+  mask-size: var(--placa-largura) var(--placa-altura);
+  -webkit-mask-position: calc(var(--curso) + var(--aco-x)) var(--aco-y);
+  mask-position: calc(var(--curso) + var(--aco-x)) var(--aco-y);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.fachada .brilho__contra {
+  position: absolute;
+  inset: 0 var(--curso);
+  transform: translateX(calc(-.084 * var(--curso)));
+}
+.fachada .brilho__texto {
+  color: rgb(255 255 255 / .55);
 }
 .fachada .vao__metade--cima .letras {
   --faixa: linear-gradient(196deg, transparent calc(var(--t0) - 1.92px), var(--prata-luz) 0 var(--t0), transparent 0);
@@ -396,7 +425,9 @@
 /* will-change só enquanto o palco está perto da tela (palco.js, inView com margem de 50%) */
 .palco--em-vista .vao__metade,
 .palco--em-vista .vao__persiana,
-.palco--em-vista .vao__captura {
+.palco--em-vista .vao__captura,
+.palco--em-vista .brilho,
+.palco--em-vista .brilho__contra {
   will-change: transform;
 }
 .palco--em-vista .vao__veu {
@@ -404,8 +435,11 @@
 }
 
 /* ---------- placas da fachada ----------
-   Posição em CSS, da mesma geometria gerada (vale com e sem JS): dentro de cada janela, encostadas ao
-   lábio de baixo do corte, a 24px do início da janela. Na torre, penduradas logo abaixo da janela.
+   Posição em CSS, da mesma geometria gerada (vale com e sem JS e em todos os estados estáticos):
+   no desktop, dentro de cada janela, encostadas ao lábio de baixo do corte, a 24px do início da
+   janela; na torre, penduradas logo abaixo da janela (bloco seguinte).
+   O lábio de baixo é a reta do corte deslocada pela abertura: 1,0403 × abre-baixo na vertical (o
+   deslocamento perpendicular visto numa vertical), menos 0,2867 × centra (a deriva lateral comum).
    A entrada e a saída (clip-path ao longo do corte) são do palco.js com Motion. */
 .placas {
   position: absolute;
@@ -425,16 +459,53 @@
   --k: 0;
   --jan-x0: 0px;
   --placa-x: calc(var(--jan-x0) + 24px);
-  --labio-baixo: calc(var(--corte-y0) + .2867 * var(--placa-x) + 1.0403 * var(--abre-baixo) - var(--labio));
+  --placa-h: var(--alvo-min);
+  --labio-baixo: calc(var(--corte-y0) + .2867 * var(--placa-x) + 1.0403 * var(--abre-baixo) - .2867 * var(--centra) - var(--labio));
   left: calc(var(--recuo-letreiro) + var(--vao-x) + var(--placa-x));
-  /* canto de baixo encostado no lábio de baixo, dentro da janela (na torre, somando o andar e a cascata) */
-  top: calc(var(--U) + var(--k) * (var(--letreiro-linha) + var(--cascata)) + var(--labio-baixo) - var(--alvo-min));
+  /* canto de baixo à esquerda encostado no lábio de baixo, dentro da janela */
+  top: calc(var(--U) + var(--labio-baixo) - var(--placa-h));
 }
 .placa--fachada {
   pointer-events: auto;
   font-size: var(--t-16);
   font-stretch: normal;
   white-space: nowrap;
+}
+
+/* Torre (abaixo de 1024px): a janela tem uns 80px de altura e desce 16° para a direita, então uma placa
+   horizontal de 200px dentro dela cobriria a base das letras de cima e o começo da captura. A placa
+   fica pendurada logo abaixo da janela, alinhada à margem do texto: o canto de cima à direita da placa
+   mais longa (--placa-w) encosta no lábio de baixo, e a placa cobre só o pé das letras de baixo do
+   mesmo andar. As três ficam na mesma posição relativa ao andar (as mais curtas sobram um pouco abaixo
+   do lábio). Trava: a base da placa nunca passa do primeiro pixel de letra do andar seguinte (a
+   metade de cima dele, subida pela abertura); em telas muito estreitas o canto entra 1 a 2px na janela. */
+@media (max-width: 1023.98px) {
+  .placas__item {
+    --placa-x: 0px;
+    --placa-w: 15.5rem; /* "Côdea, padaria de bairro" a 16px: 245px */
+    --labio-baixo: calc(var(--corte-y0) + .2867 * (var(--placa-x) + var(--placa-w)) + 1.0403 * var(--abre-baixo) - .2867 * var(--centra) - var(--labio));
+    --andar-seguinte: calc(var(--letreiro-linha) + var(--cascata) - .961 * var(--abre-cima) + (var(--letreiro-linha) - var(--letreiro-versal)) / 2);
+    top: calc(var(--U) + var(--k) * (var(--letreiro-linha) + var(--cascata)) + min(var(--labio-baixo), var(--andar-seguinte) - var(--placa-h) - 2px));
+  }
+}
+/* Abaixo de 768px, placa visual de 32px (texto de 14px) dentro de um alvo de toque de 48px: as três
+   placas cabem no pé dos andares e o vermelho fica perto dos 5% da tela (princípio 2). */
+@media (max-width: 767.98px) {
+  .placas__item {
+    --placa-w: 12.25rem; /* "Côdea, padaria de bairro" a 14px: 194px */
+    --placa-h: 32px;
+  }
+  .placa.placa--fachada {
+    --h: 32px;
+    padding-left: 12px;
+    padding-right: calc(12px + var(--h) * var(--corte-tan));
+    font-size: var(--t-14);
+  }
+  .placa.placa--fachada::after {
+    content: '';
+    position: absolute;
+    inset: -8px 0;
+  }
 }
 
 /* ---------- estado vivo: .js, com movimento e altura ≥ 500px ---------- */
@@ -453,9 +524,15 @@
     align-content: center;
   }
   /* p = 0 antes do render.js: nome contínuo, metades encostadas (a carga abre a fenda), aresta apagada */
-  .js .fachada {
+  .js .fachada [data-linha] {
     --peso: 900;
-    --brilho: .15;
+  }
+  /* --brilho = 0,15: faixa em (0,15 − 0,5) × curso */
+  .js .fachada .brilho {
+    transform: translateX(calc(-.35 * var(--curso)));
+  }
+  .js .fachada .brilho__contra {
+    transform: translateX(calc(.35 * var(--curso)));
   }
   .js .vao__fundo {
     visibility: hidden; /* janela fechada: nada a pintar (render.js mostra quando a > 0) */
@@ -533,20 +610,19 @@
     --cel-c: calc(var(--cel-2) / 2 + var(--folga));
   }
   .fonte-lenta .fachada .letras .cel {
-    --brilho: inherit;
-    background-image:
-      linear-gradient(104deg,
-        transparent calc(var(--brilho) * 100% - 9%),
-        rgb(255 255 255 / .55) calc(var(--brilho) * 100%),
-        transparent calc(var(--brilho) * 100% + 9%)),
-      var(--grao-letreiro), var(--prata-escovada);
-    background-repeat: no-repeat, repeat, no-repeat;
-    background-blend-mode: normal, soft-light, normal;
+    background-image: var(--grao-letreiro), var(--prata-escovada);
+    background-repeat: repeat, no-repeat;
+    background-blend-mode: soft-light, normal;
     background-size:
-      calc(var(--placa-largura) / var(--escala)) var(--placa-altura),
       calc(2400px / var(--escala)) 128px,
       calc(var(--placa-largura) / var(--escala)) var(--placa-altura);
     background-position: calc((-1 * (var(--vao-x) + var(--cel-x)) - (1 - var(--escala)) * var(--cel-c)) / var(--escala)) var(--aco-y);
+  }
+  .fonte-lenta .fachada .brilho__texto .cel {
+    color: rgb(255 255 255 / .55);
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
   }
   .fonte-lenta .fachada .aresta .cel {
     background-color: var(--prata-luz);

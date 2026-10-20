@@ -1,4 +1,6 @@
-/* Quem cuida do seu site (seção 3.4). Frente: meio. Grafite Parede, colunas 3 a 9, só texto. */
+/* Quem cuida do seu site (seção 3.4). Frente: meio. Grafite Parede, colunas 3 a 9, só texto (pausa).
+   Hierarquia só tipográfica: o título, a abertura em primeira pessoa em corpo grande e Prata Luz, e os
+   dois parágrafos seguintes no corpo do lead, em Prata (7,92:1 sobre o grafite). */
 
 .sobre__texto {
   grid-column: 1 / -1;
@@ -11,8 +13,23 @@
 .sobre__texto p {
   font-size: var(--t-lead);
   line-height: var(--lh-lead);
+  max-width: 58ch;
+}
+.sobre__texto .sobre__abertura {
+  margin-bottom: var(--e-1);
+  font-size: clamp(1.375rem, 1.05rem + 1.1vw, 2rem); /* 22 → 32 */
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -.005em;
+  color: var(--prata-luz);
+  max-width: 34ch;
 }
 
+@media (min-width: 600px) {
+  .sobre__texto {
+    grid-column: 1 / span 5;
+  }
+}
 @media (min-width: 1024px) {
   .sobre__texto {
     grid-column: 3 / span 7;

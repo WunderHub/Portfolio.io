@@ -1,5 +1,8 @@
-<!-- Como trabalho, sobre a Chapa (seções 3.4 e 5.3). Frente: meio.
-     Sem JS: sem trilho nem palavra grande (controles hidden); a lista com as cinco etapas fica sempre visível. -->
+<!-- Como trabalho, sobre a Chapa (seções 3.4 e 5.3, Momento 3). Frente: meio.
+     Sem JS: sem trilho nem palavra grande (controles hidden); a lista com as cinco etapas e as cinco
+     mini-palavras fica sempre visível e mostra a progressão. Com JS (processo.js): a palavra
+     "SEU NEGÓCIO" ganha peso e largura conforme a etapa do range. A palavra é aria-hidden: a informação
+     está na lista. -->
 <section class="processo secao superficie-chapa" id="processo" aria-labelledby="titulo-processo">
   <div class="conteudo">
     <div class="processo__cabeca">
@@ -7,10 +10,52 @@
       <p>O projeto ganha peso aos poucos. Escolha uma etapa para ver o que muda nela.</p>
     </div>
 
-    <div class="processo__controles" data-processo-controles hidden>
-      <div class="processo__palavra" aria-hidden="true">SEU NEGÓCIO</div>
-      <label class="processo__rotulo" for="etapa">Etapa do projeto</label>
-      <input class="processo__trilho" type="range" id="etapa" min="1" max="5" step="1" value="1" aria-valuetext="Etapa 1 de 5: Conversa">
+    <div class="processo__controles m3" data-processo-controles data-etapa="1" hidden>
+      <div class="m3__palavra" aria-hidden="true">
+        <svg class="m3__guias" width="100%" height="100%" focusable="false">
+          <line class="m3__guia" data-grupo="0" pathLength="1" x1="0" x2="100%" y1="0.0325em" y2="0.0325em"/>
+          <line class="m3__guia" data-grupo="0" pathLength="1" x1="0" x2="100%" y1="0.7075em" y2="0.7075em"/>
+          <line class="m3__guia m3__guia--l2" data-grupo="0" pathLength="1" x1="0" x2="100%" y1="0.7725em" y2="0.7725em"/>
+          <line class="m3__guia m3__guia--l2" data-grupo="0" pathLength="1" x1="0" x2="100%" y1="1.4475em" y2="1.4475em"/>
+          <line class="m3__guia" data-grupo="1" pathLength="1" x1="0.75" x2="0.75" y1="-14%" y2="114%"/>
+          <line class="m3__guia" data-grupo="1" pathLength="1" x1="33.333%" x2="33.333%" y1="-14%" y2="114%"/>
+          <line class="m3__guia" data-grupo="2" pathLength="1" x1="66.667%" x2="66.667%" y1="-14%" y2="114%"/>
+          <line class="m3__guia m3__guia--fim" data-grupo="2" pathLength="1" x1="100%" x2="100%" y1="-14%" y2="114%"/>
+        </svg>
+        <div class="m3__grade"></div>
+        <div class="m3__texto">
+          <span class="m3__copia m3__copia--inteira"><span class="m3__l1">SEU</span> <span class="m3__l2">NEGÓCIO</span></span>
+          <span class="m3__copia m3__copia--baixo"><span class="m3__l1">SEU</span> <span class="m3__l2">NEGÓCIO</span></span>
+          <span class="m3__copia m3__copia--cima"><span class="m3__l1">SEU</span> <span class="m3__l2">NEGÓCIO</span></span>
+          <span class="m3__copia m3__copia--aresta"><span class="m3__l1">SEU</span> <span class="m3__l2">NEGÓCIO</span></span>
+          <span class="m3__ancora"><span class="placa placa--etiqueta m3__no-ar">No ar</span></span>
+        </div>
+      </div>
+
+      <div class="m3__seletor">
+        <label class="m3__rotulo" for="etapa">Etapa do projeto</label>
+        <p class="m3__leitura" aria-hidden="true">Etapa <span data-m3-numero>1</span> de 5: <span data-m3-nome>Conversa</span></p>
+        <div class="m3__trilho">
+          <input class="m3__range" type="range" id="etapa" min="1" max="5" step="1" value="1" aria-valuetext="Etapa 1 de 5: Conversa">
+          <div class="m3__visual" aria-hidden="true">
+            <span class="m3__linha"></span>
+            <span class="m3__progresso"></span>
+            <span class="m3__marca" style="--i: 0"></span>
+            <span class="m3__marca" style="--i: 1"></span>
+            <span class="m3__marca" style="--i: 2"></span>
+            <span class="m3__marca" style="--i: 3"></span>
+            <span class="m3__marca" style="--i: 4"></span>
+            <span class="m3__polegar"><span class="m3__polegar-forma"></span></span>
+          </div>
+        </div>
+        <div class="m3__botoes">
+          <button class="m3__botao" type="button" data-etapa="1" aria-pressed="true" aria-label="Etapa 1: Conversa"><span class="m3__botao-nome">Conversa</span><span class="m3__botao-numero">1</span></button>
+          <button class="m3__botao" type="button" data-etapa="2" aria-pressed="false" aria-label="Etapa 2: Mapa"><span class="m3__botao-nome">Mapa</span><span class="m3__botao-numero">2</span></button>
+          <button class="m3__botao" type="button" data-etapa="3" aria-pressed="false" aria-label="Etapa 3: Desenho"><span class="m3__botao-nome">Desenho</span><span class="m3__botao-numero">3</span></button>
+          <button class="m3__botao" type="button" data-etapa="4" aria-pressed="false" aria-label="Etapa 4: Construção"><span class="m3__botao-nome">Construção</span><span class="m3__botao-numero">4</span></button>
+          <button class="m3__botao" type="button" data-etapa="5" aria-pressed="false" aria-label="Etapa 5: No ar"><span class="m3__botao-nome">No ar</span><span class="m3__botao-numero">5</span></button>
+        </div>
+      </div>
     </div>
 
     <ol class="etapas" role="list">
@@ -52,7 +97,7 @@
       </li>
       <li class="etapa" data-etapa="5">
         <h3 class="etapa__nome"><span class="etapa__numero">5</span> No ar</h3>
-        <span class="etapa__mini" aria-hidden="true">SEU NEGÓCIO</span>
+        <span class="etapa__mini" aria-hidden="true"><span class="etapa__mini-baixo">SEU NEGÓCIO</span><span class="etapa__mini-cima">SEU NEGÓCIO</span></span>
         <dl class="etapa__detalhes">
           <div><dt>O que eu faço</dt><dd>Publico o site e confiro com você se o WhatsApp e o e-mail estão funcionando.</dd></div>
           <div><dt>O que você recebe</dt><dd>O site publicado no endereço combinado.</dd></div>

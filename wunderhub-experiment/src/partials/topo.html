@@ -1,8 +1,11 @@
 <!-- Abertura e palco (seções 3.4, 5.0 e 5.1). Frente: topo.
      O texto comercial é HTML real, visível no primeiro paint e nunca animado.
      O letreiro é decorativo (aria-hidden). Cada vão tem um plano de trás (captura, véu e duas persianas
-     pretas que abrem a janela) e duas metades de letras cortadas a 16°. Sem JS (ou com reduced motion,
-     altura < 500px ou teto estourado) o CSS mostra o estado estático equivalente a p=0,62. -->
+     pretas que abrem a janela) e duas metades de letras cortadas a 16°. Em cada metade, .letras é o aço
+     (estático) e .brilho leva a faixa especular: uma máscara com a faixa que anda por transform sobre uma
+     cópia branca das letras que anda ao contrário (fica parada), sem repintar nem recalcular o aço.
+     Sem JS (ou com reduced motion, altura < 500px ou teto estourado) o CSS mostra o estado estático
+     equivalente a p=0,62. -->
 <div class="topo" id="topo">
   <div class="abertura">
     <div class="abertura__grade conteudo">
@@ -34,8 +37,8 @@
               <span class="vao__persiana vao__persiana--cima"></span>
               <span class="vao__persiana vao__persiana--baixo"></span>
             </div>
-            <div class="vao__metade vao__metade--cima"><span class="letras" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span><span class="aresta" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></div>
-            <div class="vao__metade vao__metade--baixo"><span class="letras" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span><span class="retorno" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></div>
+            <div class="vao__metade vao__metade--cima"><span class="letras" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span><span class="brilho"><span class="brilho__mascara"><span class="brilho__contra"><span class="brilho__texto" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></span></span></span><span class="aresta" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></div>
+            <div class="vao__metade vao__metade--baixo"><span class="letras" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span><span class="brilho"><span class="brilho__mascara"><span class="brilho__contra"><span class="brilho__texto" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></span></span></span><span class="retorno" data-linha><span class="cel" data-i="0">W</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">N</span></span></div>
           </div>
           <div class="vao" data-vao="1">
             <div class="vao__fundo">
@@ -50,8 +53,8 @@
               <span class="vao__persiana vao__persiana--cima"></span>
               <span class="vao__persiana vao__persiana--baixo"></span>
             </div>
-            <div class="vao__metade vao__metade--cima"><span class="letras" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span><span class="aresta" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></div>
-            <div class="vao__metade vao__metade--baixo"><span class="letras" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span><span class="retorno" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></div>
+            <div class="vao__metade vao__metade--cima"><span class="letras" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span><span class="brilho"><span class="brilho__mascara"><span class="brilho__contra"><span class="brilho__texto" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></span></span></span><span class="aresta" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></div>
+            <div class="vao__metade vao__metade--baixo"><span class="letras" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span><span class="brilho"><span class="brilho__mascara"><span class="brilho__contra"><span class="brilho__texto" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></span></span></span><span class="retorno" data-linha><span class="cel" data-i="0">D</span><span class="cel" data-i="1">E</span><span class="cel" data-i="2">R</span></span></div>
           </div>
           <div class="vao" data-vao="2">
             <div class="vao__fundo">
@@ -66,8 +69,8 @@
               <span class="vao__persiana vao__persiana--cima"></span>
               <span class="vao__persiana vao__persiana--baixo"></span>
             </div>
-            <div class="vao__metade vao__metade--cima"><span class="letras" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span><span class="aresta" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></div>
-            <div class="vao__metade vao__metade--baixo"><span class="letras" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span><span class="retorno" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></div>
+            <div class="vao__metade vao__metade--cima"><span class="letras" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span><span class="brilho"><span class="brilho__mascara"><span class="brilho__contra"><span class="brilho__texto" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></span></span></span><span class="aresta" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></div>
+            <div class="vao__metade vao__metade--baixo"><span class="letras" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span><span class="brilho"><span class="brilho__mascara"><span class="brilho__contra"><span class="brilho__texto" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></span></span></span><span class="retorno" data-linha><span class="cel" data-i="0">H</span><span class="cel" data-i="1">U</span><span class="cel" data-i="2">B</span></span></div>
           </div>
         </div>
 

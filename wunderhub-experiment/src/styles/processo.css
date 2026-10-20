@@ -1,15 +1,398 @@
-/* Como trabalho, sobre a Chapa (seções 3.4 e 5.3). Frente: meio.
-   Provisório da fundação: o estado sem JS (lista com as cinco mini-palavras mostrando a progressão). */
+/* Como trabalho, sobre a Chapa (seções 3.4 e 5.3, Momento 3). Frente: meio.
+   Motores (seção 5): processo.js é o único escritor de --w, --s e --e (num único frame.render) e de
+   data-etapa (a etapa arredondada); o Motion anima o número e, as guias (stroke-dashoffset) e o
+   clip-path da placa "No ar"; o CSS cuida das cores e das camadas (transições de 160ms).
+   Geometria da palavra: caixa de linha de .74em com a versal centrada (padding-top
+   --letreiro-desvio-y), versal de .0325em a .7075em. O corte de 16° da etapa 5 passa pelo centro da
+   versal no meio da palavra (no celular, no meio de NEGÓCIO): A e B são os pontos onde a reta cruza
+   y = −.5em e y = 1.24em (Δx = 1,74em / tan 16° = 6,069em). */
 
+.processo {
+  /* toque: rolagem vertical e zoom livres; o arraste horizontal fica com o trilho (5.3, Toque) */
+  touch-action: pan-y pinch-zoom;
+}
+
+/* ---------- cabeça ---------- */
 .processo__cabeca {
   display: grid;
   gap: var(--e-3);
-  margin-bottom: var(--e-8);
+  margin-bottom: clamp(var(--e-6), 5vw, var(--e-8));
+}
+.processo__final {
+  margin-top: clamp(var(--e-6), 5vw, var(--e-8));
+  padding-top: var(--e-3);
+  border-top: 1px solid rgb(37 40 44 / .28);
 }
 .processo__cabeca p,
 .processo__final {
   color: var(--preto-acm);
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--medida-lead);
 }
+
+/* ---------- Momento 3: palco da palavra ---------- */
+.processo__controles {
+  container-type: inline-size;
+  margin-bottom: clamp(var(--e-8), 6vw, var(--e-12));
+  /* valores iniciais (etapa 1); depois vêm do processo.js */
+  --w: 100;
+  --s: 50;
+  --e: 1;
+  --tinta: transparent;
+  --contorno-cor: var(--preto-acm);
+  /* fenda do corte da etapa 5, na perpendicular (a de cima sobe à direita, a de baixo desce à esquerda) */
+  --fenda: max(6px, .1em);
+}
+/* Com JS, a caixa ocupa o seu lugar desde o primeiro paint (sem deslocar a página quando o módulo
+   carrega) e só aparece quando o processo.js tira o hidden. Sem JS (ou com o teto estourado) some. */
+.js .processo__controles[hidden] {
+  display: block !important;
+  visibility: hidden;
+}
+
+.m3__palavra {
+  position: relative;
+  /* um corpo só por largura de tela: a palavra mais larga (900/150, 10,835em) ocupa 98,5% da linha */
+  font-size: calc(100cqi / 11);
+  height: .74em;
+  margin-top: .26em; /* acento do Ó acima da versal */
+  /* zona da placa "No ar" abaixo da palavra (sem CLS: o espaço existe em todas as etapas) */
+  margin-bottom: calc(.11em + 40px + 32px);
+  overflow-x: clip;
+  overflow-y: visible;
+  /* polígonos do corte (uma linha) */
+  --corte-a: calc(50% - 3.0345em) -.5em;
+  --corte-b: calc(50% + 3.0345em) 1.24em;
+  --clip-baixo: polygon(-1em -.5em, var(--corte-a), var(--corte-b), -1em 1.24em);
+  --clip-cima: polygon(var(--corte-a), calc(100% + 1em) -.5em, calc(100% + 1em) 1.24em, var(--corte-b));
+  --clip-aresta: polygon(calc(50% - 3.0345em) calc(-.5em - 2px), calc(50% + 3.0345em) calc(1.24em - 2px), var(--corte-b), var(--corte-a));
+  /* ponto onde o corte sai pela base (placa pendurada ali) */
+  --saida-x: calc(50% + 1.177em);
+  --saida-y: .7075em;
+}
+
+/* grade de 12 colunas (Desenho): faixas alternadas de preto a 6% */
+.m3__grade {
+  position: absolute;
+  inset: -.14em 0;
+  background: repeating-linear-gradient(90deg,
+    rgb(0 0 0 / .06) 0 calc(100% / 12),
+    transparent calc(100% / 12) calc(100% / 6));
+  opacity: 0;
+  transition: opacity var(--dur-saida) var(--ease-saida);
+}
+.m3[data-etapa='3'] .m3__grade {
+  opacity: 1;
+  transition: opacity 180ms var(--ease-resposta);
+}
+
+/* guias (Mapa e Desenho): linha de base, altura de versal e três colunas, em Vermelho Acrílico */
+.m3__guias {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.m3__guia {
+  stroke: var(--vermelho-acrilico);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1; /* desenhada pelo processo.js com Motion */
+  shape-rendering: crispEdges;
+}
+.m3__guia--l2 {
+  display: none;
+}
+
+/* texto: quatro cópias empilhadas (inteira; metades de baixo e de cima; aresta branca) */
+.m3__texto {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+.m3__copia {
+  display: block;
+  box-sizing: border-box;
+  height: .74em;
+  padding-top: var(--letreiro-desvio-y);
+  line-height: .74em;
+  white-space: nowrap;
+  font-family: var(--fonte-letreiro);
+  font-weight: var(--w);
+  font-stretch: calc(var(--s) * 1%);
+  font-kerning: normal;
+  color: var(--tinta);
+  -webkit-text-stroke: 1.5px var(--contorno-cor);
+  transition:
+    color var(--dur-resposta) var(--ease-resposta),
+    -webkit-text-stroke-color var(--dur-resposta) var(--ease-resposta),
+    visibility 0s linear var(--dur-resposta),
+    transform var(--dur-resposta) var(--ease-resposta);
+}
+/* As metades só existem na etapa 5 (fora dela, display: none poupa três moldagens de texto por
+   quadro); ao sair, ficam 160ms para a fenda fechar (display discreto) antes de sumir. */
+.m3__copia--baixo,
+.m3__copia--cima,
+.m3__copia--aresta {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  transition:
+    color var(--dur-resposta) var(--ease-resposta),
+    -webkit-text-stroke-color var(--dur-resposta) var(--ease-resposta),
+    display 0s linear var(--dur-resposta) allow-discrete,
+    transform var(--dur-resposta) var(--ease-resposta);
+}
+.m3__copia--baixo {
+  clip-path: var(--clip-baixo);
+}
+.m3__copia--cima {
+  clip-path: var(--clip-cima);
+}
+.m3__copia--aresta {
+  clip-path: var(--clip-aresta);
+  color: var(--branco);
+  -webkit-text-stroke-color: transparent;
+}
+
+/* etapas: tinta e contorno (as cores seguem a etapa arredondada, 160ms) */
+.m3[data-etapa='3'] {
+  --tinta: var(--grafite-fio);
+  --contorno-cor: transparent;
+}
+.m3[data-etapa='4'],
+.m3[data-etapa='5'] {
+  --tinta: var(--preto-acm);
+  --contorno-cor: transparent;
+}
+/* No ar: a palavra inteira dá lugar às metades, que se afastam na perpendicular do corte */
+.m3[data-etapa='5'] .m3__copia--inteira {
+  visibility: hidden;
+  transition-delay: 0s;
+}
+.m3[data-etapa='5'] .m3__copia--baixo,
+.m3[data-etapa='5'] .m3__copia--cima,
+.m3[data-etapa='5'] .m3__copia--aresta {
+  display: block;
+  transition-delay: 0s;
+}
+.m3[data-etapa='5'] .m3__copia--baixo {
+  transform: translate(calc(-.138 * var(--fenda)), calc(.4805 * var(--fenda)));
+}
+.m3[data-etapa='5'] .m3__copia--cima,
+.m3[data-etapa='5'] .m3__copia--aresta,
+.m3[data-etapa='5'] .m3__ancora {
+  transform: translate(calc(.138 * var(--fenda)), calc(-.4805 * var(--fenda)));
+}
+.m3[data-etapa='5'] .m3__copia--aresta {
+  color: var(--branco);
+}
+/* ao entrar na etapa 5 as metades nascem encostadas e a fenda abre (vem depois das regras acima) */
+@starting-style {
+  .m3[data-etapa='5'] .m3__copia--baixo,
+  .m3[data-etapa='5'] .m3__copia--cima,
+  .m3[data-etapa='5'] .m3__copia--aresta {
+    transform: none;
+  }
+}
+
+/* placa "No ar": pendurada no lábio de cima, onde o corte sai pela base; entra por clip-path
+   ao longo do corte (processo.js). O corpo da âncora é o da palavra, para os em da geometria. */
+.m3__ancora {
+  position: absolute;
+  left: var(--saida-x);
+  top: calc(var(--saida-y) + .11em);
+  line-height: 0;
+  transition: transform var(--dur-resposta) var(--ease-resposta);
+}
+.m3__no-ar {
+  --h: 40px;
+  padding-left: 14px;
+  padding-right: calc(14px + var(--h) * var(--corte-tan));
+  font-size: var(--t-16);
+  line-height: 1;
+  white-space: nowrap;
+  visibility: hidden;
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  transition: visibility 0s linear var(--dur-saida);
+}
+.m3[data-etapa='5'] .m3__no-ar {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* ---------- seletor: rótulo, trilho e botões ---------- */
+.m3__seletor {
+  display: grid;
+  gap: 12px;
+}
+.m3__rotulo {
+  justify-self: start;
+  font-size: var(--t-14);
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--preto-acm);
+}
+.m3__leitura {
+  display: none;
+}
+
+.m3__trilho {
+  position: relative;
+  height: 48px;
+}
+.m3__range {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.m3__range::-webkit-slider-runnable-track {
+  height: 48px;
+  background: transparent;
+  border: 0;
+}
+.m3__range::-webkit-slider-thumb {
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.m3__range::-moz-range-track {
+  height: 48px;
+  background: transparent;
+  border: 0;
+}
+.m3__range::-moz-range-thumb {
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+/* o foco aparece no polegar desenhado (o do range é transparente) */
+.m3__range:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.m3__visual {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  container-type: inline-size; /* 100cqi = largura do trilho (o polegar anda por transform) */
+  /* distância entre duas etapas no trilho: (largura − polegar) / 4 */
+  --passo: calc(25% - 12px);
+}
+.m3__linha {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: var(--grafite-parede);
+}
+.m3__progresso {
+  position: absolute;
+  left: 24px;
+  top: calc(50% - 2px);
+  width: calc((var(--e) - 1) * var(--passo));
+  height: 4px;
+  background: var(--preto-acm);
+}
+.m3__marca {
+  position: absolute;
+  left: calc(24px + var(--i) * var(--passo) - 1px);
+  top: calc(50% - 9px);
+  width: 2px;
+  height: 18px;
+  background: var(--preto-acm);
+}
+.m3__polegar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(calc((var(--e) - 1) * (25cqi - 12px)));
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+}
+.m3__polegar-forma {
+  /* barra preta com os lados a 16° da vertical, como a borda da placa */
+  width: 27px;
+  height: 40px;
+  background: var(--preto-acm);
+  clip-path: polygon(11.5px 0, 100% 0, calc(100% - 11.5px) 100%, 0 100%);
+}
+.m3__range:focus-visible + .m3__visual .m3__polegar {
+  outline: 2px solid var(--preto-acm);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--chapa), 0 0 0 7px var(--vermelho-acrilico);
+}
+
+.m3__botoes {
+  position: relative;
+  height: 48px;
+  margin-top: 4px;
+}
+.m3__botao {
+  position: absolute;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--preto-acm);
+  color: var(--preto-acm);
+  font-family: var(--fonte-leitura);
+  font-size: var(--t-16);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  transition:
+    background-color var(--dur-toque) var(--ease-resposta),
+    color var(--dur-toque) var(--ease-resposta);
+}
+/* cada botão centralizado na marca da sua etapa; os das pontas encostam nas bordas */
+.m3__botao[data-etapa='1'] { left: 0; transform: none; }
+.m3__botao[data-etapa='2'] { left: calc(24px + 1 * (25% - 12px)); }
+.m3__botao[data-etapa='3'] { left: calc(24px + 2 * (25% - 12px)); }
+.m3__botao[data-etapa='4'] { left: calc(24px + 3 * (25% - 12px)); }
+.m3__botao[data-etapa='5'] { right: 0; transform: none; }
+.m3__botao:hover,
+.m3__botao:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: .25em;
+}
+.m3__botao[aria-pressed='true'] {
+  background: var(--preto-acm);
+  color: var(--prata-luz);
+}
+.m3__botao-numero {
+  display: none;
+}
+
+/* ---------- lista sempre visível ---------- */
 .etapas {
   display: grid;
   gap: var(--e-4);
@@ -20,57 +403,202 @@
   grid-template-columns: minmax(0, 1fr);
   gap: var(--e-2);
   align-content: start;
-  padding-top: var(--e-2);
-  border-top: 4px solid var(--grafite-parede);
+  padding-top: 20px;
+  border-top: 4px solid rgb(37 40 44 / .28);
   color: var(--grafite-parede); /* 8,79:1 sobre a Chapa */
+  transition:
+    border-color var(--dur-resposta) var(--ease-resposta),
+    color var(--dur-resposta) var(--ease-resposta);
+}
+.etapa[data-ativa] {
+  border-top-color: var(--vermelho-acrilico);
+  color: var(--preto-acm);
 }
 .etapa__nome {
   display: flex;
   align-items: baseline;
-  gap: var(--e-1);
+  gap: 10px;
   font-size: var(--t-24);
   line-height: 1.1;
+  color: inherit;
+}
+.superficie-chapa .etapa__nome {
+  color: inherit;
 }
 .etapa__numero {
   font-family: var(--fonte-leitura);
   font-size: var(--t-16);
   font-weight: 650;
+  font-stretch: normal;
 }
-.etapa__mini {
-  font-family: var(--fonte-estrutura);
-  /* 28px, ou menos quando a coluna não comporta a etapa mais larga (900/150, 10,835em) */
-  font-size: min(28px, 100cqi / var(--seu-negocio-em-5));
-  line-height: .74;
-  white-space: nowrap;
-  color: var(--preto-acm);
-}
-.etapa[data-etapa='1'] .etapa__mini { font-weight: 100; font-stretch: 50%; color: transparent; -webkit-text-stroke: max(1px, .05em) var(--preto-acm); }
-.etapa[data-etapa='2'] .etapa__mini { font-weight: 300; font-stretch: 50%; color: transparent; -webkit-text-stroke: max(1px, .05em) var(--preto-acm); }
-.etapa[data-etapa='3'] .etapa__mini { font-weight: 560; font-stretch: 62%; color: var(--grafite-fio); }
-.etapa[data-etapa='4'] .etapa__mini { font-weight: 850; font-stretch: 62%; }
-.etapa[data-etapa='5'] .etapa__mini { font-weight: 900; font-stretch: 150%; }
 .etapa__detalhes {
   display: grid;
-  gap: var(--e-2);
+  gap: 14px;
   font-size: var(--t-16);
   line-height: 1.5;
 }
 .etapa__detalhes dt {
   font-weight: 650;
+}
+.etapa[data-ativa] .etapa__detalhes dt {
   color: var(--preto-acm);
 }
-.processo__final {
-  margin-top: var(--e-8);
-  font-size: var(--t-lead);
-  line-height: var(--lh-lead);
+
+/* mini-palavra: a etapa nos seus eixos, a 28px (ou menos, quando a coluna não comporta 900/150) */
+.etapa__mini {
+  display: block;
+  box-sizing: border-box;
+  height: .74em;
+  margin-block: .2em .12em;
+  padding-top: var(--letreiro-desvio-y);
+  font-family: var(--fonte-letreiro);
+  font-size: 28px;
+  line-height: .74em;
+  white-space: nowrap;
+  color: var(--preto-acm);
+}
+.etapa[data-etapa='1'] .etapa__mini {
+  /* a 28px o contorno de 1px empasta as letras de 100/50: a mini-palavra usa o traço cheio */
+  font-weight: 100;
+  font-stretch: 50%;
+}
+.etapa[data-etapa='2'] .etapa__mini,
+.etapa[data-etapa='3'] .etapa__mini {
+  /* guias de versal e base, de ponta a ponta da coluna */
+  background:
+    linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .0325em / 100% 1px no-repeat,
+    linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .7075em / 100% 1px no-repeat;
+}
+.etapa[data-etapa='2'] .etapa__mini {
+  font-weight: 300;
+  font-stretch: 50%;
+}
+.etapa[data-etapa='3'] .etapa__mini {
+  font-weight: 560;
+  font-stretch: 62%;
+  color: var(--grafite-fio);
+  background:
+    linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .0325em / 100% 1px no-repeat,
+    linear-gradient(var(--vermelho-acrilico), var(--vermelho-acrilico)) 0 .7075em / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, rgb(0 0 0 / .06) 0 calc(100% / 12), transparent calc(100% / 12) calc(100% / 6));
+}
+.etapa[data-etapa='4'] .etapa__mini {
+  font-weight: 850;
+  font-stretch: 62%;
+}
+.etapa[data-etapa='5'] .etapa__mini {
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  padding-top: 0;
+  font-size: min(28px, 100cqi / var(--seu-negocio-em-5));
+  font-weight: 900;
+  font-stretch: 150%;
+  --fenda: 3px;
+}
+.etapa__mini-baixo,
+.etapa__mini-cima {
+  display: block;
+  box-sizing: border-box;
+  height: .74em;
+  padding-top: var(--letreiro-desvio-y);
+}
+.etapa__mini-baixo {
+  clip-path: polygon(-1em -.5em, calc(50% - 3.0345em) -.5em, calc(50% + 3.0345em) 1.24em, -1em 1.24em);
+  transform: translate(calc(-.138 * var(--fenda)), calc(.4805 * var(--fenda)));
+}
+.etapa__mini-cima {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  clip-path: polygon(calc(50% - 3.0345em) -.5em, calc(100% + 1em) -.5em, calc(100% + 1em) 1.24em, calc(50% + 3.0345em) 1.24em);
+  transform: translate(calc(.138 * var(--fenda)), calc(-.4805 * var(--fenda)));
 }
 
-@media (min-width: 768px) {
-  .etapas {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: var(--gutter);
+/* ---------- celular (< 768px): palavra em duas linhas, etapa atual por extenso, botões 1–5 ---------- */
+@media (max-width: 767.98px) {
+  .m3__palavra {
+    font-size: calc(100cqi / 7.3);
+    height: 1.48em;
+    margin-bottom: calc(.11em + 32px + 32px);
+    /* corte só em NEGÓCIO (segunda linha), pelo centro da versal: (50%, 1.11em) */
+    --clip-cima: polygon(-1em -.6em, calc(100% + 1em) -.6em, calc(100% + 1em) 1.6em, calc(50% + 1.709em) 1.6em, calc(50% - 1.2905em) .74em, -1em .74em);
+    --clip-baixo: polygon(-1em .74em, calc(50% - 1.2905em) .74em, calc(50% + 1.709em) 1.6em, -1em 1.6em);
+    --clip-aresta: polygon(calc(50% - 1.2905em) calc(.74em - 2px), calc(50% + 1.709em) calc(1.6em - 2px), calc(50% + 1.709em) 1.6em, calc(50% - 1.2905em) .74em);
+    --saida-y: 1.4475em;
+  }
+  .m3__guia--l2 {
+    display: inline;
+  }
+  .m3__copia {
+    height: 1.48em;
+  }
+  .m3__l1,
+  .m3__l2 {
+    display: block;
+  }
+  .m3__no-ar {
+    --h: 32px;
+    padding-left: 12px;
+    padding-right: calc(12px + var(--h) * var(--corte-tan));
+    font-size: var(--t-14);
+  }
+  .m3__rotulo {
+    /* o nome do range continua sendo "Etapa do projeto"; à vista fica a etapa por extenso */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .m3__leitura {
+    display: block;
+    font-family: var(--fonte-estrutura);
+    font-size: var(--t-24);
+    font-weight: 800;
+    font-stretch: 62%;
+    line-height: 1.1;
+    color: var(--preto-acm);
+  }
+  .m3__botao {
+    width: 48px;
+    padding: 0;
+    font-weight: 650;
+  }
+  .m3__botao-nome {
+    display: none;
+  }
+  .m3__botao-numero {
+    display: inline;
   }
 }
+
+/* ---------- 600–1023px: cada etapa numa linha (nome e mini-palavra | textos) ---------- */
+@media (min-width: 600px) and (max-width: 1023.98px) {
+  .etapas {
+    gap: var(--e-3);
+  }
+  .etapa {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: auto 1fr;
+    column-gap: var(--gutter);
+  }
+  .etapa__nome,
+  .etapa__mini {
+    grid-column: 1;
+  }
+  .etapa__detalhes {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .etapa[data-etapa='5'] .etapa__mini {
+    font-size: min(28px, 41.6cqi / var(--seu-negocio-em-5));
+  }
+}
+
+/* ---------- desktop ---------- */
 @media (min-width: 1024px) {
   .processo__cabeca {
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -78,12 +606,22 @@
     align-items: end;
   }
   .processo__cabeca h2 {
-    grid-column: 1 / span 5;
+    grid-column: 1 / span 6;
   }
   .processo__cabeca p {
     grid-column: 7 / span 6;
   }
   .etapas {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+}
+
+@media (forced-colors: active) {
+  .m3__polegar-forma,
+  .m3__progresso,
+  .m3__marca,
+  .m3__linha {
+    background: CanvasText;
   }
 }

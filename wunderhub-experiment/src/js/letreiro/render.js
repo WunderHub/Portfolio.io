@@ -1,8 +1,13 @@
 // Renderizador do palco (seção 5.1, Motores): único escritor, num único frame.render do Motion, de
-//   transform das metades, das persianas e da imagem de trás, opacidade do véu, visibilidade do plano
-//   de trás, --peso e --brilho da .fachada, --v (varredura da carga) das arestas e data-corte da
-//   .fachada ('cortando' durante a varredura; 'pronto' depois: o CSS troca as cópias de texto da
-//   aresta e do retorno pela faixa desenhada no próprio aço, mais barata para a troca de peso).
+//   - transform das metades, das persianas e da imagem de trás, opacidade do véu, visibilidade do
+//     plano de trás;
+//   - --peso das linhas de letras ([data-linha]), escrito direto em quem o usa (ver "custo por
+//     quadro" em palco.css);
+//   - posição da faixa especular (o --brilho da seção 5.1), escrita como transform da .brilho (que
+//     leva a máscara) e da cópia .brilho__contra, que anda ao contrário (as letras ficam paradas);
+//   - --v (varredura da carga) das arestas e data-corte da .fachada ('cortando' durante a varredura;
+//     'pronto' depois: o CSS troca as cópias de texto da aresta e do retorno pela faixa desenhada no
+//     próprio aço, mais barata para a troca de peso).
 // Escreve só quando algum valor quantizado muda. Não lê layout ao desenhar (medidas vêm de medir()).
 // Usado por palco.js (que entrega p) e por carga.js (que escreve os números da carga e pede um quadro).
 // Frente dona: topo.
@@ -55,6 +60,12 @@ export function criarRenderizador(fachada, { passoPeso, fonteLenta }) {
     metadeBaixo: vao.querySelector('.vao__metade--baixo'),
     aresta: vao.querySelector('.aresta'),
   }));
+  const linhas = [...fachada.querySelectorAll('[data-linha]')];
+  const faixas = [...fachada.querySelectorAll('.brilho')].map((brilho) => ({
+    brilho,
+    mascara: brilho.querySelector('.brilho__mascara'),
+    contra: brilho.querySelector('.brilho__contra'),
+  }));
 
   // Cache do que já foi escrito (elemento → propriedade → valor) para escrever só o que mudou.
   const escrito = new Map();
@@ -71,7 +82,7 @@ export function criarRenderizador(fachada, { passoPeso, fonteLenta }) {
     else el.style[prop] = valor;
   }
 
-  let medidas = { svh: 9, torre: false };
+  let medidas = { svh: 9, torre: false, curso: 0 };
   let p = 0;
   let pedido = null;
 
@@ -88,15 +99,21 @@ export function criarRenderizador(fachada, { passoPeso, fonteLenta }) {
     // das metades (sem a fenda de 6px), para a abertura ficar centrada e nenhuma letra sair da tela.
     const centra = 0.138 * (abreBaixo - cima);
 
-    // peso quantizado (passos de 20 com ponteiro fino, 40 com toque); o fallback não é variável
+    // peso quantizado (passo do palco.js); o fallback não é variável
     if (!fonteLenta()) {
       const minimo = torre ? 220 : 140;
       const passo = passoPeso();
       const alvo = 900 - w * (900 - minimo);
       const peso = Math.max(minimo, Math.min(900, 900 - Math.round((900 - alvo) / passo) * passo));
-      definir(fachada, '--peso', String(peso));
+      for (const linha of linhas) definir(linha, '--peso', String(peso));
     }
-    definir(fachada, '--brilho', String(Math.round((0.15 + 0.7 * p) * 200) / 200));
+    // faixa especular: --brilho = 0,15 + 0,7 × p vira deslocamento horizontal (palco.css, .brilho):
+    // a máscara anda x e a cópia das letras anda −x. Só transforms: nada de aço recalculado.
+    const x = r1((0.15 + 0.7 * p - 0.5) * medidas.curso);
+    for (const f of faixas) {
+      definir(f.brilho, 'transform', `translateX(${x}px)`);
+      definir(f.contra, 'transform', `translateX(${-x}px)`);
+    }
     definir(fachada, 'data-corte', carga.varredura.every((v) => v >= 1) ? 'pronto' : 'cortando');
 
     const veu = String(Math.round(0.75 * (1 - b) * 200) / 200);
@@ -128,14 +145,19 @@ export function criarRenderizador(fachada, { passoPeso, fonteLenta }) {
     get p() {
       return p;
     },
-    /** Lê as medidas (svh em px e modo) uma vez por resize. svh = (altura da caixa + header) / 100. */
+    /** Lê as medidas (svh em px, modo e curso da faixa) uma vez por resize. svh = (caixa + header) / 100. */
     medir() {
       const raiz = document.documentElement;
       const headerH = parseFloat(getComputedStyle(raiz).getPropertyValue('--header-h')) || 64;
       const caixa = fachada.closest('.palco__caixa');
       const altura = caixa ? caixa.getBoundingClientRect().height : 0;
       const svh = altura > 0 ? (altura + headerH) / 100 : window.innerHeight / 100;
-      medidas = { svh, torre: !matchMedia('(min-width: 1024px)').matches };
+      // curso da faixa = largura + 0,2493 × altura da placa de aço (o tamanho da máscara, em px)
+      const tamanho = faixas[0] ? getComputedStyle(faixas[0].mascara) : null;
+      const [largura = 0, alturaPlaca = 0] = ((tamanho && (tamanho.maskSize || tamanho.webkitMaskSize)) || '')
+        .split(' ')
+        .map(parseFloat);
+      medidas = { svh, torre: !matchMedia('(min-width: 1024px)').matches, curso: largura + 0.2493 * alturaPlaca };
       api.pedir();
     },
     escrever(novoP) {
