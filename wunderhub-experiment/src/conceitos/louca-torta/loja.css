@@ -510,10 +510,13 @@ html:not(.js) .so-js { display: none !important; }
     grid-column: 6 / tela-fim;
     grid-row: 2 / 4;
     align-self: stretch;
-    aspect-ratio: 16 / 9;
+    min-width: 0;
     margin-top: 0;
     border-radius: var(--raio) 0 0 var(--raio);
   }
+  /* no mínimo 16:9 pela largura; se a coluna do texto for mais alta (1024 a 1199), a foto cresce na altura
+     e recorta, em vez de alargar a página (aspect-ratio com stretch derivaria a largura da altura) */
+  .topo__foto::before { content: ''; display: block; padding-top: 56.25%; }
   .topo__foto img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; }
   .topo__titulo + .topo__texto, .topo__titulo ~ .topo__foto { margin-top: 40px; }
   /* desktop: a lista desce até o pé da foto, no canto que sobrava embaixo do botão */
@@ -856,6 +859,44 @@ html:not(.js) .pecas__corpo { display: block; }
   html:not(.js) .grade { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
+/* Nota do ateliê: a casa que sobra no fim da grade, do tamanho de uma foto */
+.grade__nota { min-width: 0; container-type: inline-size; }
+.nota {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  aspect-ratio: 1;
+  padding: 14px;
+  border: 1px solid var(--fio);
+  border-radius: var(--raio);
+  background: var(--giz);
+}
+.nota__anel { width: 32px; height: 32px; color: var(--cobalto); }
+.nota__texto { margin-top: auto; font-family: var(--serifa); font-size: 1rem; line-height: 1.25; text-wrap: pretty; }
+.nota__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo);
+  margin-block: -8px -10px;
+  color: var(--cobalto);
+  font-size: var(--t-ui);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .25em;
+}
+.nota__link:hover { text-decoration-thickness: 2px; }
+/* casa estreita (duas colunas no celular): sem o anel, o texto cabe no quadrado da foto */
+@container (max-width: 199.98px) {
+  .nota__anel { display: none; }
+}
+@container (min-width: 250px) {
+  .nota { gap: 16px; padding: 24px; }
+  .nota__anel { width: 40px; height: 40px; }
+  .nota__texto { font-size: 1.375rem; }
+}
+
 .pecas__vazio {
   display: grid;
   justify-items: start;
@@ -1185,8 +1226,24 @@ html:not(.js) .pecas__corpo { display: block; }
   margin-inline: auto;
   padding: 72px var(--margem) 120px;
 }
+.nao-encontrada__anel { width: 72px; height: 72px; color: var(--cobalto); }
+.nao-encontrada__anel .anel { stroke-width: 1.1; }
 .nao-encontrada__titulo { max-width: 14ch; font-size: var(--t-h1); line-height: 1.04; }
 .nao-encontrada__texto { font-size: var(--t-lead); }
+.nao-encontrada__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo-principal);
+  color: var(--cobalto);
+  font-weight: 600;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: .22em;
+}
+.nao-encontrada__link:hover { text-decoration-thickness: 2.5px; }
+@media (min-width: 1024px) {
+  .nao-encontrada { padding-top: 112px; padding-bottom: 160px; }
+  .nao-encontrada__anel { width: 96px; height: 96px; }
+}
 
 @media (min-width: 768px) {
   .detalhe__galeria { margin-inline: 0; }
@@ -1278,6 +1335,12 @@ html:not(.js) .pecas__corpo { display: block; }
 .sacola__memoria { margin: 12px max(var(--margem), 24px) 0; color: var(--argila); font-size: var(--t-ui); }
 .sacola__corpo { flex: 1 1 auto; overflow: auto; overscroll-behavior: contain; padding: 8px max(var(--margem), 24px) 16px; }
 .sacola__itens { list-style: none; }
+/* Tela baixa (celular deitado, zoom alto): o painel inteiro rola, em vez de espremer a lista entre o topo e o rodapé */
+@media (max-height: 560px) {
+  .sacola__painel { height: auto; min-height: 100%; }
+  .sacola { overflow-y: auto; overscroll-behavior: contain; }
+  .sacola__corpo { flex: none; overflow: visible; }
+}
 .item {
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);

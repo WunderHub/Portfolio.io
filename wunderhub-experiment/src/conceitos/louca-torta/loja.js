@@ -1,6 +1,7 @@
 // Loja: filtros combinados (tipo, esmalte, só pronta entrega), ordenação, contagem viva e estado vazio
 // (seção 7.3, decisão A). Abaixo de 1024px os mesmos controles vão para um <dialog> aberto por "Filtrar (n)".
 // Com filtro de esmalte, cada cartão mostra a foto e o link da variante que combina com o filtro.
+// A nota do ateliê fecha a grade só quando completa uma linha (nunca abre uma linha sozinha).
 // A grade se reorganiza com FLIP (Motion); com movimento reduzido a troca é instantânea.
 import { PRODUTOS, TIPOS, contarPecas } from './dados.js';
 import { SIZES } from './imagens.js';
@@ -28,7 +29,9 @@ export function iniciarLoja({ raiz }) {
   const tituloDialogo = dialogo.querySelector('#filtros-dialogo-titulo');
   const telaLarga = matchMedia('(min-width: 1024px)');
 
-  const cartoes = new Map([...grade.children].map((li) => [li.dataset.peca, li]));
+  const cartoes = new Map([...grade.querySelectorAll(':scope > [data-peca]')].map((li) => [li.dataset.peca, li]));
+  const nota = grade.querySelector('[data-grade-nota]');
+  let totalVisivel = cartoes.size;
   // foto que o HTML estático trouxe em cada cartão (variante padrão)
   for (const p of PRODUTOS) {
     const img = cartoes.get(p.id)?.querySelector('[data-peca-foto]');
@@ -70,7 +73,17 @@ export function iniciarLoja({ raiz }) {
   function medir() {
     const r = new Map();
     for (const [id, li] of cartoes) if (!li.hidden) r.set(id, li.getBoundingClientRect());
+    if (nota && !nota.hidden) r.set('nota', nota.getBoundingClientRect());
     return r;
+  }
+
+  /** A nota entra na última casa livre; se ela fosse abrir uma linha nova sozinha, fica escondida. */
+  function posicionarNota() {
+    if (!nota) return;
+    nota.hidden = totalVisivel === 0;
+    if (nota.hidden) return;
+    const inicioDaLinha = Math.abs(nota.getBoundingClientRect().left - grade.getBoundingClientRect().left) < 2;
+    if (inicioDaLinha) nota.hidden = true;
   }
 
   function aplicar({ animar = true, rolar = false } = {}) {
@@ -106,12 +119,15 @@ export function iniciarLoja({ raiz }) {
       if (mudou) fotosNovas.push(img);
       grade.append(li); // ordem do DOM = ordem visual (Tab segue a grade)
     });
+    if (nota) grade.append(nota);
     for (const [id, li] of cartoes) {
       if (visiveis.has(id)) continue;
       li.hidden = true;
       li.classList.remove('peca--destaque');
       grade.append(li);
     }
+    totalVisivel = lista.length;
+    posicionarNota();
 
     // Contagem, vazio, rótulos
     const texto = contarPecas(lista.length);
@@ -149,6 +165,17 @@ export function iniciarLoja({ raiz }) {
           );
         }
       });
+      if (nota && !nota.hidden) {
+        const r0 = antes.get('nota');
+        const r1 = nota.getBoundingClientRect();
+        if (!r0) {
+          animacoes.add(animate(nota, { opacity: [0, 1] }, { duration: 0.32, delay: Math.min(lista.length, 6) * 0.03, ease: EASE_SAIDA }));
+        } else if (Math.abs(r0.left - r1.left) > 0.5 || Math.abs(r0.top - r1.top) > 0.5) {
+          const dx = r0.left - r1.left;
+          const dy = r0.top - r1.top;
+          animacoes.add(animate(nota, { transform: [`translate(${dx}px, ${dy}px)`, 'translate(0px, 0px)'] }, { duration: 0.42, ease: EASE_SAIDA }));
+        }
+      }
       for (const img of fotosNovas) {
         const a = surgir(img);
         if (a) animacoes.add(a);
@@ -217,6 +244,16 @@ export function iniciarLoja({ raiz }) {
   };
   telaLarga.addEventListener('change', aoMudarTela);
 
+  // A largura da grade muda o número de colunas: a nota se reposiciona (só largura; esconder a nota muda a altura)
+  let larguraGrade = 0;
+  const observador = new ResizeObserver(([entrada]) => {
+    const largura = Math.round(entrada.contentRect.width);
+    if (largura === larguraGrade) return;
+    larguraGrade = largura;
+    posicionarNota();
+  });
+  observador.observe(grade);
+
   // ?tipo=canecas (vem da trilha da página de produto)
   const tipoUrl = new URLSearchParams(location.search).get('tipo');
   if (tipoUrl && TIPOS[tipoUrl]) {
@@ -242,6 +279,7 @@ export function iniciarLoja({ raiz }) {
       dialogo.removeEventListener('close', aoFecharFolha);
       dialogo.removeEventListener('click', aoClicarFolha);
       telaLarga.removeEventListener('change', aoMudarTela);
+      observador.disconnect();
       for (const a of animacoes) a.cancel();
     },
   };
