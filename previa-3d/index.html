@@ -23,8 +23,6 @@
       <span class="loader-line"><i data-loader-bar></i></span>
     </div>
 
-    <canvas class="gl" aria-hidden="true" data-gl></canvas>
-    <div class="shade" aria-hidden="true"></div>
 
     <header class="top">
       <a class="brand" href="#inicio" aria-label="WunderHub, voltar ao início">
@@ -40,26 +38,27 @@
       <a class="btn btn-sm" href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20site%20da%20WunderHub%20e%20quero%20um%20or%C3%A7amento." target="_blank" rel="noopener" data-open-orcamento>Pedir orçamento</a>
     </header>
 
-    <ol class="estados" aria-hidden="true">
-      <li data-estado="0"><span>01</span>Líquido</li>
-      <li data-estado="1"><span>02</span>Estrutura</li>
-      <li data-estado="2"><span>03</span>Fios</li>
-      <li data-estado="3"><span>04</span>Marca</li>
-    </ol>
 
     <main id="conteudo">
-      <section class="sec hero" id="inicio" data-estagio="0">
+      <section class="sec hero" id="inicio">
+        <div class="obra obra-hero" aria-hidden="true">
+          <div class="m m-gotas" data-shader="gotas"></div>
+          <div class="m m-w" data-shader="w-prata"></div>
+          <div class="m m-w" data-shader="w-laranja"></div>
+          <div class="calor"></div>
+        </div>
         <div class="hero-main">
           <h1 class="display" data-words>Sites para o seu negócio ser <em>encontrado</em> e <em>chamado.</em></h1>
           <div class="row">
             <a class="btn" href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20site%20da%20WunderHub%20e%20quero%20um%20or%C3%A7amento." target="_blank" rel="noopener" data-open-orcamento>Pedir orçamento</a>
-            <a class="scroll-cue" href="#encontrado">Role para ver o metal tomar forma</a>
+            <a class="scroll-cue" href="#encontrado">Role para conhecer</a>
           </div>
         </div>
         <p class="hero-side">Landing pages, sites institucionais e lojas virtuais para pequenos negócios. Desenhados, programados e publicados por mim, Kauê Ribeiro, em São Paulo.</p>
       </section>
 
-      <section class="sec lado-dir" id="encontrado" data-estagio="1">
+      <section class="sec lado-dir" id="encontrado">
+        <div class="obra obra-esq" aria-hidden="true"><div class="m" data-shader="gota"></div></div>
         <div class="col">
           <p class="kicker">Ser encontrado</p>
           <h2 class="h2" data-reveal>Antes de chamar, o cliente <em>pesquisa.</em></h2>
@@ -72,7 +71,8 @@
         </div>
       </section>
 
-      <section class="sec" id="formatos" data-estagio="2">
+      <section class="sec" id="formatos">
+        <div class="celulas" aria-hidden="true" data-shader="celulas"></div>
         <div class="col col-wide">
           <p class="kicker">Formatos</p>
           <h2 class="h2" data-reveal>Três formatos, um objetivo: <em>ser chamado.</em></h2>
@@ -96,7 +96,7 @@
         </ul>
       </section>
 
-      <section class="sec lado-dir" id="processo" data-estagio="2">
+      <section class="sec lado-dir" id="processo">
         <div class="col">
           <p class="kicker">Como funciona</p>
           <h2 class="h2" data-reveal>Você fala sempre com <em>a mesma pessoa.</em></h2>
@@ -109,7 +109,11 @@
         </div>
       </section>
 
-      <section class="sec lado-dir fim" id="contato" data-estagio="3">
+      <section class="sec lado-dir fim" id="contato">
+        <div class="obra obra-esq obra-fim" aria-hidden="true">
+          <div class="m m-w" data-shader="w-prata"></div>
+          <div class="m m-w" data-shader="w-laranja"></div>
+        </div>
         <div class="col">
           <p class="kicker">Ser chamado</p>
           <h2 class="h2 big" data-reveal>Eu faço <em>esse</em> site.</h2>
