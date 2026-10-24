@@ -10,4 +10,4 @@
 
 ## Antes de dar algo por pronto
 - Conferir a página no navegador em celular (360 px) e computador (1440 px), com movimento reduzido, sem JavaScript e navegando só pelo teclado.
-- Depois de mudar um conceito em `concepts/`, gerar de novo as capturas com `node scripts/capture-work.mjs`.
+- Não criar vitrine, galeria ou sites de exemplo por enquanto. Os trabalhos autorais entram só quando o dono pedir, à medida que criar novos sites.
