@@ -3,3 +3,6 @@ _site/
 __pycache__/
 .DS_Store
 .build-meta.json
+
+# Configuração local do Claude Code (não versionar)
+.claude/settings.local.json
