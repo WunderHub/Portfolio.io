@@ -3,96 +3,151 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>WunderHub · Prévia 3D</title>
-    <meta name="description" content="Prévia do novo topo da WunderHub: sites para pequenos negócios, por Kauê Ribeiro." />
+    <title>WunderHub · Prévia</title>
+    <meta name="description" content="Prévia do novo site da WunderHub: sites para pequenos negócios, por Kauê Ribeiro." />
     <meta name="robots" content="noindex" />
-    <meta name="theme-color" content="#07080a" />
+    <meta name="theme-color" content="#0a0b0d" />
     <meta name="color-scheme" content="dark" />
     <link rel="preload" href="./fonts/inter-tight-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="./style.css" />
     <script>document.documentElement.classList.add('js');</script>
-    <script type="importmap">
-      { "imports": { "three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/" } }
-    </script>
     <script type="module" src="./app.js"></script>
   </head>
   <body>
     <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
-    <div class="loader" aria-hidden="true" data-loader>
-      <div class="loader-in">
-        <svg class="loader-w" viewBox="0 0 1205 536"><path d="M0 0H216L447 337L668 71L992 536H791L628 301L434 536H365Z" /><path class="r" d="M575 0H681L445 289L394 216Z" /><path class="r" d="M1009 0H1205L904 359L815 232Z" /></svg>
-        <span class="loader-n" data-loader-n>000</span>
-      </div>
-      <div class="loader-bar"><i data-loader-bar></i></div>
+    <div class="loader" aria-hidden="true">
+      <span class="loader-label">WunderHub</span>
+      <span class="loader-n" data-loader-n>000</span>
+      <span class="loader-line"><i data-loader-bar></i></span>
     </div>
 
     <canvas class="gl" aria-hidden="true" data-gl></canvas>
-    <div class="vignette" aria-hidden="true"></div>
+    <div class="shade" aria-hidden="true"></div>
 
     <header class="top">
       <a class="brand" href="#inicio" aria-label="WunderHub, voltar ao início">
-        <svg viewBox="0 0 1205 536" aria-hidden="true"><path d="M0 0H216L447 337L668 71L992 536H791L628 301L434 536H365Z" /><path class="r" d="M575 0H681L445 289L394 216Z" /><path class="r" d="M1009 0H1205L904 359L815 232Z" /></svg>
+        <svg viewBox="0 0 1205 536" aria-hidden="true"><path d="M0 0H216L447 337L668 71L992 536H791L628 301L434 536H365Z" /><path class="o" d="M575 0H681L445 289L394 216Z" /><path class="o" d="M1009 0H1205L904 359L815 232Z" /></svg>
         <span>WunderHub</span>
       </a>
       <nav class="nav" aria-label="Seções">
-        <a href="#pesquisa">Encontrado</a>
-        <a href="#decide">Formatos</a>
+        <a href="#encontrado">Ser encontrado</a>
+        <a href="#formatos">Formatos</a>
+        <a href="#processo">Como funciona</a>
         <a href="#contato">Contato</a>
       </nav>
-      <a class="cta cta-sm" href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20site%20da%20WunderHub%20e%20quero%20conversar%20sobre%20um%20site." target="_blank" rel="noopener">Orçamento</a>
+      <a class="btn btn-sm" href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20site%20da%20WunderHub%20e%20quero%20um%20or%C3%A7amento." target="_blank" rel="noopener" data-open-orcamento>Pedir orçamento</a>
     </header>
 
-    <div class="hud" aria-hidden="true">
-      <span data-hud-cap>01 / 04</span>
-      <span class="hud-line"><i data-hud-bar></i></span>
-      <span data-hud-xy>Role para explorar</span>
-    </div>
+    <ol class="estados" aria-hidden="true">
+      <li data-estado="0"><span>01</span>Líquido</li>
+      <li data-estado="1"><span>02</span>Estrutura</li>
+      <li data-estado="2"><span>03</span>Fios</li>
+      <li data-estado="3"><span>04</span>Marca</li>
+    </ol>
 
     <main id="conteudo">
-      <section class="cap cap-hero" id="inicio" data-cap="0">
-        <div class="cap-in">
-          <p class="kicker">Kauê Ribeiro · Estúdio WunderHub · São Paulo</p>
-          <h1 class="h1"><span class="sr">Sites para o seu negócio ser encontrado e chamado.</span><span aria-hidden="true" data-words>Sites para o seu negócio ser encontrado e chamado.</span></h1>
-          <p class="lead">Landing pages, sites institucionais e lojas virtuais, desenhados e programados por mim, do primeiro rascunho à publicação.</p>
-          <div class="actions">
-            <a class="cta" href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20site%20da%20WunderHub%20e%20quero%20conversar%20sobre%20um%20site." target="_blank" rel="noopener">Chamar no WhatsApp</a>
-            <a class="link" href="#pesquisa">Role para explorar</a>
+      <section class="sec hero" id="inicio" data-estagio="0">
+        <div class="hero-main">
+          <h1 class="display" data-words>Sites para o seu negócio ser <em>encontrado</em> e <em>chamado.</em></h1>
+          <div class="row">
+            <a class="btn" href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20site%20da%20WunderHub%20e%20quero%20um%20or%C3%A7amento." target="_blank" rel="noopener" data-open-orcamento>Pedir orçamento</a>
+            <a class="scroll-cue" href="#encontrado">Role para ver o metal tomar forma</a>
           </div>
         </div>
+        <p class="hero-side">Landing pages, sites institucionais e lojas virtuais para pequenos negócios. Desenhados, programados e publicados por mim, Kauê Ribeiro, em São Paulo.</p>
       </section>
 
-      <section class="cap cap-right" id="pesquisa" data-cap="1">
-        <div class="cap-in">
+      <section class="sec lado-dir" id="encontrado" data-estagio="1">
+        <div class="col">
           <p class="kicker">Ser encontrado</p>
-          <h2 class="h2"><span class="sr">Antes de chamar, o cliente pesquisa.</span><span aria-hidden="true" data-scramble>Antes de chamar, o cliente pesquisa.</span></h2>
+          <h2 class="h2" data-reveal>Antes de chamar, o cliente <em>pesquisa.</em></h2>
           <p class="body">Ele procura no Google, abre o link no celular e decide em segundos. Seu site aparece na busca, carrega rápido e mostra que você é sério.</p>
-        </div>
-      </section>
-
-      <section class="cap" id="decide" data-cap="2">
-        <div class="cap-in">
-          <p class="kicker">Ser escolhido</p>
-          <h2 class="h2"><span class="sr">É no seu site que ele decide.</span><span aria-hidden="true" data-scramble>É no seu site que ele decide.</span></h2>
-          <ul class="formats">
-            <li><strong>Landing page</strong><span>Uma página, um objetivo: lançar, divulgar ou receber contatos.</span></li>
-            <li><strong>Site institucional</strong><span>Quem você é, o que faz e como falar com você.</span></li>
-            <li><strong>Loja virtual</strong><span>Catálogo e páginas de produto que ajudam a escolher.</span></li>
+          <ul class="facts">
+            <li><strong>Celular primeiro</strong><span>Desenhado para a tela pequena e testado em vários tamanhos.</span></li>
+            <li><strong>Pronto para o Google</strong><span>SEO técnico e prévia bonita quando o link é compartilhado.</span></li>
+            <li><strong>Para todo mundo</strong><span>Contraste, leitura e navegação pelo teclado.</span></li>
           </ul>
         </div>
       </section>
 
-      <section class="cap cap-right cap-end" id="contato" data-cap="3">
-        <div class="cap-in">
+      <section class="sec" id="formatos" data-estagio="2">
+        <div class="col col-wide">
+          <p class="kicker">Formatos</p>
+          <h2 class="h2" data-reveal>Três formatos, um objetivo: <em>ser chamado.</em></h2>
+        </div>
+        <ul class="cards">
+          <li class="card">
+            <h3>Landing page</h3>
+            <p>Uma página com um objetivo só: lançar um produto, divulgar um serviço ou receber contatos de uma campanha.</p>
+            <dl><dt>Páginas</dt><dd>1</dd><dt>Ideal para</dt><dd>campanha, lançamento, serviço único</dd></dl>
+          </li>
+          <li class="card">
+            <h3>Site institucional</h3>
+            <p>Algumas páginas para mostrar quem você é, o que faz e como falar com você.</p>
+            <dl><dt>Páginas</dt><dd>algumas, uma por pergunta do cliente</dd><dt>Ideal para</dt><dd>profissionais e empresas de serviço</dd></dl>
+          </li>
+          <li class="card">
+            <h3>Loja virtual</h3>
+            <p>Catálogo e páginas de produto que mostram bem cada item e ajudam quem compra a escolher.</p>
+            <dl><dt>Páginas</dt><dd>catálogo, produto e sacola</dd><dt>Ideal para</dt><dd>quem vende peças ou produtos</dd></dl>
+          </li>
+        </ul>
+      </section>
+
+      <section class="sec lado-dir" id="processo" data-estagio="2">
+        <div class="col">
+          <p class="kicker">Como funciona</p>
+          <h2 class="h2" data-reveal>Você fala sempre com <em>a mesma pessoa.</em></h2>
+          <ol class="steps">
+            <li><span>01</span><div><strong>Conversa</strong><p>Você me conta sobre o negócio. Eu mando uma proposta com escopo, valor e prazo.</p></div></li>
+            <li><span>02</span><div><strong>Direção</strong><p>Defino estrutura, visual e textos. Você aprova antes de eu programar.</p></div></li>
+            <li><span>03</span><div><strong>Desenvolvimento</strong><p>Você recebe prévias do site em construção e pede ajustes no caminho.</p></div></li>
+            <li><span>04</span><div><strong>Publicação</strong><p>Testo no celular e no computador, deixo rápido e coloco no ar.</p></div></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="sec lado-dir fim" id="contato" data-estagio="3">
+        <div class="col">
           <p class="kicker">Ser chamado</p>
-          <h2 class="h2"><span class="sr">Eu faço esse site.</span><span aria-hidden="true" data-scramble>Eu faço esse site.</span></h2>
-          <p class="body">Você fala direto comigo, da conversa à publicação. Me conte o que o seu negócio precisa.</p>
-          <div class="actions">
-            <a class="cta" href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20site%20da%20WunderHub%20e%20quero%20conversar%20sobre%20um%20site." target="_blank" rel="noopener">Chamar no WhatsApp</a>
+          <h2 class="h2 big" data-reveal>Eu faço <em>esse</em> site.</h2>
+          <p class="body">Me conte o que o seu negócio precisa. Quem responde sou eu.</p>
+          <div class="row">
+            <a class="btn" href="https://wa.me/5511959300903?text=Ol%C3%A1%2C%20Kau%C3%AA%21%20Vi%20o%20site%20da%20WunderHub%20e%20quero%20um%20or%C3%A7amento." target="_blank" rel="noopener" data-open-orcamento>Pedir orçamento</a>
             <span class="tel">+55 (11) 95930-0903</span>
           </div>
         </div>
       </section>
     </main>
+
+    <footer class="rodape">
+      <span>© 2026 Kauê Ribeiro · WunderHub · São Paulo</span>
+      <a href="#inicio">Voltar ao topo</a>
+    </footer>
+
+    <dialog class="painel" id="orcamento" aria-labelledby="orcamento-titulo">
+      <form class="painel-in" method="dialog" data-form>
+        <div class="painel-top">
+          <h2 id="orcamento-titulo">Pedir orçamento</h2>
+          <button class="fechar" type="submit" value="fechar" aria-label="Fechar">Fechar</button>
+        </div>
+        <p class="painel-txt">Preencha e a mensagem vai pronta para o meu WhatsApp. Eu respondo com as próximas etapas.</p>
+        <label class="campo" for="o-nome">Seu nome<input id="o-nome" name="nome" autocomplete="name" /></label>
+        <label class="campo" for="o-negocio">Seu negócio<input id="o-negocio" name="negocio" placeholder="Ex.: padaria, clínica, loja de roupas" /></label>
+        <fieldset class="campo">
+          <legend>Que tipo de site?</legend>
+          <div class="chips">
+            <label><input type="radio" name="tipo" value="uma landing page" id="o-t1" /> Landing page</label>
+            <label><input type="radio" name="tipo" value="um site institucional" id="o-t2" /> Site institucional</label>
+            <label><input type="radio" name="tipo" value="uma loja virtual" id="o-t3" /> Loja virtual</label>
+            <label><input type="radio" name="tipo" value="ajuda para escolher o formato" id="o-t4" checked /> Ainda não sei</label>
+          </div>
+        </fieldset>
+        <label class="campo" for="o-msg">O que o site precisa resolver?<textarea id="o-msg" name="msg" rows="3"></textarea></label>
+        <a class="btn btn-full" href="https://wa.me/5511959300903" target="_blank" rel="noopener" data-enviar>Enviar pelo WhatsApp</a>
+      </form>
+    </dialog>
   </body>
 </html>

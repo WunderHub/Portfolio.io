@@ -1,76 +1,81 @@
-// Prévia 3D da WunderHub, estilo metal escuro com brilho laranja.
-// Topo: um feixe de cabos de metal com pulsos de luz laranja correndo por dentro.
-// Ao rolar, a câmera viaja pelos cabos até uma estrutura de metal vazada
-// que brilha por dentro, e termina no W da WunderHub em metal.
-import * as THREE from 'three';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+// Prévia WunderHub: metal líquido que esfria e se solidifica em estruturas.
+// A cena é desenhada inteira num shader (raymarching), sem bibliotecas.
+// Estágios ao rolar: 0 líquido · 1 estrutura vazada · 2 fios torcidos · 3 o W da marca.
 
 const root = document.documentElement;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-const small = matchMedia('(max-width: 760px)');
-const coarse = matchMedia('(pointer: coarse)');
-const loaderN = document.querySelector('[data-loader-n]');
-const loaderBar = document.querySelector('[data-loader-bar]');
-const ORANGE = new THREE.Color('#ff6a1a');
+const narrow = matchMedia('(max-width: 860px)');
+const capture = location.search.includes('captura');
 
 /* ---------- Texto ---------- */
 function splitWords(el) {
-  const words = el.textContent.trim().split(/\s+/);
-  el.textContent = '';
-  words.forEach((w, i) => {
-    const o = document.createElement('span');
-    o.className = 'w';
-    const inner = document.createElement('i');
-    inner.textContent = w;
-    inner.style.transitionDelay = `${0.15 + i * 0.06}s`;
-    o.append(inner);
-    el.append(o, document.createTextNode(' '));
+  const out = document.createDocumentFragment();
+  let i = 0;
+  const addWord = (text, wrapEm) => {
+    const w = document.createElement('span');
+    w.className = 'w';
+    const inner = document.createElement('span');
+    inner.style.transitionDelay = `${0.2 + i++ * 0.07}s`;
+    if (wrapEm) { const em = document.createElement('em'); em.textContent = text; inner.append(em); } else inner.textContent = text;
+    w.append(inner);
+    out.append(w, document.createTextNode(' '));
+  };
+  el.childNodes.forEach((n) => {
+    const isEm = n.nodeName === 'EM';
+    n.textContent.trim().split(/\s+/).filter(Boolean).forEach((t) => addWord(t, isEm));
   });
+  el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim());
+  el.textContent = '';
+  el.append(out);
+  [...el.children].forEach((c) => c.setAttribute('aria-hidden', 'true'));
 }
 document.querySelectorAll('[data-words]').forEach(splitWords);
 
-const GLYPHS = 'ABCDEFGHJKLMNPRSTUVWXZ0123456789#%&*+=/<>';
-function scramble(el) {
-  const final = el.dataset.final || (el.dataset.final = el.textContent);
-  if (reduce.matches) { el.textContent = final; return; }
-  const dur = 900, start = performance.now();
-  const step = (now) => {
-    const t = Math.min(1, (now - start) / dur);
-    const solved = Math.floor(t * final.length);
-    let out = '';
-    for (let i = 0; i < final.length; i++) {
-      const c = final[i];
-      out += i < solved || c === ' ' || c === ',' || c === '.' ? c : GLYPHS[(Math.random() * GLYPHS.length) | 0];
-    }
-    el.textContent = out;
-    if (t < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
 const io = new IntersectionObserver((entries) => {
-  entries.forEach((e) => { if (e.isIntersecting) { scramble(e.target); io.unobserve(e.target); } });
-}, { threshold: 0.6 });
-document.querySelectorAll('[data-scramble]').forEach((el) => io.observe(el));
+  entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.35 });
+document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+
+/* ---------- Painel de orçamento ---------- */
+const dialog = document.getElementById('orcamento');
+const form = document.querySelector('[data-form]');
+const enviar = document.querySelector('[data-enviar]');
+function montarLink() {
+  const f = new FormData(form);
+  const nome = (f.get('nome') || '').trim();
+  const negocio = (f.get('negocio') || '').trim();
+  const tipo = f.get('tipo') || 'ajuda para escolher o formato';
+  const msg = (f.get('msg') || '').trim();
+  let t = 'Olá, Kauê! Vi o site da WunderHub.';
+  if (nome) t += ` Sou ${nome}${negocio ? `, de ${negocio}` : ''}.`;
+  else if (negocio) t += ` Tenho ${negocio}.`;
+  t += ` Quero ${tipo}.`;
+  if (msg) t += ` ${msg}`;
+  enviar.href = `https://wa.me/5511959300903?text=${encodeURIComponent(t)}`;
+}
+if (dialog && typeof dialog.showModal === 'function') {
+  document.querySelectorAll('[data-open-orcamento]').forEach((a) => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    montarLink();
+    dialog.showModal();
+  }));
+  form.addEventListener('input', montarLink);
+  enviar.addEventListener('click', () => setTimeout(() => dialog.close(), 300));
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+}
 
 /* ---------- Carregador ---------- */
-let shown = 0;
-function setLoad(p) {
-  shown = p;
-  loaderN.textContent = String(Math.round(p * 100)).padStart(3, '0');
-  loaderBar.style.transform = `scaleX(${p})`;
-}
-const tick = () => new Promise((r) => setTimeout(r, 0));
-function finishLoad() {
+const loaderN = document.querySelector('[data-loader-n]');
+const loaderBar = document.querySelector('[data-loader-bar]');
+function runLoader() {
   return new Promise((resolve) => {
-    if (reduce.matches) { setLoad(1); resolve(); return; }
-    const from = shown, start = performance.now(), dur = 600;
+    if (reduce.matches || capture) { resolve(); return; }
+    const start = performance.now(), dur = 1300;
     const step = (now) => {
       const t = Math.min(1, (now - start) / dur);
-      setLoad(from + (1 - from) * (1 - Math.pow(1 - t, 3)));
+      const e = 1 - Math.pow(1 - t, 3);
+      loaderN.textContent = String(Math.round(e * 100)).padStart(3, '0');
+      loaderBar.style.transform = `scaleX(${e})`;
       t < 1 ? requestAnimationFrame(step) : resolve();
     };
     requestAnimationFrame(step);
@@ -81,417 +86,419 @@ function reveal() {
   requestAnimationFrame(() => root.classList.add('ready'));
 }
 
-/* ---------- Ambiente refletido no metal: sala escura com faixas de luz ---------- */
-function makeEnvironment(renderer) {
-  const env = new THREE.Scene();
-  const room = new THREE.Mesh(new THREE.BoxGeometry(30, 30, 30), new THREE.MeshBasicMaterial({ color: 0x050607, side: THREE.BackSide }));
-  env.add(room);
-  const strip = (w, h, color, pos, rot) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
-    m.position.set(...pos); m.rotation.set(...rot); env.add(m);
-  };
-  strip(26, 2.2, new THREE.Color(5, 5.2, 5.6), [0, 14, -2], [Math.PI / 2, 0, 0]);
-  strip(2, 18, new THREE.Color(3.2, 3.3, 3.6), [-14, 2, -4], [0, Math.PI / 2, 0]);
-  strip(8, 1.4, new THREE.Color(1.6, 1.7, 1.9), [6, 5, -14], [0, 0, 0.3]);
-  strip(10, 3, new THREE.Color(6, 1.6, 0.25), [9, -10, 4], [-Math.PI / 3, 0, 0]);
-  strip(3, 10, new THREE.Color(2.4, 0.6, 0.08), [14, -2, -6], [0, -Math.PI / 2, 0]);
-  strip(16, 3, new THREE.Color(3.4, 3.5, 3.8), [-2, 5, 14], [0, Math.PI, 0.25]);
-  strip(4, 1.2, new THREE.Color(5, 1.4, 0.2), [6, -3, 14], [0, Math.PI, 0]);
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const tex = pmrem.fromScene(env, 0.02).texture;
-  pmrem.dispose();
-  return tex;
+/* ---------- Shader ---------- */
+// Vértices do W da marca, convertidos para o espaço da cena (2,4 de largura)
+const WS = 2.4 / 1205;
+const toW = (pts) => pts.map(([x, y]) => `vec2(${((x - 602.5) * WS).toFixed(4)},${(-(y - 268) * WS).toFixed(4)})`).join(',');
+const W_SILVER = toW([[0, 0], [216, 0], [447, 337], [668, 71], [992, 536], [791, 536], [628, 301], [434, 536], [365, 536]]);
+const W_O1 = toW([[575, 0], [681, 0], [445, 289], [394, 216]]);
+const W_O2 = toW([[1009, 0], [1205, 0], [904, 359], [815, 232]]);
+
+const VERT = `#version 300 es
+void main() {
+  vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
+  gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+const FRAG = `#version 300 es
+precision highp float;
+out vec4 fragColor;
+uniform vec2 uRes;
+uniform float uTime, uProg, uCamZ;
+uniform vec4 uMouse;
+uniform vec2 uShift, uRot;
+uniform int uSteps;
+
+#define ORANGE vec3(1.0, 0.33, 0.05)
+
+const vec2 WS9[9] = vec2[9](${W_SILVER});
+const vec2 WO1[4] = vec2[4](${W_O1});
+const vec2 WO2[4] = vec2[4](${W_O2});
+
+float ss(float a, float b, float x) { float t = clamp((x - a) / (b - a), 0.0, 1.0); return t * t * (3.0 - 2.0 * t); }
+mat2 rot(float a) { float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
+float smin(float a, float b, float k) { float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0); return mix(b, a, h) - k * h * (1.0 - h); }
+
+float sdPoly9(vec2 p) {
+  float d = dot(p - WS9[0], p - WS9[0]); float s = 1.0;
+  for (int i = 0, j = 8; i < 9; j = i, i++) {
+    vec2 e = WS9[j] - WS9[i], w = p - WS9[i];
+    vec2 b = w - e * clamp(dot(w, e) / dot(e, e), 0.0, 1.0);
+    d = min(d, dot(b, b));
+    bvec3 c = bvec3(p.y >= WS9[i].y, p.y < WS9[j].y, e.x * w.y > e.y * w.x);
+    if (all(c) || all(not(c))) s *= -1.0;
+  }
+  return s * sqrt(d);
+}
+float sdQuad(vec2 p, vec2 v0, vec2 v1, vec2 v2, vec2 v3) {
+  vec2 v[4] = vec2[4](v0, v1, v2, v3);
+  float d = dot(p - v[0], p - v[0]); float s = 1.0;
+  for (int i = 0, j = 3; i < 4; j = i, i++) {
+    vec2 e = v[j] - v[i], w = p - v[i];
+    vec2 b = w - e * clamp(dot(w, e) / dot(e, e), 0.0, 1.0);
+    d = min(d, dot(b, b));
+    bvec3 c = bvec3(p.y >= v[i].y, p.y < v[j].y, e.x * w.y > e.y * w.x);
+    if (all(c) || all(not(c))) s *= -1.0;
+  }
+  return s * sqrt(d);
+}
+float extrude(float d2, float z, float h, float r) {
+  vec2 w = vec2(d2 + r, abs(z) - h + r);
+  return min(max(w.x, w.y), 0.0) + length(max(w, 0.0)) - r;
 }
 
-/* ---------- Cabos com pulsos de luz ---------- */
-function pulseMaterial(opts, shared) {
-  const mat = new THREE.MeshStandardMaterial(opts.base);
-  const u = {
-    uLen: { value: opts.len }, uGap: { value: opts.gap }, uDash: { value: opts.dash },
-    uSpeed: { value: opts.speed }, uSeed: { value: opts.seed }, uGlow: { value: opts.glow },
-  };
-  mat.onBeforeCompile = (sh) => {
-    Object.assign(sh.uniforms, u, shared);
-    sh.vertexShader = sh.vertexShader
-      .replace('#include <common>', '#include <common>\nvarying vec2 vTubeUv;')
-      .replace('#include <uv_vertex>', '#include <uv_vertex>\nvTubeUv = uv;');
-    sh.fragmentShader = sh.fragmentShader
-      .replace('#include <common>', `#include <common>
-        varying vec2 vTubeUv;
-        uniform float uLen, uGap, uDash, uSpeed, uSeed, uGlow, uTime, uBoost;
-        uniform vec3 uOrange;`)
-      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
-        float px = vTubeUv.x * uLen - uTime * uSpeed * uBoost + uSeed;
-        float pd = fract(px / uGap);
-        float pulse = smoothstep(0.0, 0.015, pd) * (1.0 - smoothstep(uDash * 0.5, uDash, pd));
-        float fade = smoothstep(0.0, 0.08, vTubeUv.x) * (1.0 - smoothstep(0.9, 1.0, vTubeUv.x));
-        totalEmissiveRadiance += uOrange * pulse * uGlow * fade;`);
-  };
-  mat.customProgramCacheKey = () => 'wh-pulse';
-  return mat;
+// 0: metal líquido
+float liquid(vec3 p) {
+  float t = uTime;
+  float d = length(p) - 0.74;
+  for (int i = 0; i < 5; i++) {
+    float fi = float(i);
+    vec3 c = vec3(sin(t * 0.55 + fi * 1.7) * 0.6, cos(t * 0.75 + fi * 2.3) * 0.45, sin(t * 0.42 + fi * 3.1) * 0.4);
+    d = smin(d, length(p - c) - (0.34 + 0.07 * sin(fi * 4.1)), 0.42);
+  }
+  d = mix(d, smin(d, length(p - uMouse.xyz) - 0.2, 0.55), uMouse.w);
+  d += 0.022 * sin(p.x * 7.0 + t * 2.1) * sin(p.y * 6.0 - t * 1.7) * sin(p.z * 6.5 + t * 1.3);
+  return d;
+}
+// 1: estrutura vazada (casca com treliça orgânica)
+float lattice(vec3 q) {
+  float k = 6.2; vec3 g3 = q * k;
+  float g = abs(dot(sin(g3), cos(g3.yzx))) / k - 0.038;
+  float shell = abs(length(q) - 0.95) - 0.26;
+  return max(shell, g * 0.7);
+}
+// 2: fios torcidos; y = 1 no fio de luz do centro
+vec2 cables(vec3 q) {
+  vec3 c = q; c.xy *= rot(0.55);
+  float tw = c.x * 1.25;
+  vec2 yz = c.yz * rot(tw);
+  float d = 1e5;
+  for (int i = 0; i < 6; i++) { float a = 6.2831 * float(i) / 6.0; d = min(d, length(yz - 0.36 * vec2(cos(a), sin(a))) - 0.095); }
+  vec2 yz2 = c.yz * rot(-tw * 1.8 + 0.7);
+  float core = 1e5;
+  for (int i = 0; i < 3; i++) { float a = 6.2831 * float(i) / 3.0; core = min(core, length(yz2 - 0.13 * vec2(cos(a), sin(a))) - 0.045); }
+  float ends = abs(c.x) - 2.1;
+  float m = core < d ? 1.0 : 0.0;
+  return vec2(max(min(d, core), ends), m);
+}
+// 3: o W; y = 1 nas partes laranja
+vec2 wmark(vec3 q) {
+  float a = extrude(sdPoly9(q.xy), q.z, 0.13, 0.03);
+  float b = extrude(min(sdQuad(q.xy, WO1[0], WO1[1], WO1[2], WO1[3]), sdQuad(q.xy, WO2[0], WO2[1], WO2[2], WO2[3])), q.z - 0.02, 0.1, 0.02);
+  return vec2(min(a, b), b < a ? 1.0 : 0.0);
 }
 
-function makeCables(count, tubular, radial, shared) {
-  const group = new THREE.Group();
-  const A = new THREE.Vector3(-15, -7, 9), K = new THREE.Vector3(0, 0, -2), B = new THREE.Vector3(15, 6.5, -26);
-  const r = (s) => new THREE.Vector3((Math.random() - 0.5) * s, (Math.random() - 0.5) * s, (Math.random() - 0.5) * s);
-  for (let i = 0; i < count; i++) {
-    const pts = [
-      A.clone().add(r(5)),
-      A.clone().lerp(K, 0.5).add(r(2.4)),
-      K.clone().add(r(0.9)),
-      K.clone().lerp(B, 0.45).add(r(2.6)),
-      B.clone().add(r(7)),
-    ];
-    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
-    const kind = Math.random();
-    let radius, base, glow, gap, dash, speed;
-    if (kind < 0.55) { // cromado
-      radius = 0.05 + Math.random() * 0.13;
-      base = { color: new THREE.Color().setHSL(0.58, 0.06, 0.55 + Math.random() * 0.2), metalness: 1, roughness: 0.14 + Math.random() * 0.16 };
-      glow = Math.random() < 0.4 ? 3 : 0; gap = 5 + Math.random() * 6; dash = 0.05 + Math.random() * 0.06; speed = 2 + Math.random() * 3;
-    } else if (kind < 0.82) { // grafite
-      radius = 0.08 + Math.random() * 0.16;
-      base = { color: 0x24282e, metalness: 0.9, roughness: 0.42 };
-      glow = Math.random() < 0.3 ? 2.5 : 0; gap = 7 + Math.random() * 6; dash = 0.04; speed = 1.5 + Math.random() * 2;
-    } else { // fibra com luz
-      radius = 0.016 + Math.random() * 0.02;
-      base = { color: 0x15161a, metalness: 0.6, roughness: 0.3 };
-      glow = 7; gap = 2.5 + Math.random() * 4; dash = 0.12 + Math.random() * 0.1; speed = 4 + Math.random() * 5;
+vec3 toObj(vec3 p) { vec3 q = p; q.xz *= rot(uRot.x); q.yz *= rot(uRot.y); return q; }
+
+// material: 0 líquido, 1 estrutura, 2 fio, 3 fio de luz, 4 W prata, 5 W laranja
+vec2 stage(int i, vec3 p, vec3 q) {
+  if (i == 0) return vec2(liquid(p), 0.0);
+  if (i == 1) return vec2(lattice(q), 1.0);
+  if (i == 2) { vec2 c = cables(q); return vec2(c.x, 2.0 + c.y); }
+  vec2 w = wmark(q); return vec2(w.x, 4.0 + w.y);
+}
+
+// devolve distância, material e calor (a borda quente onde o metal está solidificando)
+vec3 map(vec3 p) {
+  vec3 q = toObj(p);
+  float pr = clamp(uProg, 0.0, 3.0);
+  int i0 = int(min(floor(pr), 2.0));
+  float t = pr - float(i0);
+  if (t <= 0.0005) { vec2 a = stage(i0, p, q); return vec3(a, 0.0); }
+  if (t >= 0.9995) { vec2 b = stage(i0 + 1, p, q); return vec3(b, 0.0); }
+  vec2 a = stage(i0, p, q), b = stage(i0 + 1, p, q);
+  float h = mix(-1.9, 1.9, t);
+  float k = ss(h + 0.35, h - 0.35, p.y);
+  float band = 1.0 - abs(2.0 * k - 1.0);
+  float d = mix(a.x, b.x, k);
+  d += band * 0.035 * sin(p.x * 9.0 + uTime * 3.0) * sin(p.z * 8.0 - uTime * 2.0);
+  d = smin(d, mix(a.x, b.x, 0.5), 0.12 * band + 0.0001);
+  return vec3(d * 0.85, k > 0.5 ? b.y : a.y, band);
+}
+
+vec3 env(vec3 r) {
+  float y = r.y;
+  vec3 c = mix(vec3(0.008, 0.009, 0.011), vec3(0.13, 0.14, 0.155), ss(-0.35, 0.35, y));
+  c = mix(c, vec3(0.05, 0.055, 0.06), ss(0.35, 0.8, y));
+  c += vec3(0.55) * ss(0.55, 0.98, r.z) * ss(0.7, 0.1, abs(y - 0.15));
+  c += vec3(2.6) * ss(0.7, 0.9, y) * ss(0.9, 0.3, abs(r.x + 0.2));
+  c += vec3(1.6) * ss(0.86, 0.97, r.x) * ss(0.6, 0.0, abs(y - 0.1));
+  c += vec3(0.5, 0.56, 0.66) * ss(0.86, 0.98, -r.x) * ss(0.8, 0.2, abs(y));
+  c += vec3(0.9) * ss(0.93, 0.995, r.z) * ss(0.35, 0.05, abs(y - 0.3));
+  c += ORANGE * 0.9 * ss(-0.82, -0.95, y) * ss(0.5, 0.0, abs(r.x));
+  return c;
+}
+
+vec3 normalAt(vec3 p) {
+  const vec2 e = vec2(0.0018, -0.0018);
+  return normalize(e.xyy * map(p + e.xyy).x + e.yyx * map(p + e.yyx).x + e.yxy * map(p + e.yxy).x + e.xxx * map(p + e.xxx).x);
+}
+float aoAt(vec3 p, vec3 n) {
+  float o = 0.0, w = 1.0;
+  for (int i = 1; i <= 4; i++) { float h = 0.04 * float(i * i); o += (h - map(p + n * h).x) * w; w *= 0.6; }
+  return clamp(1.0 - o * 2.2, 0.0, 1.0);
+}
+
+vec3 background(vec2 uv) {
+  vec3 c = vec3(0.039, 0.043, 0.051);
+  c += vec3(0.05, 0.03, 0.02) * ss(1.3, 0.0, length(uv - vec2(0.0, -0.9)));
+  c += ORANGE * 0.02 * ss(0.9, 0.0, length(uv - vec2(0.0, -0.55)));
+  return c;
+}
+
+void main() {
+  vec2 fc = gl_FragCoord.xy;
+  vec2 uv = (fc - 0.5 * uRes) / uRes.y;
+  vec2 suv = uv - uShift;
+  vec3 ro = vec3(0.0, 0.0, uCamZ);
+  vec3 rd = normalize(vec3(suv, -1.75));
+
+  vec3 col = background(uv);
+  float glow = 0.0;
+
+  // esfera que envolve a cena: pula o que fica de fora
+  float b = dot(ro, rd), cc = dot(ro, ro) - 2.75 * 2.75, disc = b * b - cc;
+  if (disc > 0.0) {
+    float tn = max(0.0, -b - sqrt(disc)), tf = -b + sqrt(disc);
+    float t = tn; vec3 m = vec3(1.0); bool hit = false;
+    for (int i = 0; i < 140; i++) {
+      if (i >= uSteps) break;
+      vec3 p = ro + rd * t;
+      m = map(p);
+      float hot = m.z + (m.y > 2.5 && m.y < 3.5 ? 0.35 : 0.0) + (m.y > 4.5 ? 0.6 : 0.0);
+      glow += hot * 0.010 / (1.0 + m.x * m.x * 260.0);
+      if (m.x < 0.0012 * t) { hit = true; break; }
+      t += m.x;
+      if (t > tf) break;
     }
-    const len = curve.getLength();
-    const mat = pulseMaterial({ base: { ...base, envMapIntensity: 1.2 }, len, gap, dash, speed, seed: Math.random() * 50, glow }, shared);
-    group.add(new THREE.Mesh(new THREE.TubeGeometry(curve, tubular, radius, radial, false), mat));
-  }
-  return group;
-}
+    if (hit) {
+      vec3 p = ro + rd * t;
+      vec3 n = normalAt(p);
+      vec3 q = toObj(p);
+      float ao = aoAt(p, n);
+      vec3 r = reflect(rd, n);
+      float fres = 0.55 + 0.45 * pow(1.0 - max(dot(n, -rd), 0.0), 4.0);
+      float mat = m.y;
+      vec3 tint = vec3(0.9, 0.92, 0.95);
+      vec3 e = env(r);
+      if (mat > 0.5) { e = 0.55 * e + 0.45 * env(normalize(r + n * 0.4)); tint = vec3(0.6, 0.63, 0.67); }
+      vec3 c = e * tint * fres * (0.35 + 0.65 * ao);
 
-/* ---------- Estrutura de metal vazada (células) ---------- */
-function makeLattice(segX, segY, shared) {
-  const geo = new THREE.PlaneGeometry(44, 28, segX, segY);
-  const mat = new THREE.MeshStandardMaterial({ color: 0x7c838c, metalness: 0.88, roughness: 0.36, flatShading: true, envMapIntensity: 1.1 });
-  const WORLEY = `
-    vec2 whHash2(vec2 p) { p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3))); return fract(sin(p) * 43758.5453); }
-    vec3 whWorley(vec2 x) {
-      vec2 n = floor(x), f = fract(x); float F1 = 8.0, F2 = 8.0; vec2 id = n;
-      for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
-        vec2 g = vec2(float(i), float(j));
-        vec2 o = 0.5 + 0.42 * sin(6.2831 * whHash2(n + g));
-        vec2 rr = g + o - f; float d = dot(rr, rr);
-        if (d < F1) { F2 = F1; F1 = d; id = n + g; } else if (d < F2) { F2 = d; }
+      if (mat > 0.5 && mat < 1.5) { // brilho laranja dentro da estrutura
+        float inner = ss(0.82, 0.7, length(q));
+        float pulse = 0.7 + 0.3 * sin(uTime * 1.4 + q.y * 5.0 + q.x * 3.0);
+        c = mix(c, c * 0.25, inner) + ORANGE * 1.6 * inner * pulse * (1.0 - ao * 0.7);
       }
-      return vec3(sqrt(F1), sqrt(F2), fract(sin(dot(id, vec2(12.9898, 78.233))) * 43758.5453));
-    }`;
-  mat.onBeforeCompile = (sh) => {
-    Object.assign(sh.uniforms, shared);
-    sh.vertexShader = sh.vertexShader
-      .replace('#include <common>', `#include <common>
-        varying float vEdge; varying float vRnd; varying float vF1;
-        ${WORLEY}`)
-      .replace('#include <begin_vertex>', `
-        vec2 q = position.xy * 0.55;
-        vec3 w = whWorley(q);
-        float edge = w.y - w.x;
-        float ridge = 1.0 - smoothstep(0.1, 0.36, edge);
-        float pocket = 0.35 + 1.1 * (0.62 - min(w.x, 0.62));
-        float h = pow(ridge, 0.7) * 0.55 - (1.0 - ridge) * pocket;
-        h += 0.35 * sin(position.x * 0.18) * cos(position.y * 0.22);
-        vec3 transformed = position + vec3(0.0, 0.0, h);
-        vEdge = edge; vRnd = w.z; vF1 = w.x;`);
-    sh.fragmentShader = sh.fragmentShader
-      .replace('#include <common>', `#include <common>
-        varying float vEdge; varying float vRnd; varying float vF1;
-        uniform float uTime; uniform vec3 uOrange;`)
-      .replace('#include <color_fragment>', `#include <color_fragment>
-        float rim = 1.0 - smoothstep(0.12, 0.34, vEdge);
-        diffuseColor.rgb = mix(vec3(0.025, 0.027, 0.03), diffuseColor.rgb, rim);`)
-      .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
-        roughnessFactor = mix(0.6, roughnessFactor, rim);`)
-      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
-        float inner = 1.0 - rim;
-        float line = smoothstep(0.36, 0.39, vEdge) * (1.0 - smoothstep(0.39, 0.44, vEdge));
-        float lit = step(0.55, vRnd) * (0.6 + 0.4 * sin(uTime * 0.8 + vRnd * 30.0));
-        totalEmissiveRadiance += uOrange * (line * 1.2 * lit + inner * (lit * 0.9 + 0.08) * smoothstep(0.5, 0.0, vF1));`);
-  };
-  mat.customProgramCacheKey = () => 'wh-lattice';
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.rotation.x = -Math.PI / 2 + 0.32;
-  mesh.position.set(0, -3.4, -44);
-  return mesh;
-}
-
-/* ---------- W da WunderHub em metal ---------- */
-function shapeFromPath(d) {
-  const nums = d.match(/[MHLZ]|-?\d+(\.\d+)?/g);
-  const s = new THREE.Shape();
-  let x = 0, y = 0, cmd = '', first = true;
-  for (let i = 0; i < nums.length; i++) {
-    const t = nums[i];
-    if (/[MHLZ]/.test(t)) { cmd = t; if (t === 'Z') s.closePath(); continue; }
-    if (cmd === 'M') { x = +t; y = +nums[++i]; s.moveTo(x, -y); first = false; cmd = 'L'; }
-    else if (cmd === 'H') { x = +t; s.lineTo(x, -y); }
-    else if (cmd === 'L') { x = +t; y = +nums[++i]; s.lineTo(x, -y); }
+      if (mat > 2.5 && mat < 3.5) { // fio de luz com pulsos correndo
+        vec3 cq = q; cq.xy *= rot(0.55);
+        float dash = ss(0.55, 0.95, fract(cq.x * 1.1 - uTime * 0.7));
+        c = vec3(0.03) + e * 0.12 + ORANGE * (0.5 + 3.2 * dash);
+      }
+      if (mat > 4.5) { // partes laranja do W
+        c = ORANGE * (0.75 + 0.25 * fres) + e * 0.08;
+      }
+      c += ORANGE * 3.2 * m.z; // borda quente onde está solidificando
+      col = c;
+    }
   }
-  return s;
-}
-function makeW(env) {
-  const g = new THREE.Group();
-  const opts = { depth: 70, bevelEnabled: true, bevelThickness: 10, bevelSize: 7, bevelSegments: 3, curveSegments: 1 };
-  const silver = new THREE.MeshStandardMaterial({ color: 0xd4d9df, metalness: 1, roughness: 0.22, envMapIntensity: 1.8 });
-  const orange = new THREE.MeshStandardMaterial({ color: 0x2a1206, emissive: ORANGE, emissiveIntensity: 1.25, metalness: 0.4, roughness: 0.3 });
-  [
-    ['M0 0H216L447 337L668 71L992 536H791L628 301L434 536H365Z', silver],
-    ['M575 0H681L445 289L394 216Z', orange],
-    ['M1009 0H1205L904 359L815 232Z', orange],
-  ].forEach(([d, m]) => g.add(new THREE.Mesh(new THREE.ExtrudeGeometry(shapeFromPath(d), opts), m)));
-  const k = 3.6 / 1205;
-  g.scale.setScalar(k);
-  g.position.set(-602 * k, 268 * k, -35 * k);
-  const holder = new THREE.Group();
-  holder.add(g);
-  holder.position.set(0, -0.2, -40.5);
-  return holder;
-}
+  col += ORANGE * glow;
 
-/* ---------- Luzes desfocadas no ar (bokeh) ---------- */
-function makeBokeh(n) {
-  const pos = new Float32Array(n * 3), col = new Float32Array(n * 3), sz = new Float32Array(n);
-  const o = new THREE.Color(1, 0.42, 0.1), w = new THREE.Color(0.85, 0.9, 1);
-  for (let i = 0; i < n; i++) {
-    const z = 8 - Math.random() * 54;
-    pos.set([(Math.random() - 0.5) * 30, (Math.random() - 0.5) * 16, z], i * 3);
-    const c = Math.random() < 0.7 ? o : w;
-    col.set([c.r, c.g, c.b], i * 3);
-    sz[i] = 0.3 + Math.random() * 1.1;
-  }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  geo.setAttribute('aSize', new THREE.BufferAttribute(sz, 1));
-  const mat = new THREE.ShaderMaterial({
-    uniforms: { uPix: { value: 1 }, uTime: { value: 0 } },
-    vertexShader: `
-      attribute float aSize; attribute vec3 color; varying vec3 vC; varying float vA; uniform float uPix; uniform float uTime;
-      void main() {
-        vec3 p = position; p.y += sin(uTime * 0.3 + position.x) * 0.25;
-        vec4 mv = modelViewMatrix * vec4(p, 1.0);
-        gl_Position = projectionMatrix * mv;
-        float dz = -mv.z;
-        gl_PointSize = aSize * uPix * 260.0 / max(dz, 1.0);
-        vC = color; vA = smoothstep(0.5, 4.0, dz) * (1.0 - smoothstep(18.0, 30.0, dz)) * 0.22;
-      }`,
-    fragmentShader: `
-      varying vec3 vC; varying float vA;
-      void main() {
-        float d = length(gl_PointCoord - 0.5) * 2.0;
-        if (d > 1.0) discard;
-        float disc = smoothstep(1.0, 0.86, d) * (0.55 + 0.45 * smoothstep(0.5, 0.95, d));
-        gl_FragColor = vec4(vC * disc * vA, 1.0);
-      }`,
-    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-  });
-  return new THREE.Points(geo, mat);
-}
+  // tom final
+  col = (col * (2.51 * col + 0.03)) / (col * (2.43 * col + 0.59) + 0.14);
+  col = pow(clamp(col, 0.0, 1.0), vec3(0.4545));
+  col *= 1.0 - 0.35 * pow(length(uv * vec2(0.8, 1.0)), 2.2);
+  col += (fract(sin(dot(fc, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) / 255.0;
+  fragColor = vec4(col, 1.0);
+}`;
 
 /* ---------- Cena ---------- */
-function webglOk() {
-  try {
-    const c = document.createElement('canvas');
-    return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')));
-  } catch { return false; }
+function compile(gl, type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
 }
 
-// Câmera em cada capítulo: posição, para onde olha, distância de foco e para que lado a cena vai
-const KEYS = [
-  { pos: [0.4, 0.3, 8.5], look: [0, 0, -2], side: 1 },
-  { pos: [-3.2, 5.2, -5.5], look: [7.5, 3.4, -18], side: -1 },
-  { pos: [0, 2.8, -30.5], look: [0, -2.8, -43], side: 1 },
-  { pos: [0.2, 0.7, -32.2], look: [0, -0.1, -40.5], side: -1 },
-];
-
 async function start() {
-  setLoad(0.1);
-  if (!webglOk()) { await finishLoad(); reveal(); return; }
+  const canvas = document.querySelector('[data-gl]');
+  const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'high-performance' });
+  const loading = runLoader();
+  if (!gl) { await loading; reveal(); return; }
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl, gl.VERTEX_SHADER, VERT));
+  gl.attachShader(prog, compile(gl, gl.FRAGMENT_SHADER, FRAG));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+  gl.useProgram(prog);
+  gl.bindVertexArray(gl.createVertexArray());
+  const U = {};
+  ['uRes', 'uTime', 'uProg', 'uCamZ', 'uMouse', 'uShift', 'uRot', 'uSteps'].forEach((n) => { U[n] = gl.getUniformLocation(prog, n); });
   root.classList.add('gl-ok');
 
-  const lite = small.matches || coarse.matches;
-  const canvas = document.querySelector('[data-gl]');
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !lite, powerPreference: 'high-performance' });
-  let dpr = Math.min(window.devicePixelRatio || 1, lite ? 1.5 : 1.75);
-  renderer.setPixelRatio(dpr);
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.95;
-  renderer.setClearColor(0x07080a, 1);
+  const secs = [...document.querySelectorAll('[data-estagio]')];
+  const estados = [...document.querySelectorAll('[data-estado]')];
+  let vw = 0, vh = 0, tops = [], scale = narrow.matches ? 0.55 : 0.7;
+  const dprCap = Math.min(window.devicePixelRatio || 1, 2);
 
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x07080a);
-  scene.fog = new THREE.FogExp2(0x07080a, 0.045);
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 120);
-
-  scene.environment = makeEnvironment(renderer);
-  setLoad(0.25); await tick();
-
-  const shared = { uTime: { value: 0 }, uBoost: { value: 1 }, uOrange: { value: ORANGE.clone() } };
-  const cables = makeCables(lite ? 26 : 44, lite ? 150 : 240, lite ? 8 : 12, shared);
-  scene.add(cables);
-  setLoad(0.5); await tick();
-  const lattice = makeLattice(lite ? 170 : 300, lite ? 110 : 190, shared);
-  scene.add(lattice);
-  setLoad(0.65); await tick();
-  const wMark = makeW();
-  scene.add(wMark);
-  const bokeh = makeBokeh(lite ? 90 : 180);
-  scene.add(bokeh);
-
-  scene.add(new THREE.AmbientLight(0x404650, 0.4));
-  const key = new THREE.DirectionalLight(0xdfe8ff, 1.6);
-  key.position.set(-6, 10, 8); scene.add(key);
-  const glowKnot = new THREE.PointLight(0xff6a1a, 30, 14, 1.6); glowKnot.position.set(1, -1.2, -1); scene.add(glowKnot);
-  const glowFloor = new THREE.PointLight(0xff6a1a, 14, 12, 1.8); glowFloor.position.set(0, -1.6, -41); scene.add(glowFloor);
-  const rimW = new THREE.PointLight(0xdfe6ff, 22, 12, 1.6); rimW.position.set(-4, 4, -36); scene.add(rimW);
-  setLoad(0.8); await tick();
-
-  // pós-processamento: desfoque de câmera (só no computador) e brilho
-  const composer = new EffectComposer(renderer);
-  composer.addPass(new RenderPass(scene, camera));
-  let bokehPass = null;
-  if (!lite) {
-    bokehPass = new BokehPass(scene, camera, { focus: 9, aperture: 0.0035, maxblur: 0.009 });
-    composer.addPass(bokehPass);
-  }
-  const bloom = new UnrealBloomPass(new THREE.Vector2(512, 512), lite ? 0.6 : 0.7, 0.5, 0.85);
-  composer.addPass(bloom);
-  composer.addPass(new OutputPass());
-
-  let vw = 0, vh = 0, tops = [];
-  const caps = [...document.querySelectorAll('[data-cap]')];
-  function resize() {
+  function size() {
     vw = innerWidth; vh = innerHeight;
-    renderer.setSize(vw, vh, false);
-    composer.setPixelRatio(dpr);
-    composer.setSize(vw, vh);
-    bloom.resolution.set(vw / 2, vh / 2);
-    camera.aspect = vw / vh;
-    camera.fov = vw < vh ? 52 : 38;
-    camera.updateProjectionMatrix();
-    bokeh.material.uniforms.uPix.value = dpr * (vh / 900);
-    tops = caps.map((c) => c.getBoundingClientRect().top + scrollY);
+    const s = Math.min(dprCap, Math.max(0.35, scale));
+    canvas.width = Math.round(vw * s);
+    canvas.height = Math.round(vh * s);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  function measure() {
+    tops = secs.map((s) => s.getBoundingClientRect().top + scrollY);
     tops.push(document.documentElement.scrollHeight);
   }
+  function resize() { size(); measure(); }
 
-  function scrollProg() {
+  function targetProg() {
     const y = scrollY + vh * 0.5;
-    for (let i = 0; i < caps.length - 1; i++) {
+    for (let i = 0; i < secs.length - 1; i++) {
       if (y < tops[i + 1]) {
-        const f = (y - tops[i]) / (tops[i + 1] - tops[i]);
-        const s = Math.min(1, Math.max(0, (f - 0.4) / 0.55));
-        return i + s * s * (3 - 2 * s);
+        const a = +secs[i].dataset.estagio, b = +secs[i + 1].dataset.estagio;
+        const f = Math.max(0, (y - tops[i]) / (tops[i + 1] - tops[i]));
+        const s = Math.min(1, Math.max(0, (f - 0.5) / 0.45));
+        return a + (b - a) * s * s * (3 - 2 * s);
       }
     }
-    return caps.length - 1;
+    return +secs[secs.length - 1].dataset.estagio;
+  }
+  function currentSection() {
+    const y = scrollY + vh * 0.5;
+    let k = 0;
+    for (let i = 0; i < secs.length; i++) if (y >= tops[i]) k = i;
+    return secs[k];
   }
 
-  const ndc = new THREE.Vector2(), ndcS = new THREE.Vector2();
+  // ponteiro: no líquido, puxa uma gota; arrastando, gira a escultura
+  const mouse = { x: 0, y: 0, last: -1e9, down: false, px: 0, py: 0 };
+  const rot = { x: 0.4, y: 0.18, tx: 0.4, ty: 0.18 };
   addEventListener('pointermove', (e) => {
     if (e.pointerType !== 'mouse') return;
-    ndc.set((e.clientX / vw) * 2 - 1, -(e.clientY / vh) * 2 + 1);
+    mouse.x = e.clientX; mouse.y = e.clientY; mouse.last = performance.now();
+    if (mouse.down) {
+      rot.tx += (e.clientX - mouse.px) * 0.006;
+      rot.ty = Math.max(-0.9, Math.min(0.9, rot.ty + (e.clientY - mouse.py) * 0.004));
+      mouse.px = e.clientX; mouse.py = e.clientY;
+    }
+    wake();
   }, { passive: true });
+  addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.target.closest('a, button, input, textarea, label, dialog, .card')) return;
+    mouse.down = true; mouse.px = e.clientX; mouse.py = e.clientY;
+  });
+  addEventListener('pointerup', () => { mouse.down = false; });
 
-  const hudCap = document.querySelector('[data-hud-cap]');
-  const hudBar = document.querySelector('[data-hud-bar]');
-
-  addEventListener('resize', () => { resize(); wake(); });
-  resize();
-
-  const P0 = new THREE.Vector3(), P1 = new THREE.Vector3(), L0 = new THREE.Vector3(), L1 = new THREE.Vector3();
-  let prog = scrollProg(), last = performance.now(), frames = 0, fpsStart = 0, degraded = false, idle = false;
-
-  // modo de gravação: desenha quadro a quadro sob comando (usado para gerar o vídeo de prévia)
-  const capture = location.search.includes('captura');
-  if (capture) {
-    window.__whFrame = (y, ms, mx, my) => { scrollTo(0, y); ndc.set(mx, my); frame(ms, true); };
-  }
+  const shift = { x: 0, y: 0 };
+  let progV = 0, t0 = performance.now(), last = t0, idle = false, frames = 0, fpsT = 0;
+  const mw = [0, 0, 0, 0];
 
   function frame(now, manual) {
-    const dt = manual ? 1 / 24 : Math.min(0.05, (now - last) / 1000);
+    const dt = manual ? (location.search.includes('rapido') ? 0.6 : 1 / 24) : Math.min(0.05, (now - last) / 1000);
     last = now;
     const still = reduce.matches;
-    const target = scrollProg();
-    prog = still ? target : prog + (target - prog) * Math.min(1, dt * 2.6);
+    const target = targetProg();
+    progV = still ? target : progV + (target - progV) * Math.min(1, dt * 2.2);
 
-    const i0 = Math.min(KEYS.length - 1, Math.floor(prog)), i1 = Math.min(KEYS.length - 1, i0 + 1);
-    let f = prog - i0; f = f * f * (3 - 2 * f);
-    P0.fromArray(KEYS[i0].pos); P1.fromArray(KEYS[i1].pos);
-    L0.fromArray(KEYS[i0].look); L1.fromArray(KEYS[i1].look);
-    P0.lerp(P1, f); L0.lerp(L1, f);
+    // lado do texto: a escultura vai para o outro lado
+    const sec = currentSection();
+    const dir = sec.classList.contains('lado-dir');
+    root.classList.toggle('shade-dir', dir && !narrow.matches);
+    const aspect = vw / vh;
+    const sx = narrow.matches ? 0 : (dir ? -1 : 1) * Math.min(0.42, aspect * 0.24);
+    const sy = narrow.matches ? 0.2 : 0;
+    const ks = still ? 1 : Math.min(1, dt * 2.5);
+    shift.x += (sx - shift.x) * ks; shift.y += (sy - shift.y) * ks;
+    const camZ = Math.max(5.6, 5.4 / aspect);
 
-    if (!still) {
-      ndcS.lerp(ndc, Math.min(1, dt * 3));
-      P0.x += ndcS.x * 0.45; P0.y += ndcS.y * 0.3;
-      P0.y += Math.sin(now * 0.0004) * 0.08;
+    if (!still && !mouse.down) {
+      if (progV > 2.3) {
+        const base = Math.round(rot.tx / (Math.PI * 2)) * Math.PI * 2;
+        const goal = base + Math.sin((now - t0) / 2000) * 0.32;
+        rot.tx += (goal - rot.tx) * Math.min(1, dt * 1.5);
+        rot.ty += (0.06 - rot.ty) * Math.min(1, dt * 1.5);
+      } else rot.tx += dt * 0.12;
     }
-    camera.position.copy(P0);
-    camera.lookAt(L0);
+    if (still && progV > 2.3) { rot.tx = Math.round(rot.tx / (Math.PI * 2)) * Math.PI * 2 - 0.2; rot.ty = 0.06; }
+    rot.x += (rot.tx - rot.x) * (still ? 1 : Math.min(1, dt * 4));
+    rot.y += (rot.ty - rot.y) * (still ? 1 : Math.min(1, dt * 4));
 
-    // empurra a cena para o lado oposto do texto
-    const side = KEYS[i0].side + (KEYS[i1].side - KEYS[i0].side) * f;
-    if (small.matches) camera.setViewOffset(vw, vh, 0, vh * 0.16, vw, vh);
-    else camera.setViewOffset(vw, vh, -side * vw * 0.17, 0, vw, vh);
-    root.classList.toggle('lado-direito', !small.matches && side < 0);
-
-    if (bokehPass) {
-      bokehPass.uniforms.focus.value = camera.position.distanceTo(L0) * (i0 === 0 && f < 0.5 ? 0.98 : 0.9);
+    // gota que segue o mouse (só no metal líquido)
+    const active = !still && now - mouse.last < 2500 && progV < 0.6 ? 1 - progV / 0.6 : 0;
+    if (active > 0) {
+      const ux = (mouse.x - vw / 2) / vh - shift.x, uy = -(mouse.y - vh / 2) / vh - shift.y;
+      const len = Math.hypot(ux, uy, 1.75);
+      const dx = ux / len, dy = uy / len, dz = -1.75 / len;
+      const tt = (0.45 - camZ) / dz;
+      let px = dx * tt, py = dy * tt;
+      const r = Math.hypot(px, py), maxR = 1.5;
+      if (r > maxR) { px *= maxR / r; py *= maxR / r; }
+      mw[0] += (px - mw[0]) * Math.min(1, dt * 6); mw[1] += (py - mw[1]) * Math.min(1, dt * 6); mw[2] = 0.45;
     }
+    mw[3] += (active - mw[3]) * Math.min(1, dt * 3);
 
-    const t = still ? 7.3 : now / 1000;
-    shared.uTime.value = t;
-    shared.uBoost.value = still ? 1 : 1 + Math.sin(Math.PI * (prog % 1)) * 2.5;
-    bokeh.material.uniforms.uTime.value = t;
-    cables.rotation.z = still ? 0 : Math.sin(t * 0.15) * 0.03;
-    wMark.rotation.y = still ? -0.25 : -0.25 + ndcS.x * 0.35 + Math.sin(t * 0.4) * 0.08;
-    wMark.rotation.x = still ? 0.05 : -ndcS.y * 0.15;
-    glowFloor.intensity = 14 + (still ? 0 : Math.sin(t * 1.3) * 3);
+    const time = still ? 4.0 : (now - t0) / 1000;
+    gl.uniform2f(U.uRes, canvas.width, canvas.height);
+    gl.uniform1f(U.uTime, time);
+    gl.uniform1f(U.uProg, progV);
+    gl.uniform1f(U.uCamZ, camZ);
+    gl.uniform4f(U.uMouse, mw[0], mw[1], mw[2], mw[3]);
+    gl.uniform2f(U.uShift, shift.x, shift.y);
+    gl.uniform2f(U.uRot, rot.x, rot.y);
+    gl.uniform1i(U.uSteps, narrow.matches ? 90 : 120);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-    composer.render(dt);
+    const on = Math.round(progV);
+    estados.forEach((el, i) => el.classList.toggle('on', i === on));
 
-    hudCap.textContent = `0${Math.min(4, Math.round(prog) + 1)} / 04`;
-    hudBar.style.transform = `scaleX(${(prog / 3).toFixed(4)})`;
-
-    // se o aparelho estiver lento, alivia o desenho
     if (manual) return;
-    if (!degraded && !still && !location.search.includes('hq')) {
+    // ajusta a resolução para manter a animação fluida
+    if (!still) {
       frames++;
-      if (!fpsStart) fpsStart = now;
-      if (now - fpsStart > 2500) {
-        const fps = (frames * 1000) / (now - fpsStart);
-        if (fps < 32) {
-          degraded = true;
-          dpr = 1; renderer.setPixelRatio(1);
-          if (bokehPass) bokehPass.enabled = false;
-          resize();
-        }
-        frames = 0; fpsStart = now;
+      if (!fpsT) fpsT = now;
+      if (now - fpsT > 1500) {
+        const fps = (frames * 1000) / (now - fpsT);
+        const prev = scale;
+        if (fps < 40) scale *= 0.82;
+        else if (fps > 57 && scale < 1) scale *= 1.08;
+        scale = Math.min(narrow.matches ? 0.8 : 1, Math.max(0.35, scale));
+        if (Math.abs(prev - scale) > 0.01) size();
+        frames = 0; fpsT = now;
       }
     }
-
-    if (!still || Math.abs(target - prog) > 0.0005) requestAnimationFrame(frame);
+    const moving = Math.abs(target - progV) > 0.0005 || Math.abs(shift.x - sx) > 0.001 || Math.abs(rot.tx - rot.x) > 0.0005;
+    if (!still || moving) requestAnimationFrame(frame);
     else idle = true;
   }
   function wake() { if (idle) { idle = false; last = performance.now(); requestAnimationFrame(frame); } }
+
+  addEventListener('resize', () => { resize(); wake(); });
   addEventListener('scroll', wake, { passive: true });
   reduce.addEventListener?.('change', wake);
+  if (document.fonts?.ready) document.fonts.ready.then(measure);
+  resize();
+  progV = targetProg();
 
-  renderer.compile(scene, camera);
-  setLoad(0.92);
-  await finishLoad();
+  if (capture) {
+    window.__whFrame = (y, ms, mx, my) => {
+      scrollTo(0, y); mouse.x = mx; mouse.y = my; mouse.last = performance.now();
+      frame(ms, true);
+    };
+  }
+  frame(performance.now(), true); // primeiro quadro já desenhado antes de mostrar a página
+  await loading;
   reveal();
   if (capture) { window.__whReady = true; return; }
+  last = performance.now();
   requestAnimationFrame(frame);
 }
 
 start().catch((err) => {
   console.error(err);
   root.classList.remove('gl-ok');
-  setLoad(1);
   reveal();
 });
