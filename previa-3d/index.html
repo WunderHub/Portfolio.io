@@ -6,12 +6,14 @@
     <title>WunderHub · Prévia 3D</title>
     <meta name="description" content="Prévia do novo topo da WunderHub: sites para pequenos negócios, por Kauê Ribeiro." />
     <meta name="robots" content="noindex" />
-    <meta name="theme-color" content="#060709" />
+    <meta name="theme-color" content="#07080a" />
     <meta name="color-scheme" content="dark" />
-    <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="./fonts/inter-tight-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="./style.css" />
     <script>document.documentElement.classList.add('js');</script>
+    <script type="importmap">
+      { "imports": { "three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/" } }
+    </script>
     <script type="module" src="./app.js"></script>
   </head>
   <body>
@@ -44,7 +46,7 @@
     <div class="hud" aria-hidden="true">
       <span data-hud-cap>01 / 04</span>
       <span class="hud-line"><i data-hud-bar></i></span>
-      <span data-hud-xy>x 0.00 · y 0.00</span>
+      <span data-hud-xy>Role para explorar</span>
     </div>
 
     <main id="conteudo">

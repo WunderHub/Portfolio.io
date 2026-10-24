@@ -1,15 +1,23 @@
-// Prévia 3D da WunderHub: milhares de partículas que formam o W,
-// viram um globo (ser encontrado), um site no celular (ser escolhido)
-// e voltam ao W (ser chamado), conforme a rolagem.
-import * as THREE from './vendor/three.module.min.js';
+// Prévia 3D da WunderHub, estilo metal escuro com brilho laranja.
+// Topo: um feixe de cabos de metal com pulsos de luz laranja correndo por dentro.
+// Ao rolar, a câmera viaja pelos cabos até uma estrutura de metal vazada
+// que brilha por dentro, e termina no W da WunderHub em metal.
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const root = document.documentElement;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 const small = matchMedia('(max-width: 760px)');
+const coarse = matchMedia('(pointer: coarse)');
 const loaderN = document.querySelector('[data-loader-n]');
 const loaderBar = document.querySelector('[data-loader-bar]');
+const ORANGE = new THREE.Color('#ff6a1a');
 
-/* ---------- Texto: palavras do título e títulos que se decifram ---------- */
+/* ---------- Texto ---------- */
 function splitWords(el) {
   const words = el.textContent.trim().split(/\s+/);
   el.textContent = '';
@@ -55,16 +63,17 @@ function setLoad(p) {
   loaderN.textContent = String(Math.round(p * 100)).padStart(3, '0');
   loaderBar.style.transform = `scaleX(${p})`;
 }
+const tick = () => new Promise((r) => setTimeout(r, 0));
 function finishLoad() {
   return new Promise((resolve) => {
     if (reduce.matches) { setLoad(1); resolve(); return; }
-    const from = shown, start = performance.now(), dur = 700;
-    const tick = (now) => {
+    const from = shown, start = performance.now(), dur = 600;
+    const step = (now) => {
       const t = Math.min(1, (now - start) / dur);
       setLoad(from + (1 - from) * (1 - Math.pow(1 - t, 3)));
-      t < 1 ? requestAnimationFrame(tick) : resolve();
+      t < 1 ? requestAnimationFrame(step) : resolve();
     };
-    requestAnimationFrame(tick);
+    requestAnimationFrame(step);
   });
 }
 function reveal() {
@@ -72,186 +81,217 @@ function reveal() {
   requestAnimationFrame(() => root.classList.add('ready'));
 }
 
-/* ---------- Formas (amostradas de desenhos em canvas) ---------- */
-const W_PATHS = [
-  ['M0 0H216L447 337L668 71L992 536H791L628 301L434 536H365Z', '#c9cfd6'],
-  ['M575 0H681L445 289L394 216Z', '#e3121c'],
-  ['M1009 0H1205L904 359L815 232Z', '#e3121c'],
-];
+/* ---------- Ambiente refletido no metal: sala escura com faixas de luz ---------- */
+function makeEnvironment(renderer) {
+  const env = new THREE.Scene();
+  const room = new THREE.Mesh(new THREE.BoxGeometry(30, 30, 30), new THREE.MeshBasicMaterial({ color: 0x050607, side: THREE.BackSide }));
+  env.add(room);
+  const strip = (w, h, color, pos, rot) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
+    m.position.set(...pos); m.rotation.set(...rot); env.add(m);
+  };
+  strip(26, 2.2, new THREE.Color(5, 5.2, 5.6), [0, 14, -2], [Math.PI / 2, 0, 0]);
+  strip(2, 18, new THREE.Color(3.2, 3.3, 3.6), [-14, 2, -4], [0, Math.PI / 2, 0]);
+  strip(8, 1.4, new THREE.Color(1.6, 1.7, 1.9), [6, 5, -14], [0, 0, 0.3]);
+  strip(10, 3, new THREE.Color(6, 1.6, 0.25), [9, -10, 4], [-Math.PI / 3, 0, 0]);
+  strip(3, 10, new THREE.Color(2.4, 0.6, 0.08), [14, -2, -6], [0, -Math.PI / 2, 0]);
+  strip(16, 3, new THREE.Color(3.4, 3.5, 3.8), [-2, 5, 14], [0, Math.PI, 0.25]);
+  strip(4, 1.2, new THREE.Color(5, 1.4, 0.2), [6, -3, 14], [0, Math.PI, 0]);
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const tex = pmrem.fromScene(env, 0.02).texture;
+  pmrem.dispose();
+  return tex;
+}
 
-// Desenha num canvas e sorteia n pontos; a opacidade do pixel é a chance de ele ser escolhido.
-function sampleCanvas(w, h, draw, n, worldW, depth) {
-  const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  const g = c.getContext('2d', { willReadFrequently: true });
-  draw(g);
-  const d = g.getImageData(0, 0, w, h).data;
-  const pos = new Float32Array(n * 3), red = new Float32Array(n);
-  const k = worldW / w;
-  let i = 0, guard = 0;
-  while (i < n && guard < n * 400) {
-    guard++;
-    const x = Math.random() * w, y = Math.random() * h;
-    const p = ((y | 0) * w + (x | 0)) * 4;
-    const a = d[p + 3] / 255;
-    if (a === 0 || Math.random() > a) continue;
-    pos[i * 3] = (x - w / 2) * k;
-    pos[i * 3 + 1] = -(y - h / 2) * k;
-    pos[i * 3 + 2] = (Math.random() - 0.5) * depth * (0.4 + a * 0.6);
-    red[i] = d[p] > 150 && d[p + 1] < 90 ? 1 : 0;
-    i++;
+/* ---------- Cabos com pulsos de luz ---------- */
+function pulseMaterial(opts, shared) {
+  const mat = new THREE.MeshStandardMaterial(opts.base);
+  const u = {
+    uLen: { value: opts.len }, uGap: { value: opts.gap }, uDash: { value: opts.dash },
+    uSpeed: { value: opts.speed }, uSeed: { value: opts.seed }, uGlow: { value: opts.glow },
+  };
+  mat.onBeforeCompile = (sh) => {
+    Object.assign(sh.uniforms, u, shared);
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec2 vTubeUv;')
+      .replace('#include <uv_vertex>', '#include <uv_vertex>\nvTubeUv = uv;');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', `#include <common>
+        varying vec2 vTubeUv;
+        uniform float uLen, uGap, uDash, uSpeed, uSeed, uGlow, uTime, uBoost;
+        uniform vec3 uOrange;`)
+      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+        float px = vTubeUv.x * uLen - uTime * uSpeed * uBoost + uSeed;
+        float pd = fract(px / uGap);
+        float pulse = smoothstep(0.0, 0.015, pd) * (1.0 - smoothstep(uDash * 0.5, uDash, pd));
+        float fade = smoothstep(0.0, 0.08, vTubeUv.x) * (1.0 - smoothstep(0.9, 1.0, vTubeUv.x));
+        totalEmissiveRadiance += uOrange * pulse * uGlow * fade;`);
+  };
+  mat.customProgramCacheKey = () => 'wh-pulse';
+  return mat;
+}
+
+function makeCables(count, tubular, radial, shared) {
+  const group = new THREE.Group();
+  const A = new THREE.Vector3(-15, -7, 9), K = new THREE.Vector3(0, 0, -2), B = new THREE.Vector3(15, 6.5, -26);
+  const r = (s) => new THREE.Vector3((Math.random() - 0.5) * s, (Math.random() - 0.5) * s, (Math.random() - 0.5) * s);
+  for (let i = 0; i < count; i++) {
+    const pts = [
+      A.clone().add(r(5)),
+      A.clone().lerp(K, 0.5).add(r(2.4)),
+      K.clone().add(r(0.9)),
+      K.clone().lerp(B, 0.45).add(r(2.6)),
+      B.clone().add(r(7)),
+    ];
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+    const kind = Math.random();
+    let radius, base, glow, gap, dash, speed;
+    if (kind < 0.55) { // cromado
+      radius = 0.05 + Math.random() * 0.13;
+      base = { color: new THREE.Color().setHSL(0.58, 0.06, 0.55 + Math.random() * 0.2), metalness: 1, roughness: 0.14 + Math.random() * 0.16 };
+      glow = Math.random() < 0.4 ? 3 : 0; gap = 5 + Math.random() * 6; dash = 0.05 + Math.random() * 0.06; speed = 2 + Math.random() * 3;
+    } else if (kind < 0.82) { // grafite
+      radius = 0.08 + Math.random() * 0.16;
+      base = { color: 0x24282e, metalness: 0.9, roughness: 0.42 };
+      glow = Math.random() < 0.3 ? 2.5 : 0; gap = 7 + Math.random() * 6; dash = 0.04; speed = 1.5 + Math.random() * 2;
+    } else { // fibra com luz
+      radius = 0.016 + Math.random() * 0.02;
+      base = { color: 0x15161a, metalness: 0.6, roughness: 0.3 };
+      glow = 7; gap = 2.5 + Math.random() * 4; dash = 0.12 + Math.random() * 0.1; speed = 4 + Math.random() * 5;
+    }
+    const len = curve.getLength();
+    const mat = pulseMaterial({ base: { ...base, envMapIntensity: 1.2 }, len, gap, dash, speed, seed: Math.random() * 50, glow }, shared);
+    group.add(new THREE.Mesh(new THREE.TubeGeometry(curve, tubular, radius, radial, false), mat));
   }
-  return { pos, red };
+  return group;
 }
 
-function shapeW(n, width) {
-  return sampleCanvas(1205 / 2, 536 / 2, (g) => {
-    g.scale(0.5, 0.5);
-    W_PATHS.forEach(([d, f]) => { g.fillStyle = f; g.fill(new Path2D(d)); });
-  }, n, width, 0.7);
+/* ---------- Estrutura de metal vazada (células) ---------- */
+function makeLattice(segX, segY, shared) {
+  const geo = new THREE.PlaneGeometry(44, 28, segX, segY);
+  const mat = new THREE.MeshStandardMaterial({ color: 0x7c838c, metalness: 0.88, roughness: 0.36, flatShading: true, envMapIntensity: 1.1 });
+  const WORLEY = `
+    vec2 whHash2(vec2 p) { p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3))); return fract(sin(p) * 43758.5453); }
+    vec3 whWorley(vec2 x) {
+      vec2 n = floor(x), f = fract(x); float F1 = 8.0, F2 = 8.0; vec2 id = n;
+      for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+        vec2 g = vec2(float(i), float(j));
+        vec2 o = 0.5 + 0.42 * sin(6.2831 * whHash2(n + g));
+        vec2 rr = g + o - f; float d = dot(rr, rr);
+        if (d < F1) { F2 = F1; F1 = d; id = n + g; } else if (d < F2) { F2 = d; }
+      }
+      return vec3(sqrt(F1), sqrt(F2), fract(sin(dot(id, vec2(12.9898, 78.233))) * 43758.5453));
+    }`;
+  mat.onBeforeCompile = (sh) => {
+    Object.assign(sh.uniforms, shared);
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', `#include <common>
+        varying float vEdge; varying float vRnd; varying float vF1;
+        ${WORLEY}`)
+      .replace('#include <begin_vertex>', `
+        vec2 q = position.xy * 0.55;
+        vec3 w = whWorley(q);
+        float edge = w.y - w.x;
+        float ridge = 1.0 - smoothstep(0.1, 0.36, edge);
+        float pocket = 0.35 + 1.1 * (0.62 - min(w.x, 0.62));
+        float h = pow(ridge, 0.7) * 0.55 - (1.0 - ridge) * pocket;
+        h += 0.35 * sin(position.x * 0.18) * cos(position.y * 0.22);
+        vec3 transformed = position + vec3(0.0, 0.0, h);
+        vEdge = edge; vRnd = w.z; vF1 = w.x;`);
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', `#include <common>
+        varying float vEdge; varying float vRnd; varying float vF1;
+        uniform float uTime; uniform vec3 uOrange;`)
+      .replace('#include <color_fragment>', `#include <color_fragment>
+        float rim = 1.0 - smoothstep(0.12, 0.34, vEdge);
+        diffuseColor.rgb = mix(vec3(0.025, 0.027, 0.03), diffuseColor.rgb, rim);`)
+      .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
+        roughnessFactor = mix(0.6, roughnessFactor, rim);`)
+      .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+        float inner = 1.0 - rim;
+        float line = smoothstep(0.36, 0.39, vEdge) * (1.0 - smoothstep(0.39, 0.44, vEdge));
+        float lit = step(0.55, vRnd) * (0.6 + 0.4 * sin(uTime * 0.8 + vRnd * 30.0));
+        totalEmissiveRadiance += uOrange * (line * 1.2 * lit + inner * (lit * 0.9 + 0.08) * smoothstep(0.5, 0.0, vF1));`);
+  };
+  mat.customProgramCacheKey = () => 'wh-lattice';
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = -Math.PI / 2 + 0.32;
+  mesh.position.set(0, -3.4, -44);
+  return mesh;
 }
 
-function shapeGlobe(n, r) {
-  const pos = new Float32Array(n * 3), red = new Float32Array(n);
-  const cities = Array.from({ length: 14 }, () => {
-    const v = new THREE.Vector3().randomDirection();
-    return v;
+/* ---------- W da WunderHub em metal ---------- */
+function shapeFromPath(d) {
+  const nums = d.match(/[MHLZ]|-?\d+(\.\d+)?/g);
+  const s = new THREE.Shape();
+  let x = 0, y = 0, cmd = '', first = true;
+  for (let i = 0; i < nums.length; i++) {
+    const t = nums[i];
+    if (/[MHLZ]/.test(t)) { cmd = t; if (t === 'Z') s.closePath(); continue; }
+    if (cmd === 'M') { x = +t; y = +nums[++i]; s.moveTo(x, -y); first = false; cmd = 'L'; }
+    else if (cmd === 'H') { x = +t; s.lineTo(x, -y); }
+    else if (cmd === 'L') { x = +t; y = +nums[++i]; s.lineTo(x, -y); }
+  }
+  return s;
+}
+function makeW(env) {
+  const g = new THREE.Group();
+  const opts = { depth: 70, bevelEnabled: true, bevelThickness: 10, bevelSize: 7, bevelSegments: 3, curveSegments: 1 };
+  const silver = new THREE.MeshStandardMaterial({ color: 0xd4d9df, metalness: 1, roughness: 0.22, envMapIntensity: 1.8 });
+  const orange = new THREE.MeshStandardMaterial({ color: 0x2a1206, emissive: ORANGE, emissiveIntensity: 1.25, metalness: 0.4, roughness: 0.3 });
+  [
+    ['M0 0H216L447 337L668 71L992 536H791L628 301L434 536H365Z', silver],
+    ['M575 0H681L445 289L394 216Z', orange],
+    ['M1009 0H1205L904 359L815 232Z', orange],
+  ].forEach(([d, m]) => g.add(new THREE.Mesh(new THREE.ExtrudeGeometry(shapeFromPath(d), opts), m)));
+  const k = 3.6 / 1205;
+  g.scale.setScalar(k);
+  g.position.set(-602 * k, 268 * k, -35 * k);
+  const holder = new THREE.Group();
+  holder.add(g);
+  holder.position.set(0, -0.2, -40.5);
+  return holder;
+}
+
+/* ---------- Luzes desfocadas no ar (bokeh) ---------- */
+function makeBokeh(n) {
+  const pos = new Float32Array(n * 3), col = new Float32Array(n * 3), sz = new Float32Array(n);
+  const o = new THREE.Color(1, 0.42, 0.1), w = new THREE.Color(0.85, 0.9, 1);
+  for (let i = 0; i < n; i++) {
+    const z = 8 - Math.random() * 54;
+    pos.set([(Math.random() - 0.5) * 30, (Math.random() - 0.5) * 16, z], i * 3);
+    const c = Math.random() < 0.7 ? o : w;
+    col.set([c.r, c.g, c.b], i * 3);
+    sz[i] = 0.3 + Math.random() * 1.1;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  geo.setAttribute('aSize', new THREE.BufferAttribute(sz, 1));
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uPix: { value: 1 }, uTime: { value: 0 } },
+    vertexShader: `
+      attribute float aSize; attribute vec3 color; varying vec3 vC; varying float vA; uniform float uPix; uniform float uTime;
+      void main() {
+        vec3 p = position; p.y += sin(uTime * 0.3 + position.x) * 0.25;
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * mv;
+        float dz = -mv.z;
+        gl_PointSize = aSize * uPix * 260.0 / max(dz, 1.0);
+        vC = color; vA = smoothstep(0.5, 4.0, dz) * (1.0 - smoothstep(18.0, 30.0, dz)) * 0.22;
+      }`,
+    fragmentShader: `
+      varying vec3 vC; varying float vA;
+      void main() {
+        float d = length(gl_PointCoord - 0.5) * 2.0;
+        if (d > 1.0) discard;
+        float disc = smoothstep(1.0, 0.86, d) * (0.55 + 0.45 * smoothstep(0.5, 0.95, d));
+        gl_FragColor = vec4(vC * disc * vA, 1.0);
+      }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
   });
-  const ringN = Math.floor(n * 0.14);
-  const ga = Math.PI * (3 - Math.sqrt(5));
-  const sphereN = n - ringN;
-  const v = new THREE.Vector3();
-  for (let i = 0; i < sphereN; i++) {
-    const y = 1 - (i / (sphereN - 1)) * 2;
-    const rad = Math.sqrt(1 - y * y);
-    const th = ga * i;
-    v.set(Math.cos(th) * rad, y, Math.sin(th) * rad);
-    let isRed = 0;
-    for (const c of cities) if (v.angleTo(c) < 0.06 + Math.random() * 0.03) { isRed = 1; break; }
-    const rr = r * (1 + (isRed ? 0.04 + Math.random() * 0.08 : (Math.random() - 0.5) * 0.02));
-    pos.set([v.x * rr, v.y * rr, v.z * rr], i * 3);
-    red[i] = isRed;
-  }
-  // Anel inclinado em volta do globo: as buscas chegando
-  for (let i = sphereN; i < n; i++) {
-    const a = Math.random() * Math.PI * 2;
-    const rr = r * (1.45 + (Math.random() - 0.5) * 0.08);
-    const x = Math.cos(a) * rr, z = Math.sin(a) * rr;
-    pos.set([x, z * 0.28 + (Math.random() - 0.5) * 0.03, z * 0.96], i * 3);
-    red[i] = Math.sin(a * 9) > 0.75 ? 1 : 0;
-  }
-  return { pos, red };
+  return new THREE.Points(geo, mat);
 }
-
-function shapePhone(n, height) {
-  const W = 300, H = 600;
-  return sampleCanvas(W, H, (g) => {
-    const rr = (x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, r); };
-    // corpo do celular
-    g.lineWidth = 7; g.strokeStyle = 'rgba(201,207,214,1)';
-    rr(6, 6, W - 12, H - 12, 40); g.stroke();
-    g.fillStyle = 'rgba(201,207,214,.05)'; g.fill();
-    // barra do topo e logo
-    g.fillStyle = 'rgba(201,207,214,1)';
-    rr(40, 48, 56, 12, 6); g.fill();
-    rr(W - 80, 48, 40, 12, 6); g.fill();
-    // imagem de destaque
-    g.fillStyle = 'rgba(201,207,214,.32)';
-    rr(32, 88, W - 64, 170, 16); g.fill();
-    // título
-    g.fillStyle = 'rgba(201,207,214,1)';
-    rr(32, 284, W - 96, 22, 6); g.fill();
-    rr(32, 314, W - 140, 22, 6); g.fill();
-    // linhas de texto
-    g.fillStyle = 'rgba(201,207,214,.55)';
-    for (let i = 0; i < 4; i++) { rr(32, 360 + i * 20, W - 64 - (i % 2) * 50, 8, 4); g.fill(); }
-    // botão vermelho
-    g.fillStyle = 'rgba(227,18,28,1)';
-    rr(32, 462, W - 64, 50, 25); g.fill();
-    // indicador inferior
-    g.fillStyle = 'rgba(201,207,214,.9)';
-    rr(W / 2 - 40, H - 30, 80, 6, 3); g.fill();
-  }, n, height * (W / H), 0.35);
-}
-
-function shuffleInPlace(shape, n) {
-  // Embaralha a ordem para que cada partícula viaje para um lugar novo na troca
-  for (let i = n - 1; i > 0; i--) {
-    const j = (Math.random() * (i + 1)) | 0;
-    for (let k = 0; k < 3; k++) { const t = shape.pos[i * 3 + k]; shape.pos[i * 3 + k] = shape.pos[j * 3 + k]; shape.pos[j * 3 + k] = t; }
-    const t = shape.red[i]; shape.red[i] = shape.red[j]; shape.red[j] = t;
-  }
-  return shape;
-}
-
-/* ---------- Shaders ---------- */
-const vert = /* glsl */ `
-  attribute vec3 aA; attribute vec3 aB; attribute vec3 aC; attribute vec3 aD;
-  attribute vec4 aRed; attribute vec2 aRnd;
-  uniform float uProg, uTime, uPix, uSize, uMotion, uScatter, uMouseK, uSpin;
-  uniform vec3 uMouse;
-  varying vec3 vCol; varying float vA;
-
-  vec3 rotY(vec3 p, float a) { float c = cos(a), s = sin(a); return vec3(c*p.x + s*p.z, p.y, -s*p.x + c*p.z); }
-
-  void main() {
-    float seg = floor(clamp(uProg, 0.0, 2.9999));
-    float f = uProg - seg;
-    // cada partícula sai num tempo um pouco diferente
-    float t = clamp(f * 1.7 - aRnd.x * 0.7, 0.0, 1.0);
-    t = t * t * (3.0 - 2.0 * t);
-
-    vec3 B = rotY(aB, uSpin);
-    vec3 from = aA, to = B; float rf = aRed.x, rt = aRed.y;
-    if (seg > 0.5) { from = B; to = aC; rf = aRed.y; rt = aRed.z; }
-    if (seg > 1.5) { from = aC; to = aD; rf = aRed.z; rt = aRed.w; }
-    vec3 p = mix(from, to, t);
-    float red = mix(rf, rt, t);
-
-    // no meio da viagem, as partículas espiralam
-    float mid = sin(t * 3.14159) * uMotion;
-    float ang = aRnd.y * 6.2831 + uTime * 0.6;
-    vec3 swirl = vec3(cos(ang), sin(ang * 1.3), sin(ang)) * (0.6 + aRnd.x * 1.6);
-    p += swirl * mid;
-
-    // respiração leve quando paradas
-    p += uMotion * 0.025 * vec3(
-      sin(uTime * 0.9 + p.y * 2.1 + aRnd.y * 6.0),
-      cos(uTime * 0.7 + p.x * 1.7 + aRnd.x * 6.0),
-      sin(uTime * 0.8 + p.x * 1.3));
-    p += uScatter * (vec3(aRnd.x, aRnd.y, fract(aRnd.x * 7.0)) - 0.5) * 0.6;
-
-    // o ponteiro afasta as partículas
-    vec2 d = p.xy - uMouse.xy;
-    float dist = length(d);
-    float push = smoothstep(1.15, 0.0, dist) * uMouseK;
-    p.xy += normalize(d + 1e-4) * push * 0.5;
-    p.z += push * 0.7;
-
-    vec4 mv = modelViewMatrix * vec4(p, 1.0);
-    gl_Position = projectionMatrix * mv;
-    gl_PointSize = uSize * uPix * (0.55 + aRnd.y * 0.9) * (10.0 / -mv.z) * (1.0 + mid * 0.6);
-
-    vec3 silver = mix(vec3(0.72, 0.76, 0.82), vec3(1.0, 1.0, 1.0), aRnd.x);
-    vec3 col = mix(silver, vec3(0.95, 0.08, 0.12), red);
-    // faíscas vermelhas durante a viagem
-    col = mix(col, vec3(1.0, 0.18, 0.2), step(0.9, aRnd.y) * mid);
-    col += push * vec3(0.9, 0.2, 0.2);
-    vCol = col;
-    vA = (0.8 + red * 0.4) * (0.75 + 0.25 * sin(uTime * 2.0 + aRnd.y * 40.0) * uMotion);
-  }
-`;
-const frag = /* glsl */ `
-  varying vec3 vCol; varying float vA;
-  void main() {
-    vec2 c = gl_PointCoord - 0.5;
-    float d = length(c);
-    float a = smoothstep(0.5, 0.0, d);
-    a *= a;
-    if (a < 0.01) discard;
-    gl_FragColor = vec4(vCol * a * vA, 1.0);
-  }
-`;
 
 /* ---------- Cena ---------- */
 function webglOk() {
@@ -261,196 +301,197 @@ function webglOk() {
   } catch { return false; }
 }
 
+// Câmera em cada capítulo: posição, para onde olha, distância de foco e para que lado a cena vai
+const KEYS = [
+  { pos: [0.4, 0.3, 8.5], look: [0, 0, -2], side: 1 },
+  { pos: [-3.2, 5.2, -5.5], look: [7.5, 3.4, -18], side: -1 },
+  { pos: [0, 2.8, -30.5], look: [0, -2.8, -43], side: 1 },
+  { pos: [0.2, 0.7, -32.2], look: [0, -0.1, -40.5], side: -1 },
+];
+
 async function start() {
-  setLoad(0.12);
+  setLoad(0.1);
   if (!webglOk()) { await finishLoad(); reveal(); return; }
   root.classList.add('gl-ok');
 
+  const lite = small.matches || coarse.matches;
   const canvas = document.querySelector('[data-gl]');
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
-  const dpr = Math.min(window.devicePixelRatio || 1, small.matches ? 1.5 : 1.75);
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !lite, powerPreference: 'high-performance' });
+  let dpr = Math.min(window.devicePixelRatio || 1, lite ? 1.5 : 1.75);
   renderer.setPixelRatio(dpr);
-  renderer.setClearColor(0x000000, 0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.95;
+  renderer.setClearColor(0x07080a, 1);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  camera.position.set(0, 0, 10);
+  scene.background = new THREE.Color(0x07080a);
+  scene.fog = new THREE.FogExp2(0x07080a, 0.045);
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 120);
 
-  const N = small.matches ? 24000 : 64000;
-  await new Promise((r) => setTimeout(r, 0));
-  const A = shapeW(N, 7.2); setLoad(0.35);
-  const B = shuffleInPlace(shapeGlobe(N, 1.9), N); setLoad(0.55);
-  const C = shuffleInPlace(shapePhone(N, 5.2), N); setLoad(0.75);
-  const D = shuffleInPlace(shapeW(N, 7.2), N); setLoad(0.85);
+  scene.environment = makeEnvironment(renderer);
+  setLoad(0.25); await tick();
 
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(A.pos.slice(), 3));
-  geo.setAttribute('aA', new THREE.BufferAttribute(A.pos, 3));
-  geo.setAttribute('aB', new THREE.BufferAttribute(B.pos, 3));
-  geo.setAttribute('aC', new THREE.BufferAttribute(C.pos, 3));
-  geo.setAttribute('aD', new THREE.BufferAttribute(D.pos, 3));
-  const red = new Float32Array(N * 4), rnd = new Float32Array(N * 2);
-  for (let i = 0; i < N; i++) {
-    red.set([A.red[i], B.red[i], C.red[i], D.red[i]], i * 4);
-    rnd[i * 2] = Math.random(); rnd[i * 2 + 1] = Math.random();
+  const shared = { uTime: { value: 0 }, uBoost: { value: 1 }, uOrange: { value: ORANGE.clone() } };
+  const cables = makeCables(lite ? 26 : 44, lite ? 150 : 240, lite ? 8 : 12, shared);
+  scene.add(cables);
+  setLoad(0.5); await tick();
+  const lattice = makeLattice(lite ? 170 : 300, lite ? 110 : 190, shared);
+  scene.add(lattice);
+  setLoad(0.65); await tick();
+  const wMark = makeW();
+  scene.add(wMark);
+  const bokeh = makeBokeh(lite ? 90 : 180);
+  scene.add(bokeh);
+
+  scene.add(new THREE.AmbientLight(0x404650, 0.4));
+  const key = new THREE.DirectionalLight(0xdfe8ff, 1.6);
+  key.position.set(-6, 10, 8); scene.add(key);
+  const glowKnot = new THREE.PointLight(0xff6a1a, 30, 14, 1.6); glowKnot.position.set(1, -1.2, -1); scene.add(glowKnot);
+  const glowFloor = new THREE.PointLight(0xff6a1a, 14, 12, 1.8); glowFloor.position.set(0, -1.6, -41); scene.add(glowFloor);
+  const rimW = new THREE.PointLight(0xdfe6ff, 22, 12, 1.6); rimW.position.set(-4, 4, -36); scene.add(rimW);
+  setLoad(0.8); await tick();
+
+  // pós-processamento: desfoque de câmera (só no computador) e brilho
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  let bokehPass = null;
+  if (!lite) {
+    bokehPass = new BokehPass(scene, camera, { focus: 9, aperture: 0.0035, maxblur: 0.009 });
+    composer.addPass(bokehPass);
   }
-  geo.setAttribute('aRed', new THREE.BufferAttribute(red, 4));
-  geo.setAttribute('aRnd', new THREE.BufferAttribute(rnd, 2));
-  geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 20);
+  const bloom = new UnrealBloomPass(new THREE.Vector2(512, 512), lite ? 0.6 : 0.7, 0.5, 0.85);
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass());
 
-  const uniforms = {
-    uProg: { value: 0 }, uTime: { value: 0 }, uPix: { value: dpr }, uSize: { value: small.matches ? 3.0 : 2.8 },
-    uMotion: { value: reduce.matches ? 0 : 1 }, uScatter: { value: 0 }, uMouse: { value: new THREE.Vector3(99, 99, 0) },
-    uMouseK: { value: 0 }, uSpin: { value: 0 },
-  };
-  const mat = new THREE.ShaderMaterial({
-    vertexShader: vert, fragmentShader: frag, uniforms,
-    transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
-  });
-  const group = new THREE.Group();
-  group.add(new THREE.Points(geo, mat));
-  scene.add(group);
-
-  // Poeira ao fundo: dá profundidade e se move um pouco com o ponteiro e a rolagem
-  const DN = small.matches ? 900 : 2200;
-  const dpos = new Float32Array(DN * 3);
-  for (let i = 0; i < DN; i++) dpos.set([(Math.random() - 0.5) * 30, (Math.random() - 0.5) * 18, -2 - Math.random() * 14], i * 3);
-  const dgeo = new THREE.BufferGeometry();
-  dgeo.setAttribute('position', new THREE.BufferAttribute(dpos, 3));
-  const dust = new THREE.Points(dgeo, new THREE.PointsMaterial({
-    size: 0.035, color: 0x8d949e, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending,
-  }));
-  scene.add(dust);
-
-  // Onde a forma fica em cada capítulo (no computador o texto fica do outro lado)
-  const OFF_DESK = [[2.3, 0.95], [-2.4, 0], [2.6, 0], [-2.5, 0.1]];
-  const SCALE = [1, 1, 1, 0.78];
-  const OFF_MOB = [[0, 1.35], [0, 1.25], [0, 1.15], [0, 1.35]];
-
-  let vw = 0, vh = 0, fit = 1, tops = [];
+  let vw = 0, vh = 0, tops = [];
   const caps = [...document.querySelectorAll('[data-cap]')];
   function resize() {
     vw = innerWidth; vh = innerHeight;
     renderer.setSize(vw, vh, false);
+    composer.setPixelRatio(dpr);
+    composer.setSize(vw, vh);
+    bloom.resolution.set(vw / 2, vh / 2);
     camera.aspect = vw / vh;
+    camera.fov = vw < vh ? 52 : 38;
     camera.updateProjectionMatrix();
-    const visH = 2 * 10 * Math.tan(THREE.MathUtils.degToRad(35 / 2));
-    const visW = visH * camera.aspect;
-    fit = small.matches ? Math.min(1, (visW * 0.92) / 7.2) : Math.min(1, visW / 12);
+    bokeh.material.uniforms.uPix.value = dpr * (vh / 900);
     tops = caps.map((c) => c.getBoundingClientRect().top + scrollY);
     tops.push(document.documentElement.scrollHeight);
-    needs = true;
   }
 
   function scrollProg() {
     const y = scrollY + vh * 0.5;
-    for (let i = 0; i < caps.length; i++) {
-      if (y < tops[i + 1] || i === caps.length - 1) {
-        if (i === caps.length - 1) return 3;
+    for (let i = 0; i < caps.length - 1; i++) {
+      if (y < tops[i + 1]) {
         const f = (y - tops[i]) / (tops[i + 1] - tops[i]);
-        const s = Math.min(1, Math.max(0, (f - 0.45) / 0.5));
+        const s = Math.min(1, Math.max(0, (f - 0.4) / 0.55));
         return i + s * s * (3 - 2 * s);
       }
     }
-    return 3;
+    return caps.length - 1;
   }
 
-  // ponteiro
-  const ndc = new THREE.Vector2(0, 0), ndcSmooth = new THREE.Vector2(0, 0);
-  let mouseActive = 0, lastMove = -1e9;
+  const ndc = new THREE.Vector2(), ndcS = new THREE.Vector2();
   addEventListener('pointermove', (e) => {
     if (e.pointerType !== 'mouse') return;
     ndc.set((e.clientX / vw) * 2 - 1, -(e.clientY / vh) * 2 + 1);
-    lastMove = performance.now();
-    needs = true;
   }, { passive: true });
 
   const hudCap = document.querySelector('[data-hud-cap]');
   const hudBar = document.querySelector('[data-hud-bar]');
-  const hudXY = document.querySelector('[data-hud-xy]');
 
-  let prog = 0, lastScroll = scrollY, scatter = 0, needs = true, last = performance.now();
-  addEventListener('resize', resize);
-  addEventListener('scroll', () => { needs = true; }, { passive: true });
-  reduce.addEventListener?.('change', () => { uniforms.uMotion.value = reduce.matches ? 0 : 1; needs = true; });
+  addEventListener('resize', () => { resize(); wake(); });
   resize();
 
-  const ray = new THREE.Raycaster(), plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), hit = new THREE.Vector3();
-  const tmp = new THREE.Vector3();
+  const P0 = new THREE.Vector3(), P1 = new THREE.Vector3(), L0 = new THREE.Vector3(), L1 = new THREE.Vector3();
+  let prog = scrollProg(), last = performance.now(), frames = 0, fpsStart = 0, degraded = false, idle = false;
 
-  function frame(now) {
-    const dt = Math.min(0.05, (now - last) / 1000);
+  // modo de gravação: desenha quadro a quadro sob comando (usado para gerar o vídeo de prévia)
+  const capture = location.search.includes('captura');
+  if (capture) {
+    window.__whFrame = (y, ms, mx, my) => { scrollTo(0, y); ndc.set(mx, my); frame(ms, true); };
+  }
+
+  function frame(now, manual) {
+    const dt = manual ? 1 / 24 : Math.min(0.05, (now - last) / 1000);
     last = now;
     const still = reduce.matches;
     const target = scrollProg();
-    prog = still ? target : prog + (target - prog) * Math.min(1, dt * 3.2);
+    prog = still ? target : prog + (target - prog) * Math.min(1, dt * 2.6);
 
-    const v = scrollY - lastScroll; lastScroll = scrollY;
-    scatter += ((still ? 0 : Math.min(1, Math.abs(v) / 120)) - scatter) * Math.min(1, dt * 6);
+    const i0 = Math.min(KEYS.length - 1, Math.floor(prog)), i1 = Math.min(KEYS.length - 1, i0 + 1);
+    let f = prog - i0; f = f * f * (3 - 2 * f);
+    P0.fromArray(KEYS[i0].pos); P1.fromArray(KEYS[i1].pos);
+    L0.fromArray(KEYS[i0].look); L1.fromArray(KEYS[i1].look);
+    P0.lerp(P1, f); L0.lerp(L1, f);
 
-    const moving = !still && now - lastMove < 1600;
-    mouseActive += ((moving ? 1 : 0) - mouseActive) * Math.min(1, dt * 3);
-    ndcSmooth.lerp(ndc, Math.min(1, dt * 5));
-
-    // posição da forma
-    const offs = small.matches ? OFF_MOB : OFF_DESK;
-    const i0 = Math.min(3, Math.floor(prog)), i1 = Math.min(3, i0 + 1), fr = prog - i0;
-    const ox = offs[i0][0] + (offs[i1][0] - offs[i0][0]) * fr;
-    const oy = offs[i0][1] + (offs[i1][1] - offs[i0][1]) * fr;
-    group.position.set(ox * (small.matches ? 1 : Math.max(0.6, fit)), oy, 0);
-    group.scale.setScalar(fit * (small.matches ? 1 : SCALE[i0] + (SCALE[i1] - SCALE[i0]) * fr));
     if (!still) {
-      group.rotation.y = ndcSmooth.x * 0.28 * mouseActive + Math.sin(now * 0.00025) * 0.12;
-      group.rotation.x = -ndcSmooth.y * 0.16 * mouseActive + Math.cos(now * 0.0002) * 0.05;
-      camera.position.z = 10 - Math.sin(Math.min(1, prog % 1) * Math.PI) * 1.6;
-    } else {
-      group.rotation.set(0, 0, 0);
-      camera.position.z = 10;
+      ndcS.lerp(ndc, Math.min(1, dt * 3));
+      P0.x += ndcS.x * 0.45; P0.y += ndcS.y * 0.3;
+      P0.y += Math.sin(now * 0.0004) * 0.08;
+    }
+    camera.position.copy(P0);
+    camera.lookAt(L0);
+
+    // empurra a cena para o lado oposto do texto
+    const side = KEYS[i0].side + (KEYS[i1].side - KEYS[i0].side) * f;
+    if (small.matches) camera.setViewOffset(vw, vh, 0, vh * 0.16, vw, vh);
+    else camera.setViewOffset(vw, vh, -side * vw * 0.17, 0, vw, vh);
+    root.classList.toggle('lado-direito', !small.matches && side < 0);
+
+    if (bokehPass) {
+      bokehPass.uniforms.focus.value = camera.position.distanceTo(L0) * (i0 === 0 && f < 0.5 ? 0.98 : 0.9);
     }
 
-    dust.position.y = (scrollY / vh) * 0.9;
-    if (!still) { dust.rotation.y = ndcSmooth.x * 0.04; dust.rotation.x = -ndcSmooth.y * 0.03; }
+    const t = still ? 7.3 : now / 1000;
+    shared.uTime.value = t;
+    shared.uBoost.value = still ? 1 : 1 + Math.sin(Math.PI * (prog % 1)) * 2.5;
+    bokeh.material.uniforms.uTime.value = t;
+    cables.rotation.z = still ? 0 : Math.sin(t * 0.15) * 0.03;
+    wMark.rotation.y = still ? -0.25 : -0.25 + ndcS.x * 0.35 + Math.sin(t * 0.4) * 0.08;
+    wMark.rotation.x = still ? 0.05 : -ndcS.y * 0.15;
+    glowFloor.intensity = 14 + (still ? 0 : Math.sin(t * 1.3) * 3);
 
-    // ponteiro no espaço da forma
-    if (!still) {
-      ray.setFromCamera(ndcSmooth, camera);
-      if (ray.ray.intersectPlane(plane, hit)) {
-        tmp.copy(hit);
-        group.worldToLocal(tmp);
-        uniforms.uMouse.value.copy(tmp);
-      }
-    }
-
-    uniforms.uProg.value = prog;
-    uniforms.uTime.value = still ? 0 : now / 1000;
-    uniforms.uScatter.value = scatter;
-    uniforms.uMouseK.value = mouseActive;
-    uniforms.uSpin.value = still ? 0.6 : now * 0.00018;
-    renderer.render(scene, camera);
+    composer.render(dt);
 
     hudCap.textContent = `0${Math.min(4, Math.round(prog) + 1)} / 04`;
     hudBar.style.transform = `scaleX(${(prog / 3).toFixed(4)})`;
-    hudXY.textContent = `x ${ndcSmooth.x.toFixed(2)} · y ${ndcSmooth.y.toFixed(2)}`;
 
-    needs = false;
-    if (!still || Math.abs(target - prog) > 0.001) requestAnimationFrame(frame);
+    // se o aparelho estiver lento, alivia o desenho
+    if (manual) return;
+    if (!degraded && !still && !location.search.includes('hq')) {
+      frames++;
+      if (!fpsStart) fpsStart = now;
+      if (now - fpsStart > 2500) {
+        const fps = (frames * 1000) / (now - fpsStart);
+        if (fps < 32) {
+          degraded = true;
+          dpr = 1; renderer.setPixelRatio(1);
+          if (bokehPass) bokehPass.enabled = false;
+          resize();
+        }
+        frames = 0; fpsStart = now;
+      }
+    }
+
+    if (!still || Math.abs(target - prog) > 0.0005) requestAnimationFrame(frame);
     else idle = true;
   }
-  let idle = false;
-  // com movimento reduzido, só desenha quando algo muda
-  const wake = () => { if (idle) { idle = false; last = performance.now(); requestAnimationFrame(frame); } };
+  function wake() { if (idle) { idle = false; last = performance.now(); requestAnimationFrame(frame); } }
   addEventListener('scroll', wake, { passive: true });
-  addEventListener('resize', wake);
   reduce.addEventListener?.('change', wake);
 
   renderer.compile(scene, camera);
+  setLoad(0.92);
   await finishLoad();
   reveal();
+  if (capture) { window.__whReady = true; return; }
   requestAnimationFrame(frame);
 }
 
 start().catch((err) => {
   console.error(err);
   root.classList.remove('gl-ok');
+  setLoad(1);
   reveal();
 });
