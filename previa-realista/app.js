@@ -1,5 +1,5 @@
 // Prévia realista da WunderHub: título que entra palavra por palavra,
-// vídeo em loop no topo (só quando o movimento está liberado) e painel de orçamento.
+// vídeo dos cabos atrás da página inteira, chão de colmeia no fim e painel de orçamento.
 (() => {
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
@@ -28,31 +28,54 @@
   });
   requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('ready')));
 
-  /* Vídeo do topo: a foto aparece na hora; o vídeo entra por cima quando estiver pronto */
-  const video = document.querySelector('.hero video');
+  /* Cena de fundo: vídeo dos cabos o tempo todo; o chão de colmeia sobe no fim da página */
+  const cena = document.querySelector('.cena');
+  const vCabos = document.querySelector('.cabos video');
+  const vChao = document.querySelector('.chao video');
   const economia = navigator.connection && navigator.connection.saveData;
-  function ligarVideo() {
-    if (!video || reduce.matches || economia) return;
-    const src = retrato.matches ? video.dataset.srcM : video.dataset.src;
-    if (video.getAttribute('src') !== src) video.src = src;
-    video.addEventListener('playing', () => video.classList.add('tocando'), { once: true });
-    video.play().catch(() => {});
+  const podeVideo = () => !reduce.matches && !economia;
+
+  function carregar(v) {
+    const src = retrato.matches ? v.dataset.srcM : v.dataset.src;
+    if (v.getAttribute('src') !== src) {
+      v.classList.remove('tocando');
+      v.src = src;
+      v.addEventListener('playing', () => v.classList.add('tocando'), { once: true });
+    }
   }
-  function desligarVideo() {
-    if (!video) return;
-    video.pause();
-    video.classList.remove('tocando');
+  function tocar(v, sim) {
+    if (!v) return;
+    if (sim && podeVideo()) { carregar(v); if (v.paused) v.play().catch(() => {}); }
+    else if (!v.paused) v.pause();
   }
-  ligarVideo();
-  reduce.addEventListener('change', () => (reduce.matches ? desligarVideo() : ligarVideo()));
-  retrato.addEventListener('change', () => { if (!reduce.matches) { desligarVideo(); ligarVideo(); } });
-  // pausa o vídeo quando o topo sai da tela, para não gastar bateria
-  if (video && 'IntersectionObserver' in window) {
-    new IntersectionObserver(([e]) => {
-      if (reduce.matches || economia) return;
-      e.isIntersecting ? video.play().catch(() => {}) : video.pause();
-    }).observe(video.closest('.hero'));
+
+  let chao = 0;
+  function atualizar() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const y = scrollY;
+    const p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+    // o chão começa a subir quando falta 1,3 tela para o fim
+    const faixa = innerHeight * 1.3;
+    chao = Math.min(1, Math.max(0, (y - (max - faixa)) / faixa));
+    const e = 1 - Math.pow(1 - chao, 2);
+    cena.style.setProperty('--p', p.toFixed(4));
+    cena.style.setProperty('--chao', e.toFixed(4));
+    tocar(vChao, chao > 0);
+    tocar(vCabos, chao < 1);
   }
+  let pedido = false;
+  addEventListener('scroll', () => {
+    if (pedido) return;
+    pedido = true;
+    requestAnimationFrame(() => { pedido = false; atualizar(); });
+  }, { passive: true });
+  addEventListener('resize', atualizar);
+  reduce.addEventListener('change', atualizar);
+  retrato.addEventListener('change', atualizar);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { vCabos.pause(); vChao.pause(); } else atualizar();
+  });
+  atualizar();
 
   /* Painel de orçamento: monta a mensagem do WhatsApp */
   const dialog = document.getElementById('orcamento');

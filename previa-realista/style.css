@@ -1,5 +1,5 @@
-/* Prévia realista: fotos de cabos e colmeia em preto, prata e laranja.
-   Cada seção tem uma imagem de fundo inteira; o texto fica sobre uma sombra só onde precisa. */
+/* Prévia realista: cabos de metal com energia laranja atrás da página inteira
+   e o chão de colmeia aparecendo no fim. Preto, prata e laranja. */
 @font-face { font-family: "Inter Tight"; src: url("./fonts/inter-tight-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: "Instrument Serif"; src: url("./fonts/instrument-serif-latin-400-italic.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: swap; }
 @font-face { font-family: "JetBrains Mono"; src: url("./fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
@@ -23,7 +23,7 @@
 
 * { box-sizing: border-box; }
 html { background: var(--bg); color: var(--ink); -webkit-text-size-adjust: 100%; scroll-padding-top: 90px; }
-body { margin: 0; font-family: var(--sans); font-size: 17px; line-height: 1.55; background: var(--bg); overflow-x: hidden; }
+body { margin: 0; font-family: var(--sans); font-size: 17px; line-height: 1.55; background: transparent; overflow-x: clip; }
 a { color: inherit; }
 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: 0; color: var(--orange-hi); }
 :focus-visible { outline: 2px solid var(--orange-hi); outline-offset: 4px; border-radius: 2px; }
@@ -44,28 +44,26 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 .btn-sm { min-height: 42px; padding: 0 20px; font-size: 14px; }
 .btn-full { width: 100%; }
 
-/* Fundos: imagem inteira, sem escurecer; a sombra fica só atrás do texto */
-.fundo { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-.fundo img, .fundo video { position: absolute; inset: -6% 0; width: 100%; height: 112%; object-fit: cover; display: block; }
-.fundo video { opacity: 0; transition: opacity 1.2s var(--ease); }
-.fundo video.tocando { opacity: 1; }
-.fundo::after { content: ""; position: absolute; inset: 0; }
-.hero .fundo::after { background: linear-gradient(90deg, rgba(10,10,11,.82) 0%, rgba(10,10,11,.45) 38%, rgba(10,10,11,0) 62%), linear-gradient(0deg, rgba(10,10,11,.7) 0%, rgba(10,10,11,0) 40%), linear-gradient(rgba(10,10,11,.5), rgba(10,10,11,0) 18%); }
-.fundo-esq::after { background: linear-gradient(270deg, rgba(10,10,11,.9) 0%, rgba(10,10,11,.6) 34%, rgba(10,10,11,0) 60%), linear-gradient(rgba(10,10,11,1), rgba(10,10,11,0) 14%, rgba(10,10,11,0) 86%, rgba(10,10,11,1)); }
-.fundo-calmo::after { background: linear-gradient(rgba(10,10,11,1), rgba(10,10,11,.35) 18%, rgba(10,10,11,.35) 70%, rgba(10,10,11,1)); }
-
-/* Parallax suave, só com CSS: a imagem anda um pouco mais devagar que a página */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .fundo img, .fundo video { animation: parallax linear both; animation-timeline: view(); animation-range: cover; }
-    @keyframes parallax { from { transform: translateY(-5%); } to { transform: translateY(5%); } }
-    .hero .fundo img, .hero .fundo video { animation-name: parallax-topo; animation-range: exit; }
-    @keyframes parallax-topo { from { transform: none; } to { transform: translateY(10%); } }
-  }
-}
+/* Cena: o vídeo dos cabos fica fixo atrás da página inteira.
+   No fim, o chão de colmeia sobe por baixo e os cabos passam a nascer dele.
+   --chao vai de 0 a 1 nas últimas telas (calculado no app.js). */
+.cena { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: #1a0f08; --chao: 0; --p: 0; }
+.camada { position: absolute; inset: 0; }
+.camada img, .camada video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.camada video { opacity: 0; transition: opacity 1.2s var(--ease); }
+.camada video.tocando { opacity: 1; }
+/* os cabos descem devagar enquanto a página rola, como se a câmera estivesse descendo */
+.cabos { transform: scale(1.12) translateY(calc(var(--p) * 4% - 2%)); }
+.chao { transform: translateY(calc((1 - var(--chao)) * 100%)); -webkit-mask-image: linear-gradient(transparent, #000 32%); mask-image: linear-gradient(transparent, #000 32%); }
+html:not(.js) .chao { display: none; }
+/* véu: escurece um pouco para o texto ler bem, mais forte do lado do texto */
+.veu { position: absolute; inset: 0; background: rgba(10,10,11,.22); }
+/* sombra suave atrás de cada bloco de texto, para ler bem sem apagar a imagem */
+.hero-main, .col, .hero-side { position: relative; }
+.hero-main::before, .col::before, .hero-side::before { content: ""; position: absolute; inset: -70px -90px; z-index: -1; background: radial-gradient(closest-side, rgba(10,10,11,.78), rgba(10,10,11,.5) 60%, rgba(10,10,11,0)); pointer-events: none; }
 
 /* Seções */
-main { position: relative; z-index: 5; }
+main { position: relative; z-index: 5; overflow-x: clip; }
 .sec { position: relative; isolation: isolate; min-height: 110vh; display: flex; flex-direction: column; justify-content: center; padding: 140px var(--pad); }
 .lado-dir { align-items: flex-end; }
 .col { max-width: 500px; }
@@ -102,8 +100,8 @@ main { position: relative; z-index: 5; }
 .steps strong { font-weight: 600; font-size: 18px; }
 .steps p { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
 
-.fim { min-height: 100vh; }
-.rodape { position: relative; z-index: 5; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 28px var(--pad) 70px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); background: var(--bg); }
+.fim { min-height: 130vh; justify-content: flex-end; padding-bottom: 18vh; }
+.rodape { position: relative; z-index: 5; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 28px var(--pad) 40px; border-top: 1px solid var(--line); font-size: 13px; color: #c9ced5; background: linear-gradient(rgba(10,10,11,0), rgba(10,10,11,.85)); }
 
 /* Entrada do título */
 .js [data-words] .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em; }
@@ -145,21 +143,18 @@ main { position: relative; z-index: 5; }
   .nav { display: none; }
   .btn-sm { margin-left: auto; }
   .lado-dir { align-items: stretch; }
-  .sec { min-height: auto; justify-content: flex-end; padding: 46vh var(--pad) 72px; }
+  .sec { min-height: auto; justify-content: flex-end; padding: 34vh var(--pad) 40px; }
   .hero { min-height: 100vh; min-height: 100svh; padding-top: 40vh; padding-bottom: 9vh; }
-  #processo { padding-top: 100px; }
-  #formatos { padding-top: 34vh; }
-  /* no celular a imagem ocupa a parte de cima (mais aberta, mostra mais cabos) e o texto fica embaixo */
-  .fundo { bottom: auto; height: min(78%, 135vw); }
-  .hero .fundo { height: min(82%, 140vw); }
-  .hero .fundo::after { background: linear-gradient(0deg, rgba(10,10,11,1) 0%, rgba(10,10,11,.55) 30%, rgba(10,10,11,0) 60%), linear-gradient(rgba(10,10,11,.55), rgba(10,10,11,0) 16%); }
-  .fundo-esq::after, .fundo-calmo::after { background: linear-gradient(rgba(10,10,11,1), rgba(10,10,11,0) 14%, rgba(10,10,11,0) 60%, rgba(10,10,11,1) 100%); }
+  .fim { min-height: 100vh; min-height: 100svh; padding-top: 40vh; }
+  .hero-main::before, .col::before, .hero-side::before { inset: -50px -40px; }
   .hero-side { position: static; margin-top: 28px; }
   .cards { grid-template-columns: 1fr; margin-top: 28px; }
   .facts li { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .cabos { transform: scale(1.04); }
+  .chao { transform: none; opacity: var(--chao); }
   .js [data-words] .w > span { transform: none; transition: none; }
   .painel[open] { animation: none; }
   .btn { transition: none; }
