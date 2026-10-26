@@ -107,24 +107,92 @@
     else if (!v.paused) v.pause();
   }
 
+  /* Descida: o vídeo da câmera é baixado inteiro e a rolagem escolhe o quadro */
+  const camDesc = document.querySelector('.descida');
+  const camChao = document.querySelector('.chao');
+  const vDesc = document.querySelector('.descida video');
+  const DESC_FIM = 0.9;            // a câmera chega ao chão em 90% da rolagem
+  let modoDescida = false, alvo = 0, mostrado = 0, rafD = null, ultimo = 0, buscando = false, pendente = null;
+  const clamp = (v) => Math.min(1, Math.max(0, v));
+  // até 62% da rolagem a câmera passeia entre os cabos (início do vídeo, sem chão);
+  // dali até 90% ela desce e o chão de colmeia aparece
+  const tempoDe = (p) => (p < 0.62 ? (p / 0.62) * 0.28 : 0.28 + clamp((p - 0.62) / (DESC_FIM - 0.62)) * 0.72);
+
+  function buscar(t) {
+    if (!vDesc.duration) return;
+    if (buscando) { pendente = t; return; }
+    buscando = true;
+    vDesc.currentTime = t;
+  }
+  vDesc.addEventListener('seeked', () => {
+    buscando = false;
+    if (pendente !== null) { const t = pendente; pendente = null; buscar(t); }
+  });
+  function passoDesc(agora) {
+    const dt = Math.min(100, agora - (ultimo || agora));
+    ultimo = agora;
+    mostrado += (alvo - mostrado) * (1 - Math.pow(1 - 0.14, dt / 16.667));
+    if (Math.abs(alvo - mostrado) < 0.0005) { mostrado = alvo; rafD = null; ultimo = 0; }
+    else rafD = requestAnimationFrame(passoDesc);
+    buscar(mostrado * (vDesc.duration - 0.05));
+  }
+  async function carregarDescida() {
+    if (vDesc.dataset.carregando || !podeVideo()) return;
+    vDesc.dataset.carregando = '1';
+    try {
+      const url = retrato.matches ? vDesc.dataset.srcM : vDesc.dataset.src;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('descida');
+      vDesc.src = URL.createObjectURL(await res.blob());
+      vDesc.load();
+      await new Promise((ok, erro) => {
+        vDesc.addEventListener('loadeddata', ok, { once: true });
+        vDesc.addEventListener('error', erro, { once: true });
+      });
+      modoDescida = true;
+      atualizar();
+    } catch (e) {
+      // sem a descida a página continua com os loops e o chão subindo
+    }
+  }
+
   let pousou = false;
   function atualizar() {
     const max = root.scrollHeight - innerHeight;
     const y = scrollY;
-    const p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
-    // o chão começa a subir quando falta 1,3 tela para o fim
-    const faixa = innerHeight * 1.3;
-    const chao = Math.min(1, Math.max(0, (y - (max - faixa)) / faixa));
-    const e = 1 - Math.pow(1 - chao, 2);
-    cena.style.setProperty('--p', p.toFixed(4));
+    const p = max > 0 ? clamp(y / max) : 0;
     root.style.setProperty('--p', p.toFixed(4));
-    cena.style.setProperty('--chao', e.toFixed(4));
+    const desc = modoDescida && podeVideo();
+    cena.classList.toggle('descendo', desc);
+    let chao, cobreCabos;
+    if (desc) {
+      // topo: loop dos cabos; meio: descida guiada pela rolagem; fim: loop do chão
+      const op = clamp(p / 0.06);
+      camDesc.style.opacity = op;
+      alvo = tempoDe(p);
+      if (rafD === null) rafD = requestAnimationFrame(passoDesc);
+      chao = clamp((p - DESC_FIM - 0.01) / 0.05);
+      camChao.style.opacity = chao;
+      cobreCabos = op >= 1;
+    } else {
+      camDesc.style.opacity = 0;
+      camChao.style.removeProperty('opacity');
+      cena.style.setProperty('--p', p.toFixed(4));
+      // o chão começa a subir quando falta 1,3 tela para o fim
+      const faixa = innerHeight * 1.3;
+      chao = clamp((y - (max - faixa)) / faixa);
+      cena.style.setProperty('--chao', (1 - Math.pow(1 - chao, 2)).toFixed(4));
+      cobreCabos = chao >= 1;
+    }
     if (chao > 0.97 && !pousou) { pousou = true; cena.classList.add('pousou'); }
     if (chao < 0.6 && pousou) { pousou = false; cena.classList.remove('pousou'); }
     tocar(vChao, chao > 0);
-    tocar(vCabos, chao < 1);
+    tocar(vCabos, !cobreCabos);
     acender();
   }
+  // baixa a descida depois da abertura (ou na primeira rolagem), sem disputar com o começo
+  setTimeout(carregarDescida, comAbertura ? 2600 : 600);
+  addEventListener('scroll', carregarDescida, { once: true, passive: true });
   let pedido = false;
   addEventListener('scroll', () => {
     if (pedido) return;

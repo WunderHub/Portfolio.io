@@ -83,6 +83,12 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 .cabos { transform: scale(1.12) translateY(calc(var(--p) * 4% - 2%)); }
 .chao { transform: translateY(calc((1 - var(--chao)) * 100%)); -webkit-mask-image: linear-gradient(transparent, #000 32%); mask-image: linear-gradient(transparent, #000 32%); }
 html:not(.js) .chao { display: none; }
+/* Descida: com o vídeo da câmera carregado, a rolagem controla a descida pelos cabos até o chão.
+   O loop dos cabos fica no topo, o vídeo da descida cobre o meio e o loop do chão assume no fim. */
+.descida { opacity: 0; }
+.descida video { opacity: 1; transition: none; }
+.descendo .cabos, .descendo .descida, .descendo .chao { transform: scale(1.04); }
+.descendo .chao { -webkit-mask-image: none; mask-image: none; opacity: 0; }
 /* quando o chão termina de subir, as frestas dão um surto de energia */
 .pousou .chao { animation: surto 1.8s var(--ease); }
 @keyframes surto { 25% { filter: brightness(1.7) saturate(1.15); } }
