@@ -25,7 +25,7 @@
 
 * { box-sizing: border-box; }
 html { background: var(--bg); color: var(--ink); -webkit-text-size-adjust: 100%; scroll-padding-top: 90px; }
-body { margin: 0; font-family: var(--sans); font-size: 17px; line-height: 1.55; background: transparent; overflow-x: clip; }
+body { margin: 0; font-family: var(--sans); font-size: 17px; line-height: 1.55; color: var(--ink); background: transparent; overflow-x: clip; }
 a { color: inherit; }
 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: 0; color: var(--red-txt); }
 :focus-visible { outline: 2px solid var(--red-hi); outline-offset: 4px; border-radius: 2px; }
@@ -79,16 +79,17 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 .camada img, .camada video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .camada video { opacity: 0; transition: opacity 1.2s var(--ease); }
 .camada video.tocando { opacity: 1; }
-/* os cabos descem devagar enquanto a página rola, como se a câmera estivesse descendo */
-.cabos { transform: scale(1.12) translateY(calc(var(--p) * 4% - 2%)); }
+/* todas as camadas usam o mesmo enquadramento, para os cabos nunca mudarem de lugar na troca */
+.cabos, .descida { transform: scale(1.04); }
 .chao { transform: translateY(calc((1 - var(--chao)) * 100%)); -webkit-mask-image: linear-gradient(transparent, #000 32%); mask-image: linear-gradient(transparent, #000 32%); }
 html:not(.js) .chao { display: none; }
 /* Descida: com o vídeo da câmera carregado, a rolagem controla a descida pelos cabos até o chão.
    O loop dos cabos fica no topo, o vídeo da descida cobre o meio e o loop do chão assume no fim. */
-.descida { opacity: 0; }
+.descida { opacity: 0; transition: opacity .7s var(--ease); }
 .descida video { opacity: 1; transition: none; }
-.descendo .cabos, .descendo .descida, .descendo .chao { transform: scale(1.04); }
-.descendo .chao { -webkit-mask-image: none; mask-image: none; opacity: 0; }
+.descendo .chao { transform: scale(1.04); -webkit-mask-image: none; mask-image: none; opacity: 0; transition: opacity 1s var(--ease); }
+/* as trocas são dissolvências rápidas: a primeira rolagem entra na descida, o fim entra no chão */
+.descendo.na-descida .descida, .descendo.no-chao .chao { opacity: 1; }
 /* quando o chão termina de subir, as frestas dão um surto de energia */
 .pousou .chao { animation: surto 1.8s var(--ease); }
 @keyframes surto { 25% { filter: brightness(1.7) saturate(1.15); } }

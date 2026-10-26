@@ -108,8 +108,6 @@
   }
 
   /* Descida: o vídeo da câmera é baixado inteiro e a rolagem escolhe o quadro */
-  const camDesc = document.querySelector('.descida');
-  const camChao = document.querySelector('.chao');
   const vDesc = document.querySelector('.descida video');
   const DESC_FIM = 0.9;            // a câmera chega ao chão em 90% da rolagem
   let modoDescida = false, alvo = 0, mostrado = 0, rafD = null, ultimo = 0, buscando = false, pendente = null;
@@ -166,18 +164,18 @@
     cena.classList.toggle('descendo', desc);
     let chao, cobreCabos;
     if (desc) {
-      // topo: loop dos cabos; meio: descida guiada pela rolagem; fim: loop do chão
-      const op = clamp(p / 0.06);
-      camDesc.style.opacity = op;
+      // topo: loop dos cabos; meio: descida guiada pela rolagem; fim: loop do chão.
+      // as trocas entre eles são dissolvências curtas (CSS), nunca uma mistura parada no meio
+      const naDescida = p > 0.004;
+      const noChao = p >= DESC_FIM + 0.006;
+      cena.classList.toggle('na-descida', naDescida);
+      cena.classList.toggle('no-chao', noChao);
       alvo = tempoDe(p);
       if (rafD === null) rafD = requestAnimationFrame(passoDesc);
-      chao = clamp((p - DESC_FIM - 0.01) / 0.05);
-      camChao.style.opacity = chao;
-      cobreCabos = op >= 1;
+      chao = noChao ? 1 : 0;
+      cobreCabos = naDescida;
     } else {
-      camDesc.style.opacity = 0;
-      camChao.style.removeProperty('opacity');
-      cena.style.setProperty('--p', p.toFixed(4));
+      cena.classList.remove('na-descida', 'no-chao');
       // o chão começa a subir quando falta 1,3 tela para o fim
       const faixa = innerHeight * 1.3;
       chao = clamp((y - (max - faixa)) / faixa);
