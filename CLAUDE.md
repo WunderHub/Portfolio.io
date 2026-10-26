@@ -9,5 +9,5 @@
 - Textos da página, commits e PRs em português.
 
 ## Antes de dar algo por pronto
-- Conferir a página no navegador em celular (360 px) e computador (1440 px), com movimento reduzido, sem JavaScript e navegando só pelo teclado.
+- Conferir a página no navegador em celular (360 px) e computador (1440 px), com movimento reduzido, sem JavaScript e navegando só pelo teclado. A skill `conferir-site` faz essa rodada e mede peso e acessibilidade.
 - Não criar vitrine, galeria ou sites de exemplo por enquanto. Os trabalhos autorais entram só quando o dono pedir, à medida que criar novos sites.
